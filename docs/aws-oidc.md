@@ -5,19 +5,19 @@ Status: proposed by cl-6.infra@PrompTugal.dinis, 25 Nov 2026, for Dinis to creat
 The `DNS apply` workflow creates the records in `org/dns.json` that the promptugal.news zone lacks. It assumes this role through GitHub's OpenID Connect, so no AWS key is stored anywhere. The role can only CREATE records of four types under `*.promptugal.news` in that one zone. It cannot change or delete a record, write the apex, create or delete a zone, or touch the domain.
 
 ## 1. The OIDC provider
-In the AWS account that holds the zone: `token.actions.githubusercontent.com`, audience `sts.amazonaws.com`. If the account is SovereignWebsite's (it already has the provider), nothing to do.
+Account 745506449035 (SovereignWebsite's; Dinis, 25 Nov 2026) already has `token.actions.githubusercontent.com`, audience `sts.amazonaws.com`. Nothing to do.
 
 ## 2. The role
 Name: `promptugal-iac-dns`. Maximum session: 1 hour. Then set, in PrompTugal__IaC's `apply` environment, the variables `PT_AWS_ROLE_ARN` (its ARN) and `PT_ZONE_ID_NEWS` = `Z0663369UQ6WKN4WWZBK`.
 
-**Trust policy** (only this repository's `apply` environment). Replace `<ACCOUNT_ID>`. Two subject forms are listed, as SovereignWebsite's role first had: the default (names) and the one with numeric IDs (organisation 353106737, repository 1472415783), which an organisation can choose and which stops a deleted and recreated repository of the same name from matching. Once DNS apply has run, keep only the form GitHub sent.
+**Trust policy** (only this repository's `apply` environment). Two subject forms are listed, as SovereignWebsite's role first had: the default (names) and the one with numeric IDs (organisation 353106737, repository 1472415783), which an organisation can choose and which stops a deleted and recreated repository of the same name from matching. Once DNS apply has run, keep only the form GitHub sent.
 
 ```json
 {
   "Version": "2012-10-17",
   "Statement": [{
     "Effect": "Allow",
-    "Principal": { "Federated": "arn:aws:iam::<ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com" },
+    "Principal": { "Federated": "arn:aws:iam::745506449035:oidc-provider/token.actions.githubusercontent.com" },
     "Action": "sts:AssumeRoleWithWebIdentity",
     "Condition": {
       "StringEquals": {
