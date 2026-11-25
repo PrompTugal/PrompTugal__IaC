@@ -1,0 +1,25 @@
+{
+  "about": "Public keys of the agents that commit to PrompTugal__IaC. Every commit is signed with one of these keys (git SSH signature from bundle.sign) and names the session recorded here.",
+  "keys": [
+    {
+      "id": "cl-6-infra-promptugal",
+      "agent": "cl-6.infra@PrompTugal.dinis",
+      "role": "PrompTugal infrastructure agent (keeps PrompTugal__IaC), Dinis Cruz account F. A session key: it ends with its session.",
+      "how": "Made by the agent in its own session on 25 November 2026 with openssl (P-256 signing, RSA-4096 encryption). Only the public half is here.",
+      "created": "2026-11-25",
+      "session": "https://claude.ai/code/session_016CrbJMTBpiuD87CmNWcUd6",
+      "published": "PrompTugal/PrompTugal__Agent__Infrastructure site/keys/cl-6.infra.json (commit b3c41fc)",
+      "signing_fingerprint": "sha256:ad319cd4181af649",
+      "fingerprint": "sha256:dfd63c722a742769",
+      "bundle": {
+        "v": 1,
+        "encrypt": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA182J4A4vHf8qNXLSLQi3\nu1M+KAhYU3zABbed4Y0UNItEoXdDOCUEeXwSVBVmk/xHqf/s6938yk9uEMO6RFv1\nsPC368qZ/WYUYvaqpP0qiKCHTU/ZQJ85PeCtxiRK6Aw0ZT0mc4PF7c+yWlIGUM3b\nysjsJTyANmYn8tvTCylss+m5Zx6zn27xLbhMAtBf4ErJXjXPyKhBGjak1G+Md8wF\nCUzmaDf77xUAxiO3a5rk/4lOOdEkgoVjC84wE1tDCS4twbPFhblSG/uVIZDtAmI8\nTOH/uoYIrWyajab04wiin5+s3vtVsFh2HoNrMzmS1/TzjPSK1qhltR7rzrhTBpp1\n9Bq6lxaAJke4ZvBIlnQdhoZUsW7e1tlDOFICUmqL6QG6prCq99YjTsowomig9u09\nGsLgkwDWWha/FOR0/qYhBjeGPjRGCJQDxsfqVBMomPAaw/bFqEDTgPrRhEiidYkx\nqE6PtNzx0b4oCo2J4+tLPTFXN0d/jXRsjly3MfUPmGIgKoSfX/QFVlqSrDPNRYfk\nXBVtsChIomNy66nzGoQVIfPLNynWPHuWqNaso7y7HIGhpSsG/IEZk63WLS6jXLIS\nPs+cIeQvy6tovgKf/EYbK09ozJAAkYvbcxEDqC6CIUL08aTKkLN2m9fvylLReAoU\npCv7xfbZ55O5s6r42G3LoDsCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+        "sign": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE9Fe+4q4dFopjkfWjSY1MDRIZvrPC\nwHux4gdMz40yu0KxspHCv0FC1CaggZcMSccwwXVHCNcqTwliDgJwiIalBQ==\n-----END PUBLIC KEY-----\n",
+        "label": "cl-6.infra-account-f",
+        "fingerprint": "sha256:dfd63c722a742769",
+        "signing_fingerprint": "sha256:ad319cd4181af649"
+      },
+      "status": "active"
+    }
+  ]
+}
