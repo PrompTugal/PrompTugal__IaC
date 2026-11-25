@@ -9,29 +9,273 @@
     "delete_branch_on_merge": true
   },
   "repos": [
-    {"name":"PrompTugal__Agent__Infrastructure","description":"repo for infrastructure.agent.promptugal.news","pages":false,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__App__Android","description":"repo for android.app.promptugal.ai","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__App__iOS","description":"repo for ios.app.promptugal.news","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__App__Mobile","description":"repo mobile.app.promptugal.news","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__IaC","description":"repo for iac.promptugal.news","pages":false,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Bulletins","description":"The bulletins of PrompTugal.news. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Civic","description":"Public data, public services and bureaucracy in Portugal, explained and cross-mapped. Independent, not a government site.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Cyber","description":"Cyber security and threat intelligence for PrompTugal.news. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Data","description":"The data behind PrompTugal.news: a refactor of the storm data site, built by its own agentic team.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Events","description":"Events across Portugal, town by town: part of PrompTugal.news. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Fringe","description":"repo for fringe.promptugal.news","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Library","description":"The library of PrompTugal.news: the repository that holds the information for everything. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Live","description":"Live views of Portugal from public, officially shared webcams: streamed, never recorded. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Signals","description":"Signals for PrompTugal.news: social media and other signals, including weak signals. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Startups","description":"Portugal's startups and their funding, place by place: companies, incubators, programmes and rounds.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Storm-Charles","description":"repo for charles-storm.promptugal.news","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Swarm","description":"repo for swarm ","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Swarm__Runs","description":"repo for swarm runs","pages":false,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Travel","description":"Travel and tourism in Portugal: flights, transport and strikes, weather for visitors, events, and tourism as an industry.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Videos","description":"The videos of PrompTugal.news. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Weather","description":"Weather and civil protection for Portugal, place by place: IPMA warnings and forecasts, fire risk, storms, sea state and UV.","pages":true,"exists_by":"live on 25 Nov 2026"},
-    {"name":"PrompTugal__News__Website","description":"repo for web-summit.newsroom.sgit.ai","pages":true,"exists_by":"live on 25 Nov 2026"}
+    {
+      "name": "PrompTugal__Agent__Infrastructure",
+      "description": "repo for infrastructure.agent.promptugal.news",
+      "pages": false,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__App__Android",
+      "description": "repo for android.app.promptugal.ai",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__App__iOS",
+      "description": "repo for ios.app.promptugal.news",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__App__Mobile",
+      "description": "repo mobile.app.promptugal.news",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__IaC",
+      "description": "repo for iac.promptugal.news",
+      "pages": false,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Bulletins",
+      "description": "The bulletins of PrompTugal.news. First version coming.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Civic",
+      "description": "Public data, public services and bureaucracy in Portugal, explained and cross-mapped. Independent, not a government site.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Cyber",
+      "description": "Cyber security and threat intelligence for PrompTugal.news. First version coming.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Data",
+      "description": "The data behind PrompTugal.news: a refactor of the storm data site, built by its own agentic team.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Events",
+      "description": "Events across Portugal, town by town: part of PrompTugal.news. First version coming.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Fringe",
+      "description": "repo for fringe.promptugal.news",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Library",
+      "description": "The library of PrompTugal.news: the repository that holds the information for everything. First version coming.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Live",
+      "description": "Live views of Portugal from public, officially shared webcams: streamed, never recorded. First version coming.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Signals",
+      "description": "Signals for PrompTugal.news: social media and other signals, including weak signals. First version coming.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Startups",
+      "description": "Portugal's startups and their funding, place by place: companies, incubators, programmes and rounds.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Storm-Charles",
+      "description": "repo for charles-storm.promptugal.news",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Swarm",
+      "description": "repo for swarm ",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Swarm__Runs",
+      "description": "repo for swarm runs",
+      "pages": false,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Travel",
+      "description": "Travel and tourism in Portugal: flights, transport and strikes, weather for visitors, events, and tourism as an industry.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Videos",
+      "description": "The videos of PrompTugal.news. First version coming.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Weather",
+      "description": "Weather and civil protection for Portugal, place by place: IPMA warnings and forecasts, fire risk, storms, sea state and UV.",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__News__Website",
+      "description": "repo for web-summit.newsroom.sgit.ai",
+      "pages": true,
+      "exists_by": "live on 25 Nov 2026"
+    }
   ],
-  "proposed": [],
-  "proposed_note": "The PrompTugal__Agent__{name} homes from cl-6.maestro@dinis plan (notes/2026-11-25-promptugal-plan.md) go here, each with who it is for, then move into repos once Dinis says yes. The plan was not published when this file was written (404 at 22:52 UTC), so none is listed yet."
+  "proposed": [
+    {
+      "name": "PrompTugal__Agent__Conductor",
+      "description": "Home of PrompTugal.news's conductor: plan, board, decisions and the team's state.",
+      "site": "conductor.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "why": "the conductor's board moves out of PrompTugal__News__Website, which goes back to being the website"
+    },
+    {
+      "name": "PrompTugal__Agent__Library",
+      "description": "Home of the library agent of PrompTugal.news: its key, area, state and site.",
+      "site": "library.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Library"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Data",
+      "description": "Home of the data agent of PrompTugal.news: its key, area, state and site.",
+      "site": "data.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Data"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Bulletins",
+      "description": "Home of the bulletins agent of PrompTugal.news: its key, area, state and site.",
+      "site": "bulletins.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Bulletins"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Signals",
+      "description": "Home of the signals agent of PrompTugal.news: its key, area, state and site.",
+      "site": "signals.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Signals"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Cyber",
+      "description": "Home of the cyber security agent of PrompTugal.news: its key, area, state and site.",
+      "site": "cyber.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Cyber"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Civic",
+      "description": "Home of the civic agent of PrompTugal.news: its key, area, state and site.",
+      "site": "civic.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Civic"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Weather",
+      "description": "Home of the weather agent of PrompTugal.news: its key, area, state and site.",
+      "site": "weather.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Weather",
+        "PrompTugal__News__Storm-Charles"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Events",
+      "description": "Home of the events agent of PrompTugal.news: its key, area, state and site.",
+      "site": "events.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Events"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Startups",
+      "description": "Home of the startups agent of PrompTugal.news: its key, area, state and site.",
+      "site": "startups.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Startups"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Travel",
+      "description": "Home of the travel agent of PrompTugal.news: its key, area, state and site.",
+      "site": "travel.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Travel"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Live",
+      "description": "Home of the live views agent of PrompTugal.news: its key, area, state and site.",
+      "site": "live.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Live"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Videos",
+      "description": "Home of the videos agent of PrompTugal.news: its key, area, state and site.",
+      "site": "videos.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Videos"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Fringe",
+      "description": "Home of the fringe agent of PrompTugal.news: its key, area, state and site.",
+      "site": "fringe.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Fringe"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Swarm",
+      "description": "Home of the swarm agent of PrompTugal.news: its key, area, state and site.",
+      "site": "swarm.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Swarm",
+        "PrompTugal__News__Swarm__Runs"
+      ]
+    },
+    {
+      "name": "PrompTugal__Agent__Apps",
+      "description": "Home of the apps agent of PrompTugal: its key, area, state and site.",
+      "site": "apps.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__App__Android",
+        "PrompTugal__App__iOS",
+        "PrompTugal__App__Mobile"
+      ]
+    }
+  ],
+  "proposed_note": "A draft for Dinis to correct (Dinis, 25 Nov 2026 in cl-6.infra's session: \"go ahead and draft names from the existing repos\"). One PrompTugal__Agent__{Name} home per section repository (two where one agent clearly covers both), plus the conductor and the apps; each home's site at {name}.agent.promptugal.news, as PrompTugal__Agent__Infrastructure's description already says for itself. Org apply never reads this list: an entry moves into repos only once Dinis says yes, and its site needs the DNS role (not yet)."
 }
