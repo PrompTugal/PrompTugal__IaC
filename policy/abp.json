@@ -147,11 +147,12 @@
     "roles": [
       {
         "name": "promptugal-iac-dns",
-        "account": "to confirm with Dinis",
+        "account": "745506449035 (SovereignWebsite's, which holds the promptugal.news zone; Dinis, 25 Nov 2026 ~23:58 UTC in cl-6.infra's session)",
         "trust": "GitHub OIDC, only PrompTugal/PrompTugal__IaC environment apply",
         "permissions": "route53:ChangeResourceRecordSets with action CREATE only, types A, AAAA, CNAME, TXT, names *.promptugal.news, on hosted zone Z0663369UQ6WKN4WWZBK; route53:ListResourceRecordSets and route53:GetHostedZone on that zone; route53:GetChange",
         "max_session": "1 hour",
-        "state": "proposed; Dinis creates it (docs/aws-oidc.md)"
+        "state": "proposed; Dinis creates it (docs/aws-oidc.md)",
+        "arn": "arn:aws:iam::745506449035:role/promptugal-iac-dns (once Dinis creates it)"
       }
     ],
     "note": "Each AWS role is listed here with its trust and permissions, proposed by a pull request Dinis merges and created by Dinis. No agent holds an AWS credential."
