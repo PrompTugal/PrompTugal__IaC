@@ -44,5 +44,8 @@ t('visibility is reported, never changed', () => {
 t('defaults are not forced on existing repositories', () => assert.deepEqual(plan(org, live(Object.fromEntries(org.repos.map((r) => [r.name, { has_wiki: true }])))).actions, []));
 t('a dry plan passes the policy', () => assert.deepEqual(checkActions(policy, plan(org, {})), []));
 
+t('proposed repositories are never planned', () => { const names = new Set((org.proposed || []).map((r) => r.name)); assert.ok(plan(org, live()).actions.every((a) => !names.has(a.target))); });
+t('proposed names follow the rules and are not already listed', () => { const have = new Set(org.repos.map((r) => r.name)); for (const r of org.proposed || []) { assert.match(r.name, /^PrompTugal__Agent__[A-Z][A-Za-z0-9]*$/); assert.ok(!have.has(r.name), r.name); } });
+
 console.log(`${n - failed} of ${n} tests passed`);
 if (failed) process.exit(1);
