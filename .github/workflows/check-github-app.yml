@@ -13,11 +13,15 @@ jobs:
     environment: apply
     steps:
       - id: app
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v1.12.0
         with:
           app-id: ${{ vars.PT_IAC_APP_ID }}
           private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
           owner: PrompTugal
+          # Only what policy/abp.json lists (privileges), whatever else the App holds.
+          permission-metadata: read
+          permission-administration: write
+          permission-contents: write
       - name: Read with the token
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}

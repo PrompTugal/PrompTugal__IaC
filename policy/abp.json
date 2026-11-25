@@ -93,22 +93,22 @@
   },
   "privileges": [
     {
-      "holder": "github-app:promptugal-iac (name for Dinis to choose)",
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
       "permission": "metadata:read",
       "why": "required by GitHub for any App",
-      "state": "requested from Dinis, 25 Nov 2026"
+      "state": "held by the App; each token PrompTugal__IaC mints asks for it"
     },
     {
-      "holder": "github-app:promptugal-iac (name for Dinis to choose)",
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
       "permission": "administration:write (repository)",
       "why": "org-apply: create repositories, set the default branch to dev and the settings in org/repos.json",
-      "state": "requested from Dinis, 25 Nov 2026"
+      "state": "held by the App; installation to cover all PrompTugal repositories (Dinis)"
     },
     {
-      "holder": "github-app:promptugal-iac (name for Dinis to choose)",
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
       "permission": "contents:write (repository)",
       "why": "org-apply: create the dev branch in a repository that lacks one",
-      "state": "requested from Dinis, 25 Nov 2026"
+      "state": "not confirmed on the PrompTugal installation: SovereignWebsite__IaC recorded it as not yet granted (22 Nov 2026); Check GitHub App will show it"
     }
   ],
   "aws": {
@@ -116,8 +116,11 @@
     "note": "No AWS role yet. A role is added here, with its trust policy (GitHub OIDC, this repository's apply environment only) and its permissions, by a pull request Dinis merges, and is created by Dinis. Nothing in this repository touches AWS or money until then."
   },
   "installation": {
-    "where": "the PrompTugal organisation, all repositories",
-    "holder_of_the_key": "this repository's apply environment only: variable PT_IAC_APP_ID, secret PT_IAC_APP_PRIVATE_KEY; deployment branches: dev",
+    "app": "agenticcells-site-factory, already installed on the PrompTugal organisation (Dinis, 25 Nov 2026, screenshot of PrompTugal Settings, Installed GitHub Apps)",
+    "where": "the PrompTugal organisation, all repositories (today: selected repositories, which SovereignWebsite__IaC uses for PrompTugal__News__Bulletins and PrompTugal__News__Data)",
+    "holder_of_the_key": "this repository's apply environment only: variable PT_IAC_APP_ID, secret PT_IAC_APP_PRIVATE_KEY (a private key generated for this repository, so it can be revoked without touching SovereignWebsite__IaC); deployment branches: dev",
+    "narrowed": "every token PrompTugal__IaC mints asks only for the permissions listed in privileges (permission-* inputs of actions/create-github-app-token), whatever else the App holds",
+    "shared": "the same App is used by SovereignWebsite__IaC, whose own policy limits what it does on PrompTugal; a dedicated PrompTugal App can replace it later by a pull request to this file",
     "never": "no agent holds the App's key or a token minted from it"
   }
 }
