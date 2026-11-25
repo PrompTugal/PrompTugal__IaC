@@ -96,19 +96,19 @@
       "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
       "permission": "metadata:read",
       "why": "required by GitHub for any App",
-      "state": "held by the App; each token PrompTugal__IaC mints asks for it"
+      "state": "confirmed by Check GitHub App run 45723680556 (25 Nov 2026 23:44 UTC): a token asking for metadata read, administration write and contents write was minted and saw all 22 PrompTugal repositories"
     },
     {
       "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
       "permission": "administration:write (repository)",
       "why": "org-apply: create repositories, set the default branch to dev and the settings in org/repos.json",
-      "state": "held by the App; installation to cover all PrompTugal repositories (Dinis)"
+      "state": "confirmed by Check GitHub App run 45723680556 (25 Nov 2026 23:44 UTC): a token asking for metadata read, administration write and contents write was minted and saw all 22 PrompTugal repositories"
     },
     {
       "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
       "permission": "contents:write (repository)",
       "why": "org-apply: create the dev branch in a repository that lacks one",
-      "state": "not confirmed on the PrompTugal installation: SovereignWebsite__IaC recorded it as not yet granted (22 Nov 2026); Check GitHub App will show it"
+      "state": "confirmed by Check GitHub App run 45723680556 (25 Nov 2026 23:44 UTC): a token asking for metadata read, administration write and contents write was minted and saw all 22 PrompTugal repositories"
     }
   ],
   "aws": {
@@ -117,10 +117,16 @@
   },
   "installation": {
     "app": "agenticcells-site-factory, already installed on the PrompTugal organisation (Dinis, 25 Nov 2026, screenshot of PrompTugal Settings, Installed GitHub Apps)",
-    "where": "the PrompTugal organisation, all repositories (today: selected repositories, which SovereignWebsite__IaC uses for PrompTugal__News__Bulletins and PrompTugal__News__Data)",
+    "where": "the PrompTugal organisation, all repositories (confirmed by run 45723680556)",
     "holder_of_the_key": "this repository's apply environment only: variable PT_IAC_APP_ID, secret PT_IAC_APP_PRIVATE_KEY (a private key generated for this repository, so it can be revoked without touching SovereignWebsite__IaC); deployment branches: dev",
     "narrowed": "every token PrompTugal__IaC mints asks only for the permissions listed in privileges (permission-* inputs of actions/create-github-app-token), whatever else the App holds",
     "shared": "the same App is used by SovereignWebsite__IaC, whose own policy limits what it does on PrompTugal; a dedicated PrompTugal App can replace it later by a pull request to this file",
-    "never": "no agent holds the App's key or a token minted from it"
+    "never": "no agent holds the App's key or a token minted from it",
+    "key": {
+      "fingerprint": "in docs/app-key.md (the leak scan allows that one file, which holds only the public fingerprint)",
+      "made": "by Dinis, 25 Nov 2026 ~23:43 UTC, on the App's Credentials page, for PrompTugal__IaC only",
+      "held_as": "secret PT_IAC_APP_PRIVATE_KEY in the apply environment; variable PT_IAC_APP_ID 5777442",
+      "revoke": "delete the key with that fingerprint on the App's Credentials page; SovereignWebsite__IaC's key is unaffected"
+    }
   }
 }
