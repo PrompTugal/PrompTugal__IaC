@@ -87,6 +87,8 @@ const ALLOW = [
   // repository's public numeric IDs (factory@, 2026-11-16). Not a secret.
   ['docs/aws-oidc.md', 'long high-entropy string', 'OIDC subject with public numeric IDs'],
   ['docs/SETUP.md', 'long high-entropy string', 'the same OIDC subject, in the setup steps'],
+  // The public SHA256 fingerprint of PrompTugal__IaC's App key, so Dinis can tell which key to revoke (cl-6.infra, 2026-11-25). Not a secret.
+  ['docs/app-key.md', 'long high-entropy string', 'public fingerprint of the App key'],
 ];
 const allowed = (path, kind) => ALLOW.some(([p, k]) => p === path && k === kind);
 
