@@ -35,5 +35,7 @@ jobs:
         run: |
           node build/check-signatures.mjs ${{ github.event.before }} ${{ github.event.after }}
           node build/abp.mjs paths ${{ github.event.before }} ${{ github.event.after }}
+      - name: Dry plan of the DNS (as if the zone were empty, no AWS)
+        run: node build/dns-plan.mjs - dns-plan.json >> "$GITHUB_STEP_SUMMARY" && node build/abp.mjs actions dns-plan.json
       - name: Dry plan of the organisation
         run: node build/org-plan.mjs plan.json >> "$GITHUB_STEP_SUMMARY" && node build/abp.mjs actions plan.json

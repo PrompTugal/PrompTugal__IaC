@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { load, validate, validateRepos, checkActions, glob } from '../build/abp.mjs';
 import { plan } from '../build/org-plan.mjs';
+import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
 
 let n = 0, failed = 0;
 const t = (name, fn) => { n++; try { fn(); } catch (e) { failed++; console.error(`FAIL ${name}: ${e.message}`); } };
@@ -46,6 +47,16 @@ t('a dry plan passes the policy', () => assert.deepEqual(checkActions(policy, pl
 
 t('proposed repositories are never planned', () => { const names = new Set((org.proposed || []).map((r) => r.name)); assert.ok(plan(org, live()).actions.every((a) => !names.has(a.target))); });
 t('proposed names follow the rules and are not already listed', () => { const have = new Set(org.repos.map((r) => r.name)); for (const r of org.proposed || []) { assert.match(r.name, /^PrompTugal__Agent__[A-Z][A-Za-z0-9]*$/); assert.ok(!have.has(r.name), r.name); } });
+
+const dns = JSON.parse(readFileSync('org/dns.json', 'utf8'));
+const liveDns = dns.records.map((r) => ({ Name: `${r.name}.`, Type: r.type, ResourceRecords: [{ Value: r.value }] }));
+t('org/dns.json follows the rules', () => assert.deepEqual(validateDns(dns), []));
+t('the apex is never written', () => assert.equal(validateDns({ zone: 'promptugal.news', records: [{ name: 'promptugal.news', type: 'TXT', value: 'x' }] }).length, 1));
+t('the zone as it is needs nothing', () => assert.deepEqual(dnsPlan(dns, liveDns).actions, []));
+t('a missing record is created, CREATE only', () => { const p = dnsPlan(dns, liveDns.slice(1)); assert.equal(p.actions.length, 1); assert.ok(p.batch.Changes.every((c) => c.Action === 'CREATE')); });
+t('a record with another value is reported, never changed', () => { const l = liveDns.map((x, i) => i ? x : { ...x, ResourceRecords: [{ Value: 'elsewhere.example' }] }); const p = dnsPlan(dns, l); assert.deepEqual(p.actions, []); assert.equal(p.notes.length, 1); });
+t('dns-apply may only create', () => { const pipe = policy.pipelines['dns-apply']; assert.deepEqual(pipe.allowed, ['route53.create_record']); for (const x of ['route53.delete_record', 'route53.upsert_record']) assert.equal(checkActions(policy, { pipeline: 'dns-apply', actions: [{ action: x, target: 'a' }] }).length, 1); });
+t('a dry DNS plan passes the policy', () => assert.deepEqual(checkActions(policy, dnsPlan(dns, [])), []));
 
 console.log(`${n - failed} of ${n} tests passed`);
 if (failed) process.exit(1);
