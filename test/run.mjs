@@ -1,0 +1,48 @@
+// Tests for PrompTugal__IaC. Node built-ins only. Usage: node test/run.mjs
+import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+import { load, validate, validateRepos, checkActions, glob } from '../build/abp.mjs';
+import { plan } from '../build/org-plan.mjs';
+
+let n = 0, failed = 0;
+const t = (name, fn) => { n++; try { fn(); } catch (e) { failed++; console.error(`FAIL ${name}: ${e.message}`); } };
+const policy = load();
+const org = JSON.parse(readFileSync('org/repos.json', 'utf8'));
+const live = (over = {}) => Object.fromEntries(org.repos.map((r) => [r.name, { name: r.name, description: r.description, default_branch: 'dev', has_dev: true, visibility: 'public', ...(over[r.name] || {}) }]));
+
+t('the policy is well formed', () => assert.deepEqual(validate(policy), []));
+t('org/repos.json follows the rules', () => assert.deepEqual(validateRepos(org), []));
+t('every repository has dev as its default branch', () => { for (const r of org.repos) assert.equal({ ...org.defaults, ...r }.default_branch, 'dev', r.name); });
+t('no agent may push to main', () => { for (const a of Object.values(policy.agents)) assert.ok(!(a.branches || []).includes('main')); });
+t('policy, .github and build need Dinis', () => { const a = policy.agents['cl-6.infra@PrompTugal.dinis']; for (const f of ['policy/abp.json', '.github/workflows/org-apply.yml', 'build/org-apply.mjs']) assert.ok(a.needs_dinis_merge.some((g) => glob(g, f)), f); });
+t('org-apply never deletes, transfers, archives, renames or makes private', () => {
+  const pipe = policy.pipelines['org-apply'];
+  for (const x of ['repo.delete', 'repo.transfer', 'repo.archive', 'repo.make_private', 'repo.rename']) { assert.ok(pipe.refused_always.includes(x), x); assert.ok(!pipe.allowed.includes(x), x); }
+});
+t('refused actions are refused', () => {
+  for (const action of ['repo.delete', 'repo.transfer', 'repo.archive', 'repo.make_private', 'pages.enable']) assert.equal(checkActions(policy, { pipeline: 'org-apply', actions: [{ action, target: 'PrompTugal__X' }] }).length, 1, action);
+});
+t('an unknown pipeline is refused', () => assert.equal(checkActions(policy, { pipeline: 'aws-apply', actions: [] }).length, 1));
+t('the organisation as it is needs nothing', () => { const p = plan(org, live()); assert.deepEqual(p.actions, []); assert.deepEqual(p.unlisted, []); });
+t('a missing repository is created with dev as default', () => {
+  const l = live(); delete l[org.repos[0].name];
+  assert.deepEqual(plan(org, l).actions.map((a) => a.action), ['repo.create', 'branch.create_dev', 'repo.set_default_branch']);
+});
+t('a repository on main gets dev, then dev as default', () => {
+  const name = org.repos[0].name, p = plan(org, live({ [name]: { default_branch: 'main', has_dev: false } }));
+  assert.deepEqual(p.actions.map((a) => a.action), ['branch.create_dev', 'repo.set_default_branch']);
+  assert.equal(p.actions[0].from, 'main');
+});
+t('a repository not listed is reported, never acted on', () => {
+  const l = { ...live(), PrompTugal__Stray: { name: 'PrompTugal__Stray', default_branch: 'main' } }, p = plan(org, l);
+  assert.deepEqual(p.unlisted, ['PrompTugal__Stray']); assert.deepEqual(p.actions, []);
+});
+t('visibility is reported, never changed', () => {
+  const name = org.repos[0].name, p = plan(org, live({ [name]: { visibility: 'private' } }));
+  assert.deepEqual(p.actions, []); assert.equal(p.notes.length, 1);
+});
+t('defaults are not forced on existing repositories', () => assert.deepEqual(plan(org, live(Object.fromEntries(org.repos.map((r) => [r.name, { has_wiki: true }])))).actions, []));
+t('a dry plan passes the policy', () => assert.deepEqual(checkActions(policy, plan(org, {})), []));
+
+console.log(`${n - failed} of ${n} tests passed`);
+if (failed) process.exit(1);
