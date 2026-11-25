@@ -8,7 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
+# build/ holds this repository's CI scripts (not Python build output)
 develop-eggs/
 dist/
 downloads/
