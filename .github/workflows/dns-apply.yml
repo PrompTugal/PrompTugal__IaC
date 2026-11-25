@@ -1,0 +1,56 @@
+name: DNS apply
+# Create the records in org/dns.json that the promptugal.news zone lacks. CREATE only: never changes or deletes a
+# record, never writes the apex. Assumes the AWS role through GitHub OIDC from the apply environment; no AWS key is
+# stored anywhere. Until Dinis has set PT_AWS_ROLE_ARN and PT_ZONE_ID_NEWS there, the run says so and changes nothing.
+on:
+  push:
+    branches: [dev]
+    paths: ['org/dns.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency: dns-apply
+defaults:
+  run:
+    shell: bash
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: apply
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node test/run.mjs && node build/abp.mjs validate
+      - name: Is the AWS role set up?
+        id: ready
+        env:
+          ROLE: ${{ vars.PT_AWS_ROLE_ARN }}
+          ZONE: ${{ vars.PT_ZONE_ID_NEWS }}
+        run: |
+          if [ -z "$ROLE" ] || [ -z "$ZONE" ]; then echo "PT_AWS_ROLE_ARN or PT_ZONE_ID_NEWS is not set in the apply environment: nothing applied." | tee -a "$GITHUB_STEP_SUMMARY"; echo "ok=false" >> "$GITHUB_OUTPUT"; else echo "ok=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.ready.outputs.ok == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.PT_AWS_ROLE_ARN }}
+          aws-region: us-east-1
+          role-duration-seconds: 900
+      - name: Plan against the zone
+        if: steps.ready.outputs.ok == 'true'
+        env:
+          ZONE: ${{ vars.PT_ZONE_ID_NEWS }}
+        run: |
+          aws route53 list-resource-record-sets --hosted-zone-id "$ZONE" --output json > live.json
+          node build/dns-plan.mjs live.json plan.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Policy check
+        if: steps.ready.outputs.ok == 'true'
+        run: node build/abp.mjs actions plan.json
+      - name: Apply (CREATE only)
+        if: steps.ready.outputs.ok == 'true'
+        env:
+          ZONE: ${{ vars.PT_ZONE_ID_NEWS }}
+        run: |
+          node -e 'const p=require("./plan.json");if(p.batch.Changes.some(c=>c.Action!=="CREATE"))process.exit(1);if(!p.batch.Changes.length){console.log("nothing to create");process.exit(0)};require("fs").writeFileSync("batch.json",JSON.stringify(p.batch))'
+          if [ -f batch.json ]; then aws route53 change-resource-record-sets --hosted-zone-id "$ZONE" --change-batch file://batch.json --query 'ChangeInfo.Status' --output text | tee -a "$GITHUB_STEP_SUMMARY"; fi

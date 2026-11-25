@@ -1,0 +1,104 @@
+{
+  "about": "DNS for promptugal.news (Route 53 hosted zone Z0663369UQ6WKN4WWZBK), as code. DNS apply only CREATES a record listed here that the zone lacks. It never changes or deletes a record: one that exists with a different value is reported for Dinis. The apex (its A, TXT and other records) is never written: the AWS role allows only names under *.promptugal.news.",
+  "zone": "promptugal.news",
+  "zone_id_variable": "PT_ZONE_ID_NEWS",
+  "source": "Zone ID from Dinis, 25 Nov 2026 ~23:50 UTC in cl-6.infra's session. Records as public DNS answered at 23:55 UTC (dns.google).",
+  "records": [
+    {
+      "name": "www.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "fringe.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "library.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "signals.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "civic.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "cyber.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "bulletins.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "videos.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "data.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "weather.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "events.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "startups.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "live.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "travel.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "storm-charles.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "ios.app.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "exists_by": "live on 25 Nov 2026"
+    }
+  ]
+}

@@ -89,6 +89,32 @@
         "read repository"
       ],
       "note": "Mints the App's token and lists the repositories it can see. Changes nothing."
+    },
+    "dns-apply": {
+      "runs_on": [
+        "push to dev that changes org/dns.json",
+        "by hand"
+      ],
+      "environment": "apply",
+      "allowed": [
+        "route53.create_record"
+      ],
+      "refused_always": [
+        "route53.upsert_record",
+        "route53.change_record",
+        "route53.delete_record",
+        "route53.write_apex",
+        "route53.create_zone",
+        "route53.delete_zone",
+        "route53domains.transfer",
+        "route53domains.update_nameservers"
+      ],
+      "zones": [
+        "promptugal.news"
+      ],
+      "note": "CREATE only: a record listed in org/dns.json that the zone lacks. One that exists with another value is reported, never changed. Names only under *.promptugal.news (the apex, with its Google verification and SPF TXT records, is never written). The AWS role enforces the same limits (docs/aws-oidc.md).",
+      "status": "active once the apply environment has PT_AWS_ROLE_ARN and PT_ZONE_ID_NEWS (Z0663369UQ6WKN4WWZBK)",
+      "source": "Dinis, 25 Nov 2026 in cl-6.infra's session: \"are you able to create um, repos here and also map the DNS?\"; zone ID ~23:50 UTC."
     }
   },
   "privileges": [
@@ -109,11 +135,26 @@
       "permission": "contents:write (repository)",
       "why": "org-apply: create the dev branch in a repository that lacks one",
       "state": "confirmed by Check GitHub App run 45723680556 (25 Nov 2026 23:44 UTC): a token asking for metadata read, administration write and contents write was minted and saw all 22 PrompTugal repositories"
+    },
+    {
+      "holder": "aws-role:promptugal-iac-dns",
+      "permission": "route53:ChangeResourceRecordSets (CREATE only; A, AAAA, CNAME, TXT; names *.promptugal.news) on zone Z0663369UQ6WKN4WWZBK; route53:ListResourceRecordSets, route53:GetHostedZone, route53:GetChange",
+      "why": "dns-apply: create the records in org/dns.json that the zone lacks",
+      "state": "proposed; Dinis creates the role"
     }
   ],
   "aws": {
-    "roles": [],
-    "note": "No AWS role yet. A role is added here, with its trust policy (GitHub OIDC, this repository's apply environment only) and its permissions, by a pull request Dinis merges, and is created by Dinis. Nothing in this repository touches AWS or money until then."
+    "roles": [
+      {
+        "name": "promptugal-iac-dns",
+        "account": "to confirm with Dinis",
+        "trust": "GitHub OIDC, only PrompTugal/PrompTugal__IaC environment apply",
+        "permissions": "route53:ChangeResourceRecordSets with action CREATE only, types A, AAAA, CNAME, TXT, names *.promptugal.news, on hosted zone Z0663369UQ6WKN4WWZBK; route53:ListResourceRecordSets and route53:GetHostedZone on that zone; route53:GetChange",
+        "max_session": "1 hour",
+        "state": "proposed; Dinis creates it (docs/aws-oidc.md)"
+      }
+    ],
+    "note": "Each AWS role is listed here with its trust and permissions, proposed by a pull request Dinis merges and created by Dinis. No agent holds an AWS credential."
   },
   "installation": {
     "app": "agenticcells-site-factory, already installed on the PrompTugal organisation (Dinis, 25 Nov 2026, screenshot of PrompTugal Settings, Installed GitHub Apps)",
