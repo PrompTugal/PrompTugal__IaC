@@ -42,7 +42,10 @@ const lines = (s) => (s ? s.split('\n').map((x) => x.trim()).filter(Boolean) : [
 export const KNOWN = {};
 export const MAIN = 'refs/remotes/origin/main';
 
-export function checkSignatures({ cwd = process.cwd(), before, after = 'HEAD' } = {}) {
+// A merge commit made in GitHub's own interface (committer web-flow, signature GitHub verified) is a person's merge of a
+// pull request whose commits were checked in that pull request; it is accepted when the caller passes it in `merged`
+// (the CLI asks GitHub's API with the run's read-only token). Any other merge commit is checked like every commit.
+export function checkSignatures({ cwd = process.cwd(), before, after = 'HEAD', merged = new Set() } = {}) {
   const git = (...a) => execFileSync('git', a, { cwd, encoding: 'utf8' }).trim();
   const tryGit = (...a) => { try { return git(...a); } catch { return null; } };
   const first = lines(git('log', '--format=%H', '--diff-filter=A', '--reverse', after, '--', SELF))[0];
@@ -86,6 +89,7 @@ export function checkSignatures({ cwd = process.cwd(), before, after = 'HEAD' } 
     for (const c of range) {
       if (!inScope.has(c)) continue;
       checked++;
+      if (merged.has(c)) continue;
       const subject = git('log', '-1', '--format=%s', c);
       const parent = signersAt(`${c}^1`);
       if (!parent) { errors.push(`${c.slice(0, 7)} ${subject}: its parent has no team/keys.json`); continue; }
@@ -108,9 +112,25 @@ export function checkSignatures({ cwd = process.cwd(), before, after = 'HEAD' } 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
+// The merge commits in before..after that GitHub verified and its web interface made (committer web-flow).
+export async function webMerges({ cwd = process.cwd(), before, after = 'HEAD', repo = process.env.GITHUB_REPOSITORY, token = process.env.GITHUB_TOKEN } = {}) {
+  const out = new Set();
+  if (!repo || !token) return out;
+  const git = (...a) => execFileSync('git', a, { cwd, encoding: 'utf8' }).trim();
+  const from = before && !/^0+$/.test(before) ? `${before}..${after}` : after;
+  for (const c of lines(git('rev-list', '--merges', from))) {
+    const r = await fetch(`https://api.github.com/repos/${repo}/commits/${c}`, { headers: { authorization: `Bearer ${token}`, accept: 'application/vnd.github+json', 'user-agent': 'promptugal-iac' } });
+    if (r.status !== 200) continue;
+    const d = await r.json();
+    if (d.commit?.verification?.verified === true && d.committer?.login === 'web-flow') out.add(c);
+  }
+  return out;
+}
+
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const [before, after] = process.argv.slice(2);
-  const r = checkSignatures({ before, after: after || 'HEAD' });
+  const merged = await webMerges({ before, after: after || 'HEAD' });
+  const r = checkSignatures({ before, after: after || 'HEAD', merged });
   if (r.errors.length) { console.error(r.errors.join('\n')); console.error(`FAILED (${r.errors.length} of ${r.checked} commits checked)`); process.exit(1); }
-  console.log(`OK (${r.checked} signed commits checked, ${r.skipped} not after the check skipped)`);
+  console.log(`OK (${r.checked} commits checked, ${merged.size} of them merges made and verified by GitHub, ${r.skipped} not after the check skipped)`);
 }
