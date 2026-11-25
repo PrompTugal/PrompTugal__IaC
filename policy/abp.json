@@ -1,0 +1,123 @@
+{
+  "about": "Agent Behaviour Policy (ABP) for PrompTugal__IaC. CI reads this file on every run: a pipeline may take only the actions listed for it, an agent's commits may change only the paths listed for it, and every privilege held by the GitHub App or an AWS role is listed here with its reason. Anything not listed is refused. Changes to this file, to .github/ and to build/ are Dinis's: they reach dev only as pull requests he merges.",
+  "version": 1,
+  "owner": "Dinis Cruz",
+  "source": "Dinis, 25 Nov 2026 (relayed by cl-6.maestro@dinis): \"we also need the super important (and powerful) PrompTugal__IaC since (managed by the PrompTugal__Agent__Infrastructure agent) since that is the one that will manage all PrompTugal GitHub and AWS resources/changes\". Dinis, 25 Nov 2026 ~22:51 UTC in cl-6.infra's session: \"yes let's set this up on PrompTugal so that you have access to both AWS and GiHub\". Pattern: SovereignWebsite/SovereignWebsite__IaC.",
+  "agents": {
+    "cl-6.infra@PrompTugal.dinis": {
+      "session": "https://claude.ai/code/session_016CrbJMTBpiuD87CmNWcUd6",
+      "home": "PrompTugal/PrompTugal__Agent__Infrastructure",
+      "may_change": [
+        "README.md",
+        "CLAUDE.md",
+        ".gitignore",
+        "status.json",
+        "docs/**",
+        "org/**",
+        "test/**",
+        "build/**",
+        ".github/**",
+        "policy/**"
+      ],
+      "needs_dinis_merge": [
+        "policy/**",
+        ".github/**",
+        "build/**"
+      ],
+      "branches": [
+        "dev",
+        "work/cl-6.infra-*"
+      ],
+      "never": [
+        "push to main",
+        "print, commit or read a private key or token",
+        "hold a credential (the GitHub App and the AWS role are CI's)",
+        "name a private person without consent",
+        "delete, transfer, archive or make private a repository"
+      ],
+      "source": "Started by cl-6.maestro@dinis at Dinis's word, 25 Nov 2026 22:48 UTC."
+    }
+  },
+  "pipelines": {
+    "checks": {
+      "runs_on": [
+        "pull_request to dev",
+        "push to dev"
+      ],
+      "allowed": [
+        "read repository"
+      ],
+      "github_token": {
+        "contents": "read"
+      },
+      "note": "Tests, policy validation, leak scan, signed commits and policy paths, and a dry plan of the organisation checked against this policy. No secrets."
+    },
+    "org-apply": {
+      "runs_on": [
+        "push to dev that changes org/ or policy/",
+        "by hand"
+      ],
+      "environment": "apply",
+      "allowed": [
+        "repo.create",
+        "branch.create_dev",
+        "repo.set_default_branch",
+        "repo.update_settings"
+      ],
+      "refused_always": [
+        "repo.delete",
+        "repo.transfer",
+        "repo.archive",
+        "repo.make_private",
+        "repo.rename",
+        "member.change",
+        "app.change",
+        "team.grant_admin",
+        "team.grant_maintain",
+        "ruleset.delete",
+        "ruleset.weaken"
+      ],
+      "note": "Creates and configures only. A repository that exists but is not in org/repos.json is reported, never deleted. On an existing repository it changes only the default branch (to dev) and the settings its own entry in org/repos.json names; the defaults block applies only when a repository is created. It never changes visibility.",
+      "default_branch_rule": "Every repository has dev as its default branch; Org apply creates dev from the current default branch if it is missing, then sets it. Dinis, 25 Nov 2026, relayed by cl-6.maestro@dinis: \"please make note to the Infa agent that all repos should have a default dev branch\"; confirmed in cl-6.infra's session ~22:51 UTC: \"yes\"."
+    },
+    "check-github-app": {
+      "runs_on": [
+        "by hand"
+      ],
+      "environment": "apply",
+      "allowed": [
+        "read repository"
+      ],
+      "note": "Mints the App's token and lists the repositories it can see. Changes nothing."
+    }
+  },
+  "privileges": [
+    {
+      "holder": "github-app:promptugal-iac (name for Dinis to choose)",
+      "permission": "metadata:read",
+      "why": "required by GitHub for any App",
+      "state": "requested from Dinis, 25 Nov 2026"
+    },
+    {
+      "holder": "github-app:promptugal-iac (name for Dinis to choose)",
+      "permission": "administration:write (repository)",
+      "why": "org-apply: create repositories, set the default branch to dev and the settings in org/repos.json",
+      "state": "requested from Dinis, 25 Nov 2026"
+    },
+    {
+      "holder": "github-app:promptugal-iac (name for Dinis to choose)",
+      "permission": "contents:write (repository)",
+      "why": "org-apply: create the dev branch in a repository that lacks one",
+      "state": "requested from Dinis, 25 Nov 2026"
+    }
+  ],
+  "aws": {
+    "roles": [],
+    "note": "No AWS role yet. A role is added here, with its trust policy (GitHub OIDC, this repository's apply environment only) and its permissions, by a pull request Dinis merges, and is created by Dinis. Nothing in this repository touches AWS or money until then."
+  },
+  "installation": {
+    "where": "the PrompTugal organisation, all repositories",
+    "holder_of_the_key": "this repository's apply environment only: variable PT_IAC_APP_ID, secret PT_IAC_APP_PRIVATE_KEY; deployment branches: dev",
+    "never": "no agent holds the App's key or a token minted from it"
+  }
+}

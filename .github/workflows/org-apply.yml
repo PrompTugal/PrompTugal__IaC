@@ -1,0 +1,51 @@
+name: Org apply
+# Plan against the live PrompTugal organisation, check the plan against policy/abp.json, then apply it with the App's
+# token. Creates and configures only. Runs in the apply environment, which alone holds the App's key; until Dinis has
+# set PT_IAC_APP_ID there, the run says so and changes nothing.
+on:
+  push:
+    branches: [dev]
+    paths: ['org/**', 'policy/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency: org-apply
+defaults:
+  run:
+    shell: bash
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: apply
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node test/run.mjs && node build/abp.mjs validate
+      - name: Is the App set up?
+        id: ready
+        env:
+          APP_ID: ${{ vars.PT_IAC_APP_ID }}
+        run: |
+          if [ -z "$APP_ID" ]; then echo "PT_IAC_APP_ID is not set in the apply environment: nothing applied." | tee -a "$GITHUB_STEP_SUMMARY"; echo "ok=false" >> "$GITHUB_OUTPUT"; else echo "ok=true" >> "$GITHUB_OUTPUT"; fi
+      - id: app
+        if: steps.ready.outputs.ok == 'true'
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+      - name: Plan against the live organisation
+        if: steps.ready.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: node build/org-plan.mjs plan.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Policy check
+        if: steps.ready.outputs.ok == 'true'
+        run: node build/abp.mjs actions plan.json
+      - name: Apply
+        if: steps.ready.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: node build/org-apply.mjs plan.json | tee -a "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,37 @@
+{
+  "about": "The PrompTugal organisation's repositories, as code. Org apply creates any that are missing and sets each one's default branch to dev; on an existing repository it changes only the settings its own entry names. It never deletes, transfers, archives, renames or makes private (policy/abp.json). Listed as they were on 25 Nov 2026 ~22:54 UTC (GitHub search, org:PrompTugal: 22 repositories, all public, all with dev as default branch).",
+  "org": "PrompTugal",
+  "defaults": {
+    "visibility": "public",
+    "default_branch": "dev",
+    "has_wiki": false,
+    "has_projects": false,
+    "delete_branch_on_merge": true
+  },
+  "repos": [
+    {"name":"PrompTugal__Agent__Infrastructure","description":"repo for infrastructure.agent.promptugal.news","pages":false,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__App__Android","description":"repo for android.app.promptugal.ai","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__App__iOS","description":"repo for ios.app.promptugal.news","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__App__Mobile","description":"repo mobile.app.promptugal.news","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__IaC","description":"repo for iac.promptugal.news","pages":false,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Bulletins","description":"The bulletins of PrompTugal.news. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Civic","description":"Public data, public services and bureaucracy in Portugal, explained and cross-mapped. Independent, not a government site.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Cyber","description":"Cyber security and threat intelligence for PrompTugal.news. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Data","description":"The data behind PrompTugal.news: a refactor of the storm data site, built by its own agentic team.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Events","description":"Events across Portugal, town by town: part of PrompTugal.news. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Fringe","description":"repo for fringe.promptugal.news","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Library","description":"The library of PrompTugal.news: the repository that holds the information for everything. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Live","description":"Live views of Portugal from public, officially shared webcams: streamed, never recorded. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Signals","description":"Signals for PrompTugal.news: social media and other signals, including weak signals. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Startups","description":"Portugal's startups and their funding, place by place: companies, incubators, programmes and rounds.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Storm-Charles","description":"repo for charles-storm.promptugal.news","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Swarm","description":"repo for swarm ","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Swarm__Runs","description":"repo for swarm runs","pages":false,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Travel","description":"Travel and tourism in Portugal: flights, transport and strikes, weather for visitors, events, and tourism as an industry.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Videos","description":"The videos of PrompTugal.news. First version coming.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Weather","description":"Weather and civil protection for Portugal, place by place: IPMA warnings and forecasts, fire risk, storms, sea state and UV.","pages":true,"exists_by":"live on 25 Nov 2026"},
+    {"name":"PrompTugal__News__Website","description":"repo for web-summit.newsroom.sgit.ai","pages":true,"exists_by":"live on 25 Nov 2026"}
+  ],
+  "proposed": [],
+  "proposed_note": "The PrompTugal__Agent__{name} homes from cl-6.maestro@dinis plan (notes/2026-11-25-promptugal-plan.md) go here, each with who it is for, then move into repos once Dinis says yes. The plan was not published when this file was written (404 at 22:52 UTC), so none is listed yet."
+}
