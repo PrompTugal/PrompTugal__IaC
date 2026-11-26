@@ -20,7 +20,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Accountant",
@@ -33,7 +36,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Analyst",
@@ -47,7 +53,10 @@
       "model": "sonnet",
       "phase": 1,
       "twin": true,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Backup",
@@ -60,7 +69,10 @@
       ],
       "model": "sonnet",
       "phase": 3,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Bulletins",
@@ -88,7 +100,10 @@
       "model": "sonnet",
       "phase": 1,
       "twin": true,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Civic",
@@ -129,7 +144,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Curator",
@@ -143,7 +161,10 @@
       "model": "sonnet",
       "phase": 1,
       "twin": true,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Customers",
@@ -156,7 +177,10 @@
       ],
       "model": "sonnet",
       "phase": 3,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Cyber",
@@ -197,7 +221,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Dev",
@@ -210,7 +237,10 @@
       ],
       "model": "sonnet",
       "phase": 1,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__DevOps",
@@ -223,7 +253,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Events",
@@ -264,7 +297,10 @@
       ],
       "model": "sonnet",
       "phase": 3,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Infrastructure",
@@ -283,7 +319,10 @@
       ],
       "model": "sonnet",
       "phase": 3,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Journalist",
@@ -296,7 +335,10 @@
       ],
       "model": "sonnet",
       "phase": 1,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Library",
@@ -337,7 +379,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Ontologist",
@@ -350,7 +395,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Outreach",
@@ -363,7 +411,10 @@
       ],
       "model": "sonnet",
       "phase": 3,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Albufeira",
@@ -1025,7 +1076,10 @@
       "model": "sonnet",
       "phase": 1,
       "twin": true,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Researcher",
@@ -1038,7 +1092,10 @@
       ],
       "model": "sonnet",
       "phase": 3,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Reviewer",
@@ -1052,7 +1109,10 @@
       "model": "sonnet",
       "phase": 1,
       "twin": true,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Rights",
@@ -1065,7 +1125,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Security",
@@ -1078,7 +1141,10 @@
       ],
       "model": "opus",
       "phase": 1,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Sherpa",
@@ -1091,7 +1157,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Signals",
@@ -1147,7 +1216,10 @@
       ],
       "model": "sonnet",
       "phase": 2,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Telemetry",
@@ -1160,7 +1232,10 @@
       ],
       "model": "sonnet",
       "phase": 3,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Translator",
@@ -1173,7 +1248,10 @@
       ],
       "model": "sonnet",
       "phase": 3,
-      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Travel",
