@@ -285,6 +285,13 @@
       "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
     },
     {
+      "name": "london.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__London",
+      "added_by": "cl-6.infra, 26 Nov 2026, with the repository (Dinis's word on London, ~15:50 UTC)"
+    },
+    {
       "name": "loule.place.agent.promptugal.news",
       "type": "CNAME",
       "value": "promptugal.github.io",
