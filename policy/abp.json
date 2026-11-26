@@ -129,6 +129,22 @@
       "status": "active (role and variables set 26 Nov 2026)",
       "source": "Dinis, 25 Nov 2026 in cl-6.infra's session: \"are you able to create um, repos here and also map the DNS?\"; zone ID ~23:50 UTC.",
       "claims_note": "DNS apply also mints a read-only App token (metadata read, pages read) to list the custom domains PrompTugal repositories claim. It never creates a CNAME to *.github.io that no repository claims, and it reports every record in the zone pointing at GitHub Pages that no repository claims (a takeover risk). Found by cl-6.security@PrompTugal.dinis on fringe.promptugal.news, 26 Nov 2026, relayed by cl-6.maestro@dinis."
+    },
+    "rules-probe": {
+      "runs_on": [
+        "by hand"
+      ],
+      "environment": "apply",
+      "allowed": [
+        "read repository rulesets",
+        "ruleset.create_disabled_probe"
+      ],
+      "refused_always": [
+        "ruleset.delete",
+        "ruleset.weaken"
+      ],
+      "note": "Creates one push ruleset named probe-file-path-restriction with enforcement disabled on PrompTugal__IaC only, to learn whether GitHub allows file-path restrictions on this organisation's public repositories; it enforces nothing and is left in place, disabled, as the record. Token limited to PrompTugal__IaC, metadata read and administration write.",
+      "source": "cl-6.security@PrompTugal.dinis (S6), 26 Nov 2026, asked via cl-6.conductor at Dinis's request: \"Please confirm which GitHub rule can enforce a path restriction on these public repositories. Do not assume one exists.\""
     }
   },
   "privileges": [

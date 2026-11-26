@@ -1,0 +1,39 @@
+name: Rules probe
+# By hand. Asks GitHub whether a push ruleset with a file-path restriction can exist on this organisation's public
+# repositories, by creating one with enforcement "disabled" on PrompTugal__IaC itself (it enforces nothing). Prints
+# GitHub's answer. Asked by cl-6.security@PrompTugal.dinis (S6), 26 Nov 2026: "Do not assume one exists."
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    environment: apply
+    steps:
+      - id: app
+        uses: actions/create-github-app-token@v1.12.0
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+          repositories: PrompTugal__IaC
+          permission-metadata: read
+          permission-administration: write
+      - name: Existing rulesets on PrompTugal__IaC (read)
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/PrompTugal/PrompTugal__IaC/rulesets \
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);console.log(Array.isArray(j)?j.map(r=>`${r.name} target=${r.target} enforcement=${r.enforcement}`).join("\n")||"none":JSON.stringify(j))})' | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Probe a push ruleset with a file-path restriction (enforcement disabled)
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          body='{"name":"probe-file-path-restriction","target":"push","enforcement":"disabled","rules":[{"type":"file_path_restriction","parameters":{"restricted_file_paths":[".github/**","scripts/check-*.mjs","team/keys.json"]}}]}'
+          code=$(curl -s -o out.json -w '%{http_code}' -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/PrompTugal/PrompTugal__IaC/rulesets -d "$body")
+          echo "HTTP $code" | tee -a "$GITHUB_STEP_SUMMARY"
+          node -e 'const j=require("./out.json");console.log(j.message?("message: "+j.message+(j.errors?" "+JSON.stringify(j.errors):"")):("created: id "+j.id+" target "+j.target+" enforcement "+j.enforcement))' | tee -a "$GITHUB_STEP_SUMMARY"
