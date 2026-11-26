@@ -186,7 +186,10 @@ async function plan(homeDir) {
       if (!A.sha) item.errors.push(`no verified anchor: ${A.why}`);
       else if (devHead !== A.sha) item.errors.push("dev's head is not the last verified anchor: commits on dev are not yet checked");
       const diff = await gh('GET', `/repos/${ORG}/${repo}/pulls/${item.pr}`, undefined, undefined, 'application/vnd.github.diff');
-      if (sha256(typeof diff.data === 'string' ? diff.data : '') !== a.diff_sha256) item.errors.push('diff sha256 differs from the approved one');
+      // On a mismatch the job's own hash goes into the report (a public diff's hash is not sensitive), so the approver can
+      // re-sign after checking it describes the same change (cl-6.security, 26 Nov 2026 17:56 UTC).
+      if (diff.status !== 200 || typeof diff.data !== 'string') item.errors.push(`pull request diff: HTTP ${diff.status}, not a text diff`);
+      else { const got = sha256(diff.data); if (got !== a.diff_sha256) item.errors.push(`diff sha256 differs from the approved one: the API diff (application/vnd.github.diff, ${Buffer.byteLength(diff.data)} bytes) hashes to ${got}`); }
       // Every page of the file list (100 per page); 300 or more is refused.
       const files = []; let truncated = false;
       for (let page = 1; ; page++) {
