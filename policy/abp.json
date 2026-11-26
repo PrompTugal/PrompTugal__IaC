@@ -62,7 +62,9 @@
         "repo.create",
         "branch.create_dev",
         "repo.set_default_branch",
-        "repo.update_settings"
+        "repo.update_settings",
+        "pages.enable",
+        "pages.set_cname"
       ],
       "refused_always": [
         "repo.delete",
@@ -75,10 +77,14 @@
         "team.grant_admin",
         "team.grant_maintain",
         "ruleset.delete",
-        "ruleset.weaken"
+        "ruleset.weaken",
+        "pages.delete",
+        "pages.unset_cname"
       ],
       "note": "Creates and configures only. A repository that exists but is not in org/repos.json is reported, never deleted. On an existing repository it changes only the default branch (to dev) and the settings its own entry in org/repos.json names; the defaults block applies only when a repository is created. It never changes visibility.",
-      "default_branch_rule": "Every repository has dev as its default branch; Org apply creates dev from the current default branch if it is missing, then sets it. Dinis, 25 Nov 2026, relayed by cl-6.maestro@dinis: \"please make note to the Infa agent that all repos should have a default dev branch\"; confirmed in cl-6.infra's session ~22:51 UTC: \"yes\"."
+      "default_branch_rule": "Every repository has dev as its default branch; Org apply creates dev from the current default branch if it is missing, then sets it. Dinis, 25 Nov 2026, relayed by cl-6.maestro@dinis: \"please make note to the Infa agent that all repos should have a default dev branch\"; confirmed in cl-6.infra's session ~22:51 UTC: \"yes\".",
+      "pages_note": "pages.enable turns on GitHub Pages from dev (root) for a repository whose entry sets pages_site; pages.set_cname sets only the site its entry names, under *.agent.promptugal.news. Its DNS record is added to org/dns.json only after the custom domain is set, so no record ever points at a site that is not ours.",
+      "pages_source": "Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the sites\"; \"you should already have permission\"."
     },
     "check-github-app": {
       "runs_on": [
@@ -141,6 +147,12 @@
       "permission": "route53:ChangeResourceRecordSets (CREATE only; A, AAAA, CNAME, TXT; names *.promptugal.news) on zone Z0663369UQ6WKN4WWZBK; route53:ListResourceRecordSets, route53:GetHostedZone, route53:GetChange",
       "why": "dns-apply: create the records in org/dns.json that the zone lacks",
       "state": "live: created by Dinis 26 Nov 2026 00:05 UTC; DNS apply runs 45726334625 and 45728049584 assumed it"
+    },
+    {
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
+      "permission": "pages:write (repository)",
+      "why": "org-apply: turn on Pages for the agent homes and set each one's custom domain",
+      "state": "Dinis, 26 Nov 2026: \"you should already have permission\" (SovereignWebsite__IaC lists pages:write for this App); confirmed by the first Org apply that asks for it"
     }
   ],
   "aws": {
