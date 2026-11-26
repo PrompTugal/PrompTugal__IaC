@@ -8,7 +8,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { createHash } from 'node:crypto';
+import { createHash, createPublicKey } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { gh } from './github.mjs';
@@ -43,25 +43,33 @@ export function approverKey(policy, home) {
   return { key, agent };
 }
 
-// team/keys.json: one new entry for the agent in the repository's key format; earlier entries of its role may only be
-// marked superseded. keyOf(entry) returns the entry's key as "type base64", or null.
-export function entryKey(entry, format) {
-  if (format === 'p256-pem') {
-    const pem = entry?.git_signing?.pem; if (!pem) return null;
+// team/keys.json in the repository's own dialect (policy repository_config). entryKey returns an entry's key as
+// "type base64" (ssh-ed25519 or ecdsa-sha2-nistp256), or null.
+const get = (o, path) => String(path || '').split('.').reduce((x, k) => (x == null ? x : x[k]), o);
+const two = (x) => String(x || '').trim().split(/\s+/).slice(0, 2).join(' ');
+export function pemToSsh(pem) {
+  try {
+    const k = createPublicKey(String(pem));
+    if (k.asymmetricKeyType === 'ed25519') {
+      const raw = k.export({ type: 'spki', format: 'der' }).subarray(-32), t = Buffer.from('ssh-ed25519');
+      const len = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n); return b; };
+      return 'ssh-ed25519 ' + Buffer.concat([len(t.length), t, len(raw.length), raw]).toString('base64');
+    }
+    if (k.asymmetricKeyType !== 'ec') return null;
     const dir = mkdtempSync(join(tmpdir(), 'kbk-'));
-    try { const f = join(dir, 'k.pem'); writeFileSync(f, String(pem)); return execFileSync('ssh-keygen', ['-i', '-m', 'PKCS8', '-f', f], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().split(/\s+/).slice(0, 2).join(' '); }
-    catch { return null; } finally { rmSync(dir, { recursive: true, force: true }); }
-  }
-  // Where the file carries ssh_signing.public_key (Events), that is the key its check-signatures trusts; if
-  // ssh_public_key is there too, the two must be the same key, or the entry has no key.
-  const two = (x) => String(x || '').trim().split(/\s+/).slice(0, 2).join(' ');
-  const signing = two(entry?.ssh_signing?.public_key), plain = two(entry?.ssh_public_key);
-  if (signing && plain && signing !== plain) return null;
-  const k = signing || plain;
-  return /^ssh-ed25519 /.test(k) ? k : null;
+    try { const f = join(dir, 'k.pem'); writeFileSync(f, k.export({ type: 'spki', format: 'pem' })); return two(execFileSync('ssh-keygen', ['-i', '-m', 'PKCS8', '-f', f], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })); }
+    finally { rmSync(dir, { recursive: true, force: true }); }
+  } catch { return null; }
 }
-const norm = (x) => String(x || '').trim().split(/\s+/).slice(0, 2).join(' ');
-export function checkKeys(before, after, { agent, session, homeKey, format = 'ed25519' }) {
+export function entryKey(entry, cfg) {
+  const v = get(entry, cfg.key_path); if (!v) return null;
+  const k = cfg.key_encoding === 'pem' ? pemToSsh(v) : two(v);
+  if (!/^(ssh-ed25519|ecdsa-sha2-nistp256) /.test(k || '')) return null;
+  if (cfg.also_equal) { const o = get(entry, cfg.also_equal); if (o && two(o) !== k) return null; }
+  return k;
+}
+export function homeKeyFor(key, home) { return /^ssh-ed25519 /.test(key || '') ? two(home?.ssh_ed25519) : /^ecdsa-sha2-nistp256 /.test(key || '') ? two(home?.ssh) : ''; }
+export function checkKeys(before, after, { agent, session, home, cfg }) {
   const e = [], parse = (t) => { const d = JSON.parse(t || '{"keys":[]}'); return Array.isArray(d) ? { keys: d } : d; };
   let b, a; try { b = parse(before); a = parse(after); } catch { return ['team/keys.json is not valid JSON']; }
   const { keys: bk = [], ...bRest } = b, { keys: ak = [], ...aRest } = a;
@@ -72,19 +80,21 @@ export function checkKeys(before, after, { agent, session, homeKey, format = 'ed
     const o = bk[i], n = ak[i];
     if (!n) { e.push('team/keys.json: an entry was removed'); continue; }
     if (JSON.stringify(o) === JSON.stringify(n)) continue;
-    const strip = ({ status, superseded, ...rest }) => rest;
-    const ok = JSON.stringify(strip(o)) === JSON.stringify(strip(n)) && n.superseded && (n.status === undefined || n.status === 'superseded') && (o.status === undefined || n.status !== undefined);
-    if (!ok) e.push(`team/keys.json: entry ${i} changed beyond being marked superseded`);
+    const field = cfg.superseded_style === 'field';
+    const strip = (x) => { const { [field ? 'superseded' : 'status']: _, ...r } = x; return r; };
+    const retired = field ? !!n.superseded : n.status === 'superseded';
+    if (JSON.stringify(strip(o)) !== JSON.stringify(strip(n)) || !retired) e.push(`team/keys.json: entry ${i} changed beyond being retired (${cfg.superseded_style})`);
     else if (role(o.agent) !== role(agent)) e.push(`team/keys.json: entry ${i} is not of ${agent}'s role`);
   }
   const k = ak[ak.length - 1] || {};
   if (k.agent !== agent) e.push(`team/keys.json: the new entry is for ${JSON.stringify(k.agent || null)}, not ${agent}`);
-  if (k.superseded || (k.status !== undefined && k.status !== 'active')) e.push('team/keys.json: the new entry is not active');
+  if (k.superseded || k.status === 'superseded') e.push('team/keys.json: the new entry is retired');
+  if (cfg.active_status ? k.status !== cfg.active_status : k.status !== undefined) e.push(`team/keys.json: the new entry's status must be ${cfg.active_status ? JSON.stringify(cfg.active_status) : 'absent'}`);
   if (session && (k.session || k.claude_session) !== session) e.push('team/keys.json: the new entry names another session');
-  const key = entryKey(k, format);
-  if (!key) e.push(`team/keys.json: the new entry has no ${format === 'p256-pem' ? 'git_signing.pem (P-256)' : 'ssh-ed25519 ssh_public_key'}`);
-  else if (!homeKey || key !== norm(homeKey)) e.push("team/keys.json: the new key is not the key the agent's home publishes");
-  return e;
+  const key = entryKey(k, cfg), want = homeKeyFor(key, home);
+  if (!key) e.push(`team/keys.json: the new entry has no usable key at ${cfg.key_path}`);
+  else if (!want || key !== want) e.push("team/keys.json: the new key is not the key the agent's home publishes");
+  return { errors: e, key };
 }
 
 // The pins for one repository, from the approver's signed pins file, limited to the policy's pinnable files.
@@ -100,7 +110,7 @@ export function readPins(policy, home, repo, ap) {
 }
 
 // The files a pull request may touch, for one repository: team/keys.json, and files pinned whole by sha256.
-export function checkFiles(files, pins, truncated = false) {
+export function checkFiles(files, pins, truncated = false, needsKeys = true) {
   const e = [];
   if (truncated || files.length >= 300) e.push('the pull request lists 300 or more files: refused');
   for (const f of files) {
@@ -110,7 +120,7 @@ export function checkFiles(files, pins, truncated = false) {
     if (f.status === 'removed' || f.status === 'renamed') e.push(`${q}: ${f.status}; a pinned file may only be modified or added`);
     else if (f.content_sha256 !== sha) e.push(`${q}: content does not match the pinned sha256`);
   }
-  if (!files.some((f) => f.filename === 'team/keys.json')) e.push('team/keys.json: not changed; the pull request must add the key');
+  if (needsKeys && !files.some((f) => f.filename === 'team/keys.json')) e.push('team/keys.json: not changed; the pull request must add the key');
   return e;
 }
 
@@ -143,15 +153,12 @@ async function contentAt(repo, path, ref) {
   const r = await fetch(`https://api.github.com/repos/${ORG}/${repo}/contents/${path.split('/').map(encodeURIComponent).join('/')}?ref=${ref}`, { headers: { authorization: `Bearer ${process.env.GH_TOKEN}`, accept: 'application/vnd.github.raw', 'user-agent': 'promptugal-iac' } });
   return r.ok ? Buffer.from(await r.arrayBuffer()) : null;
 }
-async function homeKeyOf(agent, format = 'ed25519') {
-  // The agent's home: PrompTugal__Agent__<Role>, file site/keys/<name>.json on dev, field ssh_ed25519. Public, read without a token.
+async function homeOf(agent) {
+  // The agent's home: PrompTugal__Agent__<Role>, file site/keys/<name>.json on dev. Public, read without a token.
   const name = agent.split('@')[0], role = name.replace(/^cl-\d+\./, '');
-  const home = `PrompTugal__Agent__${role.split(/[-.]/).map((w) => w[0].toUpperCase() + w.slice(1)).join('-')}`;
-  try {
-    const r = await fetch(`https://raw.githubusercontent.com/${ORG}/${home}/dev/site/keys/${name}.json`);
-    const j = r.ok ? await r.json() : {};
-    return { home, key: (format === 'p256-pem' ? j.ssh : j.ssh_ed25519) || null };
-  } catch { return { home, key: null }; }
+  const repo = `PrompTugal__Agent__${role.split(/[-.]/).map((w) => w[0].toUpperCase() + w.slice(1)).join('-')}`;
+  try { const r = await fetch(`https://raw.githubusercontent.com/${ORG}/${repo}/dev/site/keys/${name}.json`); return { repo, keys: r.ok ? await r.json() : null }; }
+  catch { return { repo, keys: null }; }
 }
 
 async function plan(homeDir) {
@@ -190,16 +197,23 @@ async function plan(homeDir) {
       }
       const { pins, notes } = readPins(policy, homeDir, repo, ap); item.notes = notes;
       for (const f of files) if (pins[f.filename]) { const t = await contentAt(repo, f.filename, a.head_sha); f.content_sha256 = t == null ? null : sha256(t); }
-      item.errors.push(...checkFiles(files, pins, truncated));
-      const format = policy.repository_config?.[repo]?.key_format || 'ed25519';
-      const { key: homeKey, home } = await homeKeyOf(a.agent || '', format);
-      const kb = await contentAt(repo, 'team/keys.json', pr.data.base.sha), ka = await contentAt(repo, 'team/keys.json', a.head_sha);
-      item.errors.push(...checkKeys(kb ? kb.toString('utf8') : null, ka ? ka.toString('utf8') : null, { agent: a.agent, session: a.session, homeKey, format }));
+      item.errors.push(...checkFiles(files, pins, truncated, !!policy.repository_config?.[repo]?.key_path));
+      const cfg = policy.repository_config?.[repo] || {};
+      const { repo: home, keys: homeKeys } = await homeOf(a.agent || '');
+      let signKey = null;
+      if (cfg.key_path) {
+        const kb = await contentAt(repo, 'team/keys.json', pr.data.base.sha), ka = await contentAt(repo, 'team/keys.json', a.head_sha);
+        const r = checkKeys(kb ? kb.toString('utf8') : null, ka ? ka.toString('utf8') : null, { agent: a.agent, session: a.session, home: homeKeys, cfg });
+        item.errors.push(...r.errors); signKey = r.key;
+      } else {
+        if (files.some((f) => f.filename === 'team/keys.json')) item.errors.push('team/keys.json: this repository reads no key file; its pull request changes pinned files only');
+        signKey = two(homeKeys?.ssh_ed25519) || two(homeKeys?.ssh) || null;
+      }
       // The head commit: signed by the new key, with the agent's trailers.
       const w = mkdtempSync(join(tmpdir(), 'kbc-'));
       try {
         git(w, 'init', '-q'); git(w, 'fetch', '-q', '--depth=1', `https://github.com/${ORG}/${repo}.git`, a.head_sha);
-        const allowed = join(w, 'allowed'); writeFileSync(allowed, `${a.agent} namespaces="git" ${homeKey || 'none'}\n`);
+        const allowed = join(w, 'allowed'); writeFileSync(allowed, `${a.agent} namespaces="git" ${signKey || 'none'}\n`);
         const v = spawnSync('git', ['-c', 'gpg.format=ssh', '-c', `gpg.ssh.allowedSignersFile=${allowed}`, 'verify-commit', a.head_sha], { cwd: w, encoding: 'utf8' });
         if (v.status !== 0) item.errors.push(`head commit is not signed by ${a.agent}'s key from ${home}`);
         const tr = (k) => git(w, 'log', '-1', `--format=%(trailers:key=${k},valueonly)`, a.head_sha).split('\n').filter(Boolean);

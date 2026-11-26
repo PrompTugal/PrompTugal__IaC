@@ -6,7 +6,7 @@ import { load, validate, validateRepos, checkActions, glob } from '../build/abp.
 import { plan } from '../build/org-plan.mjs';
 import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
 import { unclaimed } from '../build/dns-unclaimed.mjs';
-import { checkKeys, checkFiles, gateState, entryKey, readPins } from '../build/key-bootstrap.mjs';
+import { checkKeys, checkFiles, gateState, entryKey, readPins, pemToSsh } from '../build/key-bootstrap.mjs';
 const kb = JSON.parse(readFileSync('policy/key-bootstrap.json', 'utf8'));
 
 let n = 0, failed = 0;
@@ -100,34 +100,48 @@ t('DNS apply never creates a GitHub Pages record no repository claims', () => {
 t('a dry DNS plan passes the policy', () => assert.deepEqual(checkActions(policy, dnsPlan(dns, [])), []));
 
 const ED = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOnew';
-t('key bootstrap: every covered repository has a config, and pages.yml is pinned whole (B2, B3)', () => {
-  for (const r of kb.repositories) { assert.ok(kb.repository_config[r], r); assert.ok(['ed25519', 'p256-pem'].includes(kb.repository_config[r].key_format), r); assert.ok(kb.pinnable_files[r].some((g) => g.file === '.github/workflows/pages.yml'), r); assert.ok(kb.repository_config[r].anchor_job.length, r); }
+const edPair = generateKeyPairSync('ed25519'), ecPair = generateKeyPairSync('ec', { namedCurve: 'P-256' });
+const EDPEM = edPair.publicKey.export({ type: 'spki', format: 'pem' }), ECPEM = ecPair.publicKey.export({ type: 'spki', format: 'pem' });
+const EDSSH = pemToSsh(EDPEM), ECSSH = pemToSsh(ECPEM);
+const HOME = { ssh_ed25519: EDSSH, ssh: ECSSH };
+const cfgOf = (r) => kb.repository_config[`PrompTugal__News__${r}`];
+const AG = 'cl-6.x@PrompTugal.dinis';
+t('key bootstrap: every covered repository has a config, and pages.yml is pinnable everywhere (B2, B3)', () => {
+  for (const r of kb.repositories) { const c = kb.repository_config[r]; assert.ok(c && c.anchor_job.length, r); assert.ok(c.key_path === null || ['ssh', 'pem'].includes(c.key_encoding), r); assert.ok(kb.pinnable_files[r].some((g) => g.file === '.github/workflows/pages.yml'), r); }
   assert.deepEqual(kb.repository_config.PrompTugal__News__Cyber.anchor_job, ['verify', 'leakscan']);
-  assert.equal(kb.repository_config.PrompTugal__News__Signals.key_format, 'p256-pem');
+  assert.match(EDSSH, /^ssh-ed25519 /); assert.match(ECSSH, /^ecdsa-sha2-nistp256 /);
 });
-t('key bootstrap: keys.json takes one new entry for the agent with its home key', () => {
-  const before = JSON.stringify({ keys: [{ agent: 'cyber.b@PrompTugal.dinis', status: 'active', ssh_public_key: 'ssh-ed25519 AAAAold' }] });
-  const ok = JSON.stringify({ keys: [{ agent: 'cyber.b@PrompTugal.dinis', status: 'superseded', superseded: '2026-11-26T03:00Z', ssh_public_key: 'ssh-ed25519 AAAAold' }, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', status: 'active', ssh_public_key: ED }] });
-  assert.deepEqual(checkKeys(before, ok, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: ED }), []);
-  assert.ok(checkKeys(before, ok, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: 'ssh-ed25519 AAAAother' }).length);
-  assert.ok(checkKeys(before.replace('cyber.b@', 'signals.b@'), ok.replace('cyber.b@', 'signals.b@'), { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: ED }).some((e) => e.includes('role')));
-  const two = JSON.stringify({ keys: [...JSON.parse(ok).keys, { agent: 'cl-6.cyber@PrompTugal.dinis', status: 'active', ssh_public_key: ED }] });
-  assert.ok(checkKeys(before, two, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: ED }).length);
+t('key bootstrap: each repository dialect accepts its own entry and refuses another', () => {
+  const cases = {
+    Library: [{ agent: 'x.b@PrompTugal.dinis', status: 'active', ssh_public_key: 'ssh-ed25519 AAAAold' }, (o) => ({ ...o, status: 'superseded' }), { agent: AG, session: 'S', status: 'active', ssh_public_key: EDSSH }],
+    Bulletins: [{ agent: 'x.b@PrompTugal.dinis', status: 'current', git_signing: { ssh_public_key: 'ssh-ed25519 AAAAold' } }, (o) => ({ ...o, status: 'superseded' }), { agent: AG, session: 'S', status: 'current', git_signing: { ssh_public_key: EDSSH } }],
+    Events: [{ agent: 'x.b@PrompTugal.dinis', ssh_signing: { public_key: 'ssh-ed25519 AAAAold' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh_signing: { public_key: EDSSH }, ssh_public_key: EDSSH }],
+    Videos: [{ agent: 'x.b@PrompTugal.dinis', ssh: { public_key_pem: 'old' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh: { public_key_pem: EDPEM } }],
+    Cyber: [{ agent: 'x.b@PrompTugal.dinis', status: 'active', bundle: { sign: 'old' } }, (o) => ({ ...o, status: 'superseded' }), { agent: AG, session: 'S', status: 'active', bundle: { sign: ECPEM } }],
+    Signals: [{ agent: 'x.b@PrompTugal.dinis', git_signing: { pem: 'old' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', git_signing: { pem: ECPEM } }],
+  };
+  for (const [r, [old, retire, neu]] of Object.entries(cases)) {
+    const before = JSON.stringify({ keys: [old] }), after = JSON.stringify({ keys: [retire(old), neu] });
+    const ok = checkKeys(before, after, { agent: AG, session: 'S', home: HOME, cfg: cfgOf(r) });
+    assert.deepEqual(ok.errors, [], r);
+    const wrongStatus = JSON.stringify({ keys: [retire(old), { ...neu, status: 'something-else' }] });
+    assert.ok(checkKeys(before, wrongStatus, { agent: AG, session: 'S', home: HOME, cfg: cfgOf(r) }).errors.length, `${r}: wrong status`);
+    assert.ok(checkKeys(before, after, { agent: AG, session: 'S', home: { ssh_ed25519: 'ssh-ed25519 AAAAother', ssh: 'ecdsa-sha2-nistp256 AAAAother' }, cfg: cfgOf(r) }).errors.length, `${r}: other home key`);
+  }
+  const ev = cfgOf('Events'), mismatch = { agent: AG, ssh_signing: { public_key: EDSSH }, ssh_public_key: 'ssh-ed25519 AAAAother' };
+  assert.equal(entryKey(mismatch, ev), null, 'Events: two different keys');
 });
-t('key bootstrap: a superseded field alone is accepted where the file has no status (Signals style)', () => {
-  const before = JSON.stringify({ keys: [{ agent: 'signals.b@PrompTugal.dinis', ssh_public_key: 'ssh-ed25519 AAAAold' }] });
-  const after = JSON.stringify({ keys: [{ agent: 'signals.b@PrompTugal.dinis', ssh_public_key: 'ssh-ed25519 AAAAold', superseded: '2026-11-26T03:00Z' }, { agent: 'cl-6.signals@PrompTugal.dinis', session: 'S', ssh_public_key: ED }] });
-  assert.deepEqual(checkKeys(before, after, { agent: 'cl-6.signals@PrompTugal.dinis', session: 'S', homeKey: ED }), []);
-  assert.equal(entryKey({ git_signing: { pem: 'not a key' } }, 'p256-pem'), null);
-  assert.equal(entryKey({ ssh_signing: { public_key: ED } }, 'ed25519'), ED);
-  assert.equal(entryKey({ ssh_signing: { public_key: ED }, ssh_public_key: ED + ' comment' }, 'ed25519'), ED);
-  assert.equal(entryKey({ ssh_signing: { public_key: ED }, ssh_public_key: 'ssh-ed25519 AAAAother' }, 'ed25519'), null);
-  const { publicKey } = generateKeyPairSync('ec', { namedCurve: 'P-256' });
-  assert.match(entryKey({ git_signing: { pem: publicKey.export({ type: 'spki', format: 'pem' }) } }, 'p256-pem'), /^ecdsa-sha2-nistp256 /);
+t('key bootstrap: more than one new entry, or one for another role, is refused', () => {
+  const c = cfgOf('Library'), old = { agent: 'x.b@PrompTugal.dinis', status: 'active', ssh_public_key: 'ssh-ed25519 AAAAold' };
+  const neu = { agent: AG, session: 'S', status: 'active', ssh_public_key: EDSSH };
+  assert.ok(checkKeys(JSON.stringify({ keys: [old] }), JSON.stringify({ keys: [old, neu, neu] }), { agent: AG, session: 'S', home: HOME, cfg: c }).errors.length);
+  const other = { ...old, agent: 'y.b@PrompTugal.dinis' };
+  assert.ok(checkKeys(JSON.stringify({ keys: [other] }), JSON.stringify({ keys: [{ ...other, status: 'superseded' }, neu] }), { agent: AG, session: 'S', home: HOME, cfg: c }).errors.some((e) => e.includes('role')));
 });
 t('key bootstrap: only keys.json and pinned files may change, with exactly the pinned content', () => {
   const files = [{ filename: 'team/keys.json' }], pins = { '.github/workflows/pages.yml': 'a'.repeat(64) };
   assert.deepEqual(checkFiles(files, {}), []);
+  assert.deepEqual(checkFiles([{ filename: 'scripts/check-commits.mjs', status: 'modified', content_sha256: 'c'.repeat(64) }], { 'scripts/check-commits.mjs': 'c'.repeat(64) }, false, false), [], 'Travel: pinned files only');
   assert.ok(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified' }], {}).some((e) => e.includes('not pinned')));
   assert.deepEqual(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified', content_sha256: 'a'.repeat(64) }], pins), []);
   assert.ok(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified', content_sha256: 'b'.repeat(64) }], pins).length);

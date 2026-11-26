@@ -24,8 +24,8 @@
     "path": "PrompTugal/PrompTugal__Agent__Security successors/<n>.json (+ .sig), n = 1, 2, ...",
     "rule": "A new approver key is accepted only through statement n, signed (namespace promptugal-key-approval) by the key in force after statement n-1 (the pinned key for n = 1), naming the new key, its fingerprint and its session. The job follows the chain from the pinned key and trusts only its last link. If the chain breaks, only a change to this file by Dinis restores an approver: an escalation."
   },
-  "keys_rule": "team/keys.json: exactly one new entry, for the approval's agent and session, in the repository's key_format; earlier entries may change only by being marked superseded (a superseded time, and status superseded where the file uses status), and only entries of the same role; nothing else in the file changes. For ed25519 the key is ssh_signing.public_key where present (what that repository's check reads), else ssh_public_key; if both are present they must be the same key. Entries may omit status (Events, Signals): an old entry is superseded by a superseded time, and a new entry without status counts as active.",
-  "commit_rule": "the pull request's head commit is signed by the new key, in the repository's key_format (ed25519: the home's ssh_ed25519; p256-pem: the home's ssh, the P-256 key), with one Agent: trailer equal to the agent and one Claude-Session: trailer equal to its session",
+  "keys_rule": "team/keys.json, in the repository's own dialect (repository_config): exactly one new entry for the approval's agent and session, its key at key_path equal to the home's key, its status exactly active_status (or no status when null), never superseded; earlier entries change only by being retired in superseded_style, and only entries of the same role; nothing else in the file changes",
+  "commit_rule": "the pull request's head commit is signed by the new key (the home's ssh_ed25519 or ssh, by the key's type), with one Agent: trailer equal to the agent and one Claude-Session: trailer equal to its session",
   "anchor": {
     "variable": "SIG_BOOTSTRAP_ANCHOR",
     "value": "the merge commit SHA on dev",
@@ -64,53 +64,79 @@
       "anchor_job": [
         "checks"
       ],
-      "key_format": "ed25519"
+      "key_path": "ssh_public_key",
+      "key_encoding": "ssh",
+      "active_status": "active",
+      "superseded_style": "status"
     },
     "PrompTugal__News__Live": {
       "anchor_job": [
         "security"
       ],
-      "key_format": "ed25519"
+      "key_path": "ssh.public_key_pem",
+      "key_encoding": "pem",
+      "also_equal": "ssh_signing.public_key",
+      "active_status": null,
+      "superseded_style": "field"
     },
     "PrompTugal__News__Videos": {
       "anchor_job": [
         "checks"
       ],
-      "key_format": "ed25519"
+      "key_path": "ssh.public_key_pem",
+      "key_encoding": "pem",
+      "active_status": null,
+      "superseded_style": "field"
     },
     "PrompTugal__News__Cyber": {
       "anchor_job": [
         "verify",
         "leakscan"
       ],
-      "key_format": "ed25519"
+      "key_path": "bundle.sign",
+      "key_encoding": "pem",
+      "active_status": "active",
+      "superseded_style": "status"
     },
     "PrompTugal__News__Bulletins": {
       "anchor_job": [
         "checks"
       ],
-      "key_format": "ed25519"
+      "key_path": "git_signing.ssh_public_key",
+      "key_encoding": "ssh",
+      "active_status": "current",
+      "superseded_style": "status"
     },
     "PrompTugal__News__Signals": {
       "anchor_job": [
         "verify"
       ],
-      "key_format": "p256-pem"
+      "key_path": "git_signing.pem",
+      "key_encoding": "pem",
+      "active_status": null,
+      "superseded_style": "field"
     },
     "PrompTugal__News__Events": {
       "anchor_job": [
         "verify"
       ],
-      "key_format": "ed25519"
+      "key_path": "ssh_signing.public_key",
+      "key_encoding": "ssh",
+      "also_equal": "ssh_public_key",
+      "active_status": null,
+      "superseded_style": "field"
     },
     "PrompTugal__News__Travel": {
       "anchor_job": [
         "security"
       ],
-      "key_format": "ed25519"
+      "key_path": null,
+      "key_encoding": null,
+      "active_status": null,
+      "superseded_style": null
     }
   },
-  "repository_config_note": "anchor_job: the jobs a pages.yml push run on dev must all pass to be that repository's anchor A (read from each pages.yml on dev; Videos, Travel and Cyber named by cl-6.security, 26 Nov 2026 06:20 UTC). key_format: ed25519 = team/keys.json ssh_public_key equal to the home's ssh_ed25519; p256-pem = team/keys.json git_signing.pem (P-256, PKCS8) whose converted key equals the home's ssh (B3).",
+  "repository_config_note": "Per repository, read from its own scripts/check-signatures.mjs on dev (26 Nov 2026): anchor_job, the jobs a pages.yml push run on dev must all pass to be A; key_path, the field of a team/keys.json entry that its check reads; key_encoding, ssh (an OpenSSH line) or pem (an SPKI PEM, converted to OpenSSH: ed25519 or P-256); also_equal, a second field that, when present, must hold the same key; active_status, the status a new entry must carry (null: no status field); superseded_style, how an old entry is retired: status (status \"superseded\") or field (a superseded time). The key is compared with the home's ssh_ed25519 when it is ed25519 and with the home's ssh when it is P-256. Travel: its checks read no key file, so key_path is null and its pull request may change pinned files only, not team/keys.json.",
   "pages_rule": "Each repository's anchor-override pages.yml is pinned whole by sha256 in the approver's signed pins file, because the eight pages.yml files differ (B2).",
   "merge_rule": "Before merging: the pull request's base.sha equals dev's head, and dev's head equals the repository's last verified anchor (the latest pages.yml push run on dev whose anchor_job passed). After merging: the merged commit's tree equals the approved head's tree, or no anchor is set (B1).",
   "pinnable_files": {
