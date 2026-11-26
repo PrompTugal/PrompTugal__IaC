@@ -99,6 +99,363 @@
       "type": "CNAME",
       "value": "promptugal.github.io",
       "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "bulletins.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Bulletins",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "civic.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Civic",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "conductor.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Conductor",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "cyber.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Cyber",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "data.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Data",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "events.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Events",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "fringe.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Fringe",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "library.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Library",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "live.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Live",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "albufeira.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Albufeira",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "alcoutim.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Alcoutim",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "algarve.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Algarve",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "aljezur.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Aljezur",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "aveiro.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Aveiro",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "beja.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Beja",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "braga.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Braga",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "braganca.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Braganca",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "castelo-branco.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Castelo-Branco",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "castro-marim.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Castro-Marim",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "coimbra.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Coimbra",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "evora.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Evora",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "faro.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Faro",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "guarda.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Guarda",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "lagoa.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Lagoa",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "lagos.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Lagos",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "leiria.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Leiria",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "lisboa.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Lisboa",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "loule.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Loule",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "monchique.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Monchique",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "olhao.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Olhao",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "portalegre.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Portalegre",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "portimao.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Portimao",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "porto.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Porto",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "portugal.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Portugal",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "quarteira.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Quarteira",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "santarem.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Santarem",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "sao-bras-de-alportel.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Sao-Bras-de-Alportel",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "setubal.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Setubal",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "silves.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Silves",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "tavira.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Tavira",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "viana-do-castelo.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Viana-do-Castelo",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "vila-do-bispo.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Vila-do-Bispo",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "vila-real.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Vila-Real",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "vila-real-de-santo-antonio.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Vila-Real-de-Santo-Antonio",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "viseu.place.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Place__Viseu",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "signals.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Signals",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "startups.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Startups",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "swarm.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Swarm",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "travel.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Travel",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "videos.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Videos",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    },
+    {
+      "name": "weather.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Weather",
+      "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
     }
   ]
 }
