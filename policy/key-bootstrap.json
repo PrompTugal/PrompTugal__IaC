@@ -1,0 +1,79 @@
+{
+  "about": "Key bootstrap and rotation for the PrompTugal section repositories, with no person in the per-repository loop. PrompTugal__IaC acts (merge one key pull request, set and later delete the anchor variable) only on cl-6.security's detached-signed approval of that pull request's exact head SHA and diff, read from its home. Changes to this file are Dinis's: he merges them. Design: PrompTugal__Agent__Security docs/security/2026-11-26-section-repos-key-bootstrap.md (6fbdbc8).",
+  "source": "Dinis, 26 Nov 2026, via cl-6.conductor: \"note that I cannot be in-line in the normal publishing workflow, only for escalations and massive exceptions.\" Designed by cl-6.security@PrompTugal.dinis with cl-6.infra@PrompTugal.dinis.",
+  "repositories": [
+    "PrompTugal__News__Library",
+    "PrompTugal__News__Live",
+    "PrompTugal__News__Videos",
+    "PrompTugal__News__Cyber",
+    "PrompTugal__News__Bulletins",
+    "PrompTugal__News__Signals",
+    "PrompTugal__News__Events",
+    "PrompTugal__News__Travel"
+  ],
+  "approver": {
+    "agent": "cl-6.security@PrompTugal.dinis",
+    "home": "PrompTugal/PrompTugal__Agent__Security",
+    "ssh_public_key": "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJoTYsEojCOVshPuzhSYM/OU2N2P4DhgKb1q+65HmJpV+5LBSV1npIZ5oNYgdnPO5Hg5O8PcKOVJheUWlN53HK8=",
+    "fingerprint": "SHA256:id7YhKBJ1bXEmyS71mRnIJu4sNT/JyTt40KIVAjEsaM",
+    "namespace": "promptugal-key-approval",
+    "key_bootstrap_approvals": "approvals/key-bootstrap/<repo>/<pr>.json (+ .sig)",
+    "gate_approvals": "approvals/gate/<repo>/<sha>.json (+ .sig)"
+  },
+  "successors": {
+    "path": "PrompTugal/PrompTugal__Agent__Security successors/<n>.json (+ .sig), n = 1, 2, ...",
+    "rule": "A new approver key is accepted only through statement n, signed (namespace promptugal-key-approval) by the key in force after statement n-1 (the pinned key for n = 1), naming the new key, its fingerprint and its session. The job follows the chain from the pinned key and trusts only its last link. If the chain breaks, only a change to this file by Dinis restores an approver: an escalation."
+  },
+  "pages_block": {
+    "file": ".github/workflows/pages.yml",
+    "lines": [
+      "if [ -n \"${{ vars.SIG_BOOTSTRAP_ANCHOR }}\" ]; then A=\"${{ vars.SIG_BOOTSTRAP_ANCHOR }}\"; echo \"anchor set by PrompTugal__IaC: $A\"; else",
+      "fi"
+    ],
+    "sha256": "82dbf68c5c0477d98791f1aa089fd45e763b2a777d93963446721b653eaf561e",
+    "rule": "the pull request adds exactly these lines (compared without leading and trailing spaces), removes none, and changes no other line of pages.yml; the existing anchor lookup and every check on A stay as they are"
+  },
+  "gate_changes": {
+    "PrompTugal__News__Travel": [
+      {
+        "file": "scripts/check-commits.mjs",
+        "sha256": null,
+        "note": "accepts cl-<n>.<role>@PrompTugal.dinis; its sha256 is set by a later policy change, once the new checker exists. Until then Travel's gate change is refused. scripts/commit-exemptions.json is never used for this; it stays Dinis's own."
+      }
+    ]
+  },
+  "keys_rule": "team/keys.json: exactly one new entry, status active, agent equal to the approval's agent, ssh_public_key equal to the ssh_ed25519 published in that agent's home (site/keys/<name>.json on dev); earlier entries may only change status to superseded (with a time), and only entries of the same role; nothing else in the file changes",
+  "commit_rule": "the pull request's head commit is signed by the new ed25519 key, with one Agent: trailer equal to the agent and one Claude-Session: trailer equal to its session",
+  "anchor": {
+    "variable": "SIG_BOOTSTRAP_ANCHOR",
+    "value": "the merge commit SHA on dev",
+    "removed": "after the first push run on dev after the merge whose checks job passed, or after 24 hours, whichever is first",
+    "max_hours": 24
+  },
+  "gate_status": {
+    "context": "promptugal-iac/gate",
+    "paths": [
+      ".github/**",
+      "scripts/check-*.mjs",
+      "team/keys.json"
+    ],
+    "rule": "success for a commit range that leaves these paths untouched; for one that touches them, success only with the approver's signed approval of that head SHA; otherwise failure",
+    "heads": [
+      "dev",
+      "work/**"
+    ]
+  },
+  "per_run": 1,
+  "log": {
+    "branch": "log/key-bootstrap",
+    "file": "key-bootstrap-log.json",
+    "note": "every action, committed by the App to this branch only (never dev)"
+  },
+  "never": [
+    "act without a verified approval of the exact head SHA and diff hash",
+    "merge anything but the approved head SHA",
+    "use commit-exemptions.json",
+    "change the approver or this file",
+    "hold a token wider than the step needs"
+  ]
+}

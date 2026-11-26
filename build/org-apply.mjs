@@ -45,6 +45,13 @@ for (const a of p.actions) {
     if (![200, 201, 204].includes(back.status)) back = await gh('PUT', `${base}/pages`, { cname: r.site });
     must(back, `custom domain ${r.site} set on ${a.target}${[200, 201, 204].includes(cleared.status) ? ` (certificate nudge, was ${a.state})` : ` (clear returned HTTP ${cleared.status}; domain kept)`}`);
   }
+  else if (a.action === 'ruleset.create') {
+    // Only a ruleset the repository's own entry names, as written there; created, never changed or deleted.
+    const rs = (r.rulesets || []).find((q) => q.name === a.ruleset);
+    if (!rs) throw new Error(`${a.target}: ruleset ${a.ruleset} is not in its entry`);
+    const { after_status, ...body } = rs;
+    must(await gh('POST', `${base}/rulesets`, body), `ruleset ${rs.name} on ${a.target}`, [201]);
+  }
   else if (a.action === 'team.grant_push') {
     // Push (write) only, and only a team its own entry names with push.
     if ((r.teams || {})[a.team] !== 'push') throw new Error(`${a.target}: team ${a.team} is not in its entry with push`);

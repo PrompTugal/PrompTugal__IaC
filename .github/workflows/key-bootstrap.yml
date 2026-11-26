@@ -1,0 +1,106 @@
+name: Key bootstrap
+# Section repositories' agent keys, with no person in the per-repository loop (policy/key-bootstrap.json).
+# Acts only on cl-6.security's detached-signed approval of a pull request's exact head SHA and diff, read from its home.
+# One repository per run. Each token is minted for one step, one repository and that step's permissions only.
+on:
+  workflow_dispatch:
+  # Every 15 minutes: Dinis's decision when he merges this; uncomment to turn it on.
+  # schedule:
+  #   - cron: '7,22,37,52 * * * *'
+permissions:
+  contents: read
+concurrency: key-bootstrap
+defaults:
+  run:
+    shell: bash
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    environment: apply
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node test/run.mjs && node build/abp.mjs validate
+      - name: The approver's home (public, read only)
+        run: git clone -q --depth 50 -b dev https://github.com/PrompTugal/PrompTugal__Agent__Security.git security-home
+      - id: read
+        uses: actions/create-github-app-token@v1.12.0
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+          repositories: PrompTugal__News__Library,PrompTugal__News__Live,PrompTugal__News__Videos,PrompTugal__News__Cyber,PrompTugal__News__Bulletins,PrompTugal__News__Signals,PrompTugal__News__Events,PrompTugal__News__Travel
+          permission-metadata: read
+          permission-contents: read
+          permission-pull-requests: read
+      - name: Plan (read only)
+        id: plan
+        env:
+          GH_TOKEN: ${{ steps.read.outputs.token }}
+        run: |
+          node build/key-bootstrap.mjs plan security-home plan.json | tee -a "$GITHUB_STEP_SUMMARY" | tee plan.txt
+          echo "repo=$(grep '^action_repo=' plan.txt | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+      - id: merge-token
+        if: steps.plan.outputs.repo != ''
+        uses: actions/create-github-app-token@v1.12.0
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+          repositories: ${{ steps.plan.outputs.repo }}
+          permission-pull-requests: write
+          permission-contents: write
+          permission-workflows: write
+      - name: Merge the approved pull request at its approved head SHA
+        if: steps.plan.outputs.repo != ''
+        env:
+          GH_TOKEN: ${{ steps.merge-token.outputs.token }}
+        run: node build/key-bootstrap.mjs merge plan.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - id: variables-token
+        if: steps.plan.outputs.repo != ''
+        uses: actions/create-github-app-token@v1.12.0
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+          repositories: ${{ steps.plan.outputs.repo }}
+          permission-actions-variables: write
+      - name: Set the one-time anchor
+        if: steps.plan.outputs.repo != ''
+        env:
+          GH_TOKEN: ${{ steps.variables-token.outputs.token }}
+        run: node build/key-bootstrap.mjs anchor plan.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: key-bootstrap-plan
+          path: plan.json
+  # The one-time anchors: each repository on its own, with its own token.
+  cleanup:
+    needs: bootstrap
+    if: always()
+    runs-on: ubuntu-latest
+    environment: apply
+    strategy:
+      max-parallel: 1
+      matrix:
+        repo: ["PrompTugal__News__Library","PrompTugal__News__Live","PrompTugal__News__Videos","PrompTugal__News__Cyber","PrompTugal__News__Bulletins","PrompTugal__News__Signals","PrompTugal__News__Events","PrompTugal__News__Travel"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: token
+        uses: actions/create-github-app-token@v1.12.0
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+          repositories: ${{ matrix.repo }}
+          permission-actions: read
+          permission-actions-variables: write
+      - name: Delete the anchor after the first green run, or after 24 hours
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+        run: node build/key-bootstrap.mjs cleanup "${{ matrix.repo }}" | tee -a "$GITHUB_STEP_SUMMARY"

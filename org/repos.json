@@ -1317,7 +1317,85 @@
       "name": "PrompTugal__IaC",
       "description": "repo for iac.promptugal.news",
       "pages": false,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "rulesets": [
+        {
+          "name": "main-locked",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/main"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "pull_request",
+              "parameters": {
+                "required_approving_review_count": 0,
+                "dismiss_stale_reviews_on_push": false,
+                "require_code_owner_review": false,
+                "require_last_push_approval": false,
+                "required_review_thread_resolution": false
+              }
+            }
+          ]
+        },
+        {
+          "name": "dev-safe",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "pull_request",
+              "parameters": {
+                "required_approving_review_count": 0,
+                "dismiss_stale_reviews_on_push": false,
+                "require_code_owner_review": false,
+                "require_last_push_approval": false,
+                "required_review_thread_resolution": false
+              }
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Bulletins",
@@ -1326,7 +1404,55 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 5777442,
+              "actor_type": "Integration",
+              "bypass_mode": "always"
+            },
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Civic",
@@ -1344,7 +1470,55 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 5777442,
+              "actor_type": "Integration",
+              "bypass_mode": "always"
+            },
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Data",
@@ -1362,7 +1536,55 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 5777442,
+              "actor_type": "Integration",
+              "bypass_mode": "always"
+            },
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Fringe",
@@ -1377,7 +1599,55 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 5777442,
+              "actor_type": "Integration",
+              "bypass_mode": "always"
+            },
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Live",
@@ -1386,7 +1656,55 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 5777442,
+              "actor_type": "Integration",
+              "bypass_mode": "always"
+            },
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Signals",
@@ -1395,7 +1713,55 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 5777442,
+              "actor_type": "Integration",
+              "bypass_mode": "always"
+            },
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Startups",
@@ -1431,7 +1797,55 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 5777442,
+              "actor_type": "Integration",
+              "bypass_mode": "always"
+            },
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Videos",
@@ -1440,7 +1854,55 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 5777442,
+              "actor_type": "Integration",
+              "bypass_mode": "always"
+            },
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Weather",
@@ -1463,5 +1925,6 @@
   ],
   "proposed": [],
   "proposed_note": "Storm-Charles and the apps are out of this map for now (Dinis, 26 Nov 2026). London is not yet a place in PrompTugal__News__Website data/by-place/places.json.",
-  "teams_note": "Every agent home gives the team promptugal-news-agents push (write), so the agents can commit; never admin or maintain. Dinis, 26 Nov 2026: \"You need to add this team to all the repos you created, or else nobody else can edit it.\""
+  "teams_note": "Every agent home gives the team promptugal-news-agents push (write), so the agents can commit; never admin or maintain. Dinis, 26 Nov 2026: \"You need to add this team to all the repos you created, or else nobody else can edit it.\"",
+  "rulesets_note": "Rulesets as code. Org apply creates a ruleset an entry names when it is missing (by name) and never changes or deletes one. dev-gate on the key-bootstrap repositories requires the App's promptugal-iac/gate status (integration_id = the App's ID, so only the App can post it), and is created only once dev's head carries that status. Bypass: the App (to merge approved key pull requests) and organisation admins (escalation)."
 }
