@@ -41,6 +41,7 @@ jobs:
           permission-administration: write
           permission-contents: write
           permission-pages: write
+          permission-members: read
       - name: Plan against the live organisation
         if: steps.ready.outputs.ok == 'true'
         env:

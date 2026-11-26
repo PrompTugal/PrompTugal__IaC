@@ -64,7 +64,8 @@
         "repo.set_default_branch",
         "repo.update_settings",
         "pages.enable",
-        "pages.set_cname"
+        "pages.set_cname",
+        "team.grant_push"
       ],
       "refused_always": [
         "repo.delete",
@@ -84,7 +85,8 @@
       "note": "Creates and configures only. A repository that exists but is not in org/repos.json is reported, never deleted. On an existing repository it changes only the default branch (to dev) and the settings its own entry in org/repos.json names; the defaults block applies only when a repository is created. It never changes visibility.",
       "default_branch_rule": "Every repository has dev as its default branch; Org apply creates dev from the current default branch if it is missing, then sets it. Dinis, 25 Nov 2026, relayed by cl-6.maestro@dinis: \"please make note to the Infa agent that all repos should have a default dev branch\"; confirmed in cl-6.infra's session ~22:51 UTC: \"yes\".",
       "pages_note": "pages.enable turns on GitHub Pages from dev (root) for a repository whose entry sets pages_site; pages.set_cname sets only the site its entry names, under *.agent.promptugal.news. Its DNS record is added to org/dns.json only after the custom domain is set, so no record ever points at a site that is not ours.",
-      "pages_source": "Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the sites\"; \"you should already have permission\"."
+      "pages_source": "Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the sites\"; \"you should already have permission\".",
+      "team_note": "team.grant_push gives a team that a repository's own entry names push (write) on that repository; team.grant_admin and team.grant_maintain stay refused always. Dinis, 26 Nov 2026 in cl-6.infra's session: \"You need to add this team to all the repos you created, or else nobody else can edit it\" (team promptugal-news-agents)."
     },
     "check-github-app": {
       "runs_on": [
@@ -153,6 +155,12 @@
       "permission": "pages:write (repository)",
       "why": "org-apply: turn on Pages for the agent homes and set each one's custom domain",
       "state": "Dinis, 26 Nov 2026: \"you should already have permission\" (SovereignWebsite__IaC lists pages:write for this App); confirmed by the first Org apply that asks for it"
+    },
+    {
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
+      "permission": "members:read (organisation)",
+      "why": "org-apply: give the team promptugal-news-agents push on each agent home (team.grant_push)",
+      "state": "asked for by Org apply from 26 Nov 2026; SovereignWebsite__IaC lists the same permission for this App; confirmed by the first run that mints a token with it"
     }
   ],
   "aws": {
