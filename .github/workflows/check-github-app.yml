@@ -23,6 +23,7 @@ jobs:
           permission-administration: write
           permission-contents: write
           permission-pages: write
+          permission-members: read
       - name: Read with the token
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}

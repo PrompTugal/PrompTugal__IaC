@@ -18,7 +18,10 @@
       ],
       "site": "bulletins.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Civic",
@@ -29,7 +32,10 @@
       ],
       "site": "civic.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Conductor",
@@ -40,7 +46,10 @@
       ],
       "site": "conductor.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Cyber",
@@ -51,7 +60,10 @@
       ],
       "site": "cyber.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Data",
@@ -62,7 +74,10 @@
       ],
       "site": "data.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Events",
@@ -73,7 +88,10 @@
       ],
       "site": "events.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Fringe",
@@ -84,7 +102,10 @@
       ],
       "site": "fringe.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Infrastructure",
@@ -101,7 +122,10 @@
       ],
       "site": "library.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Live",
@@ -112,7 +136,10 @@
       ],
       "site": "live.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Albufeira",
@@ -127,7 +154,10 @@
       },
       "site": "albufeira.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Alcoutim",
@@ -142,7 +172,10 @@
       },
       "site": "alcoutim.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Algarve",
@@ -157,7 +190,10 @@
       },
       "site": "algarve.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Aljezur",
@@ -172,7 +208,10 @@
       },
       "site": "aljezur.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Aveiro",
@@ -187,7 +226,10 @@
       },
       "site": "aveiro.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Beja",
@@ -202,7 +244,10 @@
       },
       "site": "beja.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Braga",
@@ -217,7 +262,10 @@
       },
       "site": "braga.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Braganca",
@@ -232,7 +280,10 @@
       },
       "site": "braganca.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Castelo-Branco",
@@ -247,7 +298,10 @@
       },
       "site": "castelo-branco.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Castro-Marim",
@@ -262,7 +316,10 @@
       },
       "site": "castro-marim.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Coimbra",
@@ -277,7 +334,10 @@
       },
       "site": "coimbra.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Evora",
@@ -292,7 +352,10 @@
       },
       "site": "evora.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Faro",
@@ -307,7 +370,10 @@
       },
       "site": "faro.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Guarda",
@@ -322,7 +388,10 @@
       },
       "site": "guarda.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Lagoa",
@@ -337,7 +406,10 @@
       },
       "site": "lagoa.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Lagos",
@@ -352,7 +424,10 @@
       },
       "site": "lagos.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Leiria",
@@ -367,7 +442,10 @@
       },
       "site": "leiria.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Lisboa",
@@ -382,7 +460,10 @@
       },
       "site": "lisboa.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Loule",
@@ -397,7 +478,10 @@
       },
       "site": "loule.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Monchique",
@@ -412,7 +496,10 @@
       },
       "site": "monchique.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Olhao",
@@ -427,7 +514,10 @@
       },
       "site": "olhao.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Portalegre",
@@ -442,7 +532,10 @@
       },
       "site": "portalegre.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Portimao",
@@ -457,7 +550,10 @@
       },
       "site": "portimao.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Porto",
@@ -472,7 +568,10 @@
       },
       "site": "porto.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Portugal",
@@ -487,7 +586,10 @@
       },
       "site": "portugal.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Quarteira",
@@ -502,7 +604,10 @@
       },
       "site": "quarteira.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Santarem",
@@ -517,7 +622,10 @@
       },
       "site": "santarem.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Sao-Bras-de-Alportel",
@@ -532,7 +640,10 @@
       },
       "site": "sao-bras-de-alportel.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Setubal",
@@ -547,7 +658,10 @@
       },
       "site": "setubal.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Silves",
@@ -562,7 +676,10 @@
       },
       "site": "silves.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Tavira",
@@ -577,7 +694,10 @@
       },
       "site": "tavira.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Viana-do-Castelo",
@@ -592,7 +712,10 @@
       },
       "site": "viana-do-castelo.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Vila-do-Bispo",
@@ -607,7 +730,10 @@
       },
       "site": "vila-do-bispo.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Vila-Real",
@@ -622,7 +748,10 @@
       },
       "site": "vila-real.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Vila-Real-de-Santo-Antonio",
@@ -637,7 +766,10 @@
       },
       "site": "vila-real-de-santo-antonio.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Place__Viseu",
@@ -652,7 +784,10 @@
       },
       "site": "viseu.place.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Signals",
@@ -663,7 +798,10 @@
       ],
       "site": "signals.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Startups",
@@ -674,7 +812,10 @@
       ],
       "site": "startups.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Swarm",
@@ -686,7 +827,10 @@
       ],
       "site": "swarm.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Travel",
@@ -697,7 +841,10 @@
       ],
       "site": "travel.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Videos",
@@ -708,7 +855,10 @@
       ],
       "site": "videos.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__Agent__Weather",
@@ -719,7 +869,10 @@
       ],
       "site": "weather.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
-      "pages_site": true
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__App__Android",
@@ -849,5 +1002,6 @@
     }
   ],
   "proposed": [],
-  "proposed_note": "Storm-Charles and the apps are out of this map for now (Dinis, 26 Nov 2026). London is not yet a place in PrompTugal__News__Website data/by-place/places.json."
+  "proposed_note": "Storm-Charles and the apps are out of this map for now (Dinis, 26 Nov 2026). London is not yet a place in PrompTugal__News__Website data/by-place/places.json.",
+  "teams_note": "Every agent home gives the team promptugal-news-agents push (write), so the agents can commit; never admin or maintain. Dinis, 26 Nov 2026: \"You need to add this team to all the repos you created, or else nobody else can edit it.\""
 }

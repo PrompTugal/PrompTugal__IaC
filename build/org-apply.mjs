@@ -31,6 +31,11 @@ for (const a of p.actions) {
     if (a.cname !== r.site || !/\.agent\.promptugal\.news$/.test(r.site)) throw new Error(`${a.target}: custom domain ${a.cname} is not its site`);
     must(await gh('PUT', `${base}/pages`, { cname: r.site }), `custom domain ${r.site} on ${a.target}`);
   }
+  else if (a.action === 'team.grant_push') {
+    // Push (write) only, and only a team its own entry names with push.
+    if ((r.teams || {})[a.team] !== 'push') throw new Error(`${a.target}: team ${a.team} is not in its entry with push`);
+    must(await gh('PUT', `/orgs/${p.org}/teams/${a.team}/repos/${p.org}/${a.target}`, { permission: 'push' }), `team ${a.team} push on ${a.target}`);
+  }
   else throw new Error(`unknown action ${a.action}`);
 }
 console.log(`APPLIED ${p.actions.length} actions`);

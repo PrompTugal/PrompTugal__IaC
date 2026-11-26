@@ -23,6 +23,7 @@ export function plan(org, live) {
       actions.push({ action: 'repo.set_default_branch', target: r.name });
       if (r.pages_site) actions.push({ action: 'pages.enable', target: r.name });
       if (r.pages_site && r.site) actions.push({ action: 'pages.set_cname', target: r.name, cname: r.site });
+      for (const [t, perm] of Object.entries(r.teams || {})) if (perm === 'push') actions.push({ action: 'team.grant_push', target: r.name, team: t });
       continue;
     }
     if (l.archived) { notes.push(`${r.name}: archived, left as it is`); continue; }
@@ -31,6 +32,7 @@ export function plan(org, live) {
     if (diff.length) actions.push({ action: 'repo.update_settings', target: r.name, fields: diff });
     if (r.pages_site && !l.has_pages) actions.push({ action: 'pages.enable', target: r.name });
     if (r.pages_site && r.site && (l.cname ?? null) !== r.site) actions.push({ action: 'pages.set_cname', target: r.name, cname: r.site });
+    for (const [t, perm] of Object.entries(r.teams || {})) if (perm === 'push' && !['push', 'maintain', 'admin'].includes((l.teams || {})[t])) actions.push({ action: 'team.grant_push', target: r.name, team: t });
     if (l.default_branch !== 'dev') {
       if (!l.has_dev) actions.push({ action: 'branch.create_dev', target: r.name, from: l.default_branch });
       actions.push({ action: 'repo.set_default_branch', target: r.name, from: l.default_branch });
@@ -53,7 +55,9 @@ export async function liveRepos(org) {
       const dev = await gh('GET', `/repos/${org}/${x.name}/branches/dev`);
       let cname = null;
       if (x.has_pages) { const pg = await gh('GET', `/repos/${org}/${x.name}/pages`); cname = pg.data?.cname ?? null; }
-      out[x.name] = { ...x, has_dev: dev.status === 200, cname };
+      const tm = await gh('GET', `/repos/${org}/${x.name}/teams`);
+      const teams = Object.fromEntries((Array.isArray(tm.data) ? tm.data : []).map((t) => [t.slug, t.permission]));
+      out[x.name] = { ...x, has_dev: dev.status === 200, cname, teams };
     }
     if (r.data.length < 100) break;
   }
@@ -62,7 +66,7 @@ export async function liveRepos(org) {
 
 export function markdown(p) {
   const l = [`### Plan for ${p.org} (${p.actions.length} actions)`];
-  for (const a of p.actions) l.push(`- \`${a.action}\` ${a.target}${a.fields ? ` (${a.fields.join(', ')})` : a.from ? ` (from ${a.from})` : a.cname ? ` (${a.cname})` : ''}`);
+  for (const a of p.actions) l.push(`- \`${a.action}\` ${a.target}${a.fields ? ` (${a.fields.join(', ')})` : a.from ? ` (from ${a.from})` : a.cname ? ` (${a.cname})` : a.team ? ` (${a.team}, push)` : ''}`);
   if (!p.actions.length) l.push('- nothing to do');
   for (const n of p.notes || []) l.push(`- note: ${n}`);
   if (p.unlisted?.length) l.push(`\nNot in org/repos.json (reported, never deleted): ${p.unlisted.join(', ')}`);
