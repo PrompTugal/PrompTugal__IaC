@@ -32,6 +32,11 @@ export function plan(org, live) {
     if (diff.length) actions.push({ action: 'repo.update_settings', target: r.name, fields: diff });
     if (r.pages_site && !l.has_pages) actions.push({ action: 'pages.enable', target: r.name });
     if (r.pages_site && r.site && (l.cname ?? null) !== r.site) actions.push({ action: 'pages.set_cname', target: r.name, cname: r.site });
+    // HTTPS only once GitHub has the certificate for this site; until then it is reported, and the next run tries again.
+    if (r.pages_site && r.site && l.cname === r.site && !l.https_enforced) {
+      if (['approved', 'issued'].includes(l.cert_state)) actions.push({ action: 'pages.enforce_https', target: r.name, cname: r.site });
+      else notes.push(`${r.name}: certificate for ${r.site} is ${l.cert_state || 'not requested yet'}; HTTPS waits`);
+    }
     for (const [t, perm] of Object.entries(r.teams || {})) if (perm === 'push' && !['push', 'maintain', 'admin'].includes((l.teams || {})[t])) actions.push({ action: 'team.grant_push', target: r.name, team: t });
     if (l.default_branch !== 'dev') {
       if (!l.has_dev) actions.push({ action: 'branch.create_dev', target: r.name, from: l.default_branch });
@@ -53,11 +58,11 @@ export async function liveRepos(org) {
       const full = await gh('GET', `/repos/${org}/${listed.name}`);
       const x = full.status === 200 ? { ...listed, ...full.data } : listed;
       const dev = await gh('GET', `/repos/${org}/${x.name}/branches/dev`);
-      let cname = null;
-      if (x.has_pages) { const pg = await gh('GET', `/repos/${org}/${x.name}/pages`); cname = pg.data?.cname ?? null; }
+      let cname = null, https_enforced = false, cert_state = null;
+      if (x.has_pages) { const pg = await gh('GET', `/repos/${org}/${x.name}/pages`); cname = pg.data?.cname ?? null; https_enforced = !!pg.data?.https_enforced; cert_state = pg.data?.https_certificate?.state ?? null; }
       const tm = await gh('GET', `/repos/${org}/${x.name}/teams`);
       const teams = Object.fromEntries((Array.isArray(tm.data) ? tm.data : []).map((t) => [t.slug, t.permission]));
-      out[x.name] = { ...x, has_dev: dev.status === 200, cname, teams };
+      out[x.name] = { ...x, has_dev: dev.status === 200, cname, teams, https_enforced, cert_state };
     }
     if (r.data.length < 100) break;
   }

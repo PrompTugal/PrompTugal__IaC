@@ -10,7 +10,7 @@ let n = 0, failed = 0;
 const t = (name, fn) => { n++; try { fn(); } catch (e) { failed++; console.error(`FAIL ${name}: ${e.message}`); } };
 const policy = load();
 const org = JSON.parse(readFileSync('org/repos.json', 'utf8'));
-const live = (over = {}) => Object.fromEntries(org.repos.map((r) => [r.name, { name: r.name, description: r.description, default_branch: 'dev', has_dev: true, visibility: 'public', has_pages: !!r.pages_site, cname: r.pages_site ? r.site : null, teams: Object.fromEntries(Object.keys(r.teams || {}).map((t) => [t, 'push'])), ...(over[r.name] || {}) }]));
+const live = (over = {}) => Object.fromEntries(org.repos.map((r) => [r.name, { name: r.name, description: r.description, default_branch: 'dev', has_dev: true, visibility: 'public', has_pages: !!r.pages_site, cname: r.pages_site ? r.site : null, https_enforced: !!r.pages_site, teams: Object.fromEntries(Object.keys(r.teams || {}).map((t) => [t, 'push'])), ...(over[r.name] || {}) }]));
 
 t('the policy is well formed', () => assert.deepEqual(validate(policy), []));
 t('org/repos.json follows the rules', () => assert.deepEqual(validateRepos(org), []));
@@ -61,6 +61,14 @@ t('a home without the agents team gets push, never more', () => {
 });
 t('the agents team never gets push on the News repositories Dinis set aside', () => { for (const n of ['Fringe', 'Swarm', 'Swarm__Runs', 'Storm-Charles']) assert.equal((org.repos.find((r) => r.name === `PrompTugal__News__${n}`) || {}).teams, undefined, n); });
 t('every agent home gives the agents team push', () => { for (const r of org.repos.filter((x) => x.name.startsWith('PrompTugal__Agent__') && x.pages_site)) assert.equal((r.teams || {})['promptugal-news-agents'], 'push', r.name); });
+t('HTTPS is enforced only once the certificate is approved or issued', () => {
+  const r = org.repos.find((x) => x.pages_site); const l = live();
+  l[r.name] = { ...l[r.name], https_enforced: false, cert_state: 'authorization_pending' };
+  let p = plan(org, l); assert.deepEqual(p.actions.filter((a) => a.target === r.name), []); assert.ok(p.notes.some((n) => n.includes(r.site)));
+  l[r.name].cert_state = 'issued'; p = plan(org, l);
+  assert.deepEqual(p.actions.filter((a) => a.target === r.name).map((a) => a.action), ['pages.enforce_https']);
+  assert.deepEqual(checkActions(policy, p), []);
+});
 t('proposed repositories are never planned', () => { const names = new Set((org.proposed || []).map((r) => r.name)); assert.ok(plan(org, live()).actions.every((a) => !names.has(a.target))); });
 t('proposed names follow the rules and are not already listed', () => { const have = new Set(org.repos.map((r) => r.name)); for (const r of org.proposed || []) { assert.match(r.name, /^PrompTugal__Agent__[A-Z][A-Za-z0-9]*$/); assert.ok(!have.has(r.name), r.name); } });
 
