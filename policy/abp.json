@@ -113,7 +113,7 @@
         "promptugal.news"
       ],
       "note": "CREATE only: a record listed in org/dns.json that the zone lacks. One that exists with another value is reported, never changed. Names only under *.promptugal.news (the apex, with its Google verification and SPF TXT records, is never written). The AWS role enforces the same limits (docs/aws-oidc.md).",
-      "status": "active once the apply environment has PT_AWS_ROLE_ARN and PT_ZONE_ID_NEWS (Z0663369UQ6WKN4WWZBK)",
+      "status": "active (role and variables set 26 Nov 2026)",
       "source": "Dinis, 25 Nov 2026 in cl-6.infra's session: \"are you able to create um, repos here and also map the DNS?\"; zone ID ~23:50 UTC."
     }
   },
@@ -140,7 +140,7 @@
       "holder": "aws-role:promptugal-iac-dns",
       "permission": "route53:ChangeResourceRecordSets (CREATE only; A, AAAA, CNAME, TXT; names *.promptugal.news) on zone Z0663369UQ6WKN4WWZBK; route53:ListResourceRecordSets, route53:GetHostedZone, route53:GetChange",
       "why": "dns-apply: create the records in org/dns.json that the zone lacks",
-      "state": "proposed; Dinis creates the role"
+      "state": "live: created by Dinis 26 Nov 2026 00:05 UTC; DNS apply runs 45726334625 and 45728049584 assumed it"
     }
   ],
   "aws": {
@@ -148,11 +148,11 @@
       {
         "name": "promptugal-iac-dns",
         "account": "745506449035 (SovereignWebsite's, which holds the promptugal.news zone; Dinis, 25 Nov 2026 ~23:58 UTC in cl-6.infra's session)",
-        "trust": "GitHub OIDC, only PrompTugal/PrompTugal__IaC environment apply",
+        "trust": "GitHub OIDC, only subject repo:PrompTugal@353106737/PrompTugal__IaC@1472415783:environment:apply (the form GitHub sends, run 45727179136)",
         "permissions": "route53:ChangeResourceRecordSets with action CREATE only, types A, AAAA, CNAME, TXT, names *.promptugal.news, on hosted zone Z0663369UQ6WKN4WWZBK; route53:ListResourceRecordSets and route53:GetHostedZone on that zone; route53:GetChange",
         "max_session": "1 hour",
-        "state": "proposed; Dinis creates it (docs/aws-oidc.md)",
-        "arn": "arn:aws:iam::745506449035:role/promptugal-iac-dns (once Dinis creates it)"
+        "state": "live: created by Dinis 26 Nov 2026 00:05 UTC; DNS apply runs 45726334625 and 45728049584 assumed it",
+        "arn": "arn:aws:iam::745506449035:role/promptugal-iac-dns"
       }
     ],
     "note": "Each AWS role is listed here with its trust and permissions, proposed by a pull request Dinis merges and created by Dinis. No agent holds an AWS credential."
