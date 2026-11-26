@@ -38,8 +38,12 @@ for (const a of p.actions) {
   else if (a.action === 'pages.nudge_certificate') {
     // Clear the domain and set the same one again: GitHub re-checks DNS and requests the certificate.
     if (a.cname !== r.site || !/\.agent\.promptugal\.news$/.test(r.site)) throw new Error(`${a.target}: ${a.cname} is not its site`);
-    must(await gh('PUT', `${base}/pages`, { cname: null }), `custom domain cleared on ${a.target}`);
-    must(await gh('PUT', `${base}/pages`, { cname: r.site }), `certificate nudge for ${r.site} (was ${a.state})`);
+    // Whatever happens to the clear, always set the domain back, so the name is never left without its site
+    // (a CNAME to GitHub Pages with no site claiming it could be taken over). Run 45743207403: a clear returned HTTP 500.
+    const cleared = await gh('PUT', `${base}/pages`, { cname: null });
+    let back = await gh('PUT', `${base}/pages`, { cname: r.site });
+    if (![200, 201, 204].includes(back.status)) back = await gh('PUT', `${base}/pages`, { cname: r.site });
+    must(back, `custom domain ${r.site} set on ${a.target}${[200, 201, 204].includes(cleared.status) ? ` (certificate nudge, was ${a.state})` : ` (clear returned HTTP ${cleared.status}; domain kept)`}`);
   }
   else if (a.action === 'team.grant_push') {
     // Push (write) only, and only a team its own entry names with push.
