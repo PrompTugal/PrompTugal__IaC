@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { load, validate, validateRepos, checkActions, glob } from '../build/abp.mjs';
 import { plan } from '../build/org-plan.mjs';
 import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
+import { unclaimed } from '../build/dns-unclaimed.mjs';
 
 let n = 0, failed = 0;
 const t = (name, fn) => { n++; try { fn(); } catch (e) { failed++; console.error(`FAIL ${name}: ${e.message}`); } };
@@ -70,6 +71,14 @@ t('the zone as it is needs nothing', () => assert.deepEqual(dnsPlan(dns, liveDns
 t('a missing record is created, CREATE only', () => { const p = dnsPlan(dns, liveDns.slice(1)); assert.equal(p.actions.length, 1); assert.ok(p.batch.Changes.every((c) => c.Action === 'CREATE')); });
 t('a record with another value is reported, never changed', () => { const l = liveDns.map((x, i) => i ? x : { ...x, ResourceRecords: [{ Value: 'elsewhere.example' }] }); const p = dnsPlan(dns, l); assert.deepEqual(p.actions, []); assert.equal(p.notes.length, 1); });
 t('dns-apply may only create', () => { const pipe = policy.pipelines['dns-apply']; assert.deepEqual(pipe.allowed, ['route53.create_record']); for (const x of ['route53.delete_record', 'route53.upsert_record']) assert.equal(checkActions(policy, { pipeline: 'dns-apply', actions: [{ action: x, target: 'a' }] }).length, 1); });
+t('an unclaimed GitHub Pages name is reported, a claimed one is not', () => {
+  const sets = [{ Name: 'a.promptugal.news.', Type: 'CNAME', ResourceRecords: [{ Value: 'promptugal.github.io' }] }, { Name: 'b.promptugal.news.', Type: 'CNAME', ResourceRecords: [{ Value: 'promptugal.github.io.' }] }, { Name: 'promptugal.news.', Type: 'A', ResourceRecords: [{ Value: '185.199.108.153' }] }, { Name: 'c.promptugal.news.', Type: 'CNAME', ResourceRecords: [{ Value: 'elsewhere.example' }] }];
+  assert.deepEqual(unclaimed(sets, { 'a.promptugal.news': 'R' }).map((x) => x.name), ['b.promptugal.news', 'promptugal.news']);
+});
+t('DNS apply never creates a GitHub Pages record no repository claims', () => {
+  const p = dnsPlan({ zone: 'promptugal.news', records: [{ name: 'x.promptugal.news', type: 'CNAME', value: 'promptugal.github.io' }] }, [], {});
+  assert.deepEqual(p.actions, []); assert.equal(p.notes.length, 1);
+});
 t('a dry DNS plan passes the policy', () => assert.deepEqual(checkActions(policy, dnsPlan(dns, [])), []));
 
 console.log(`${n - failed} of ${n} tests passed`);

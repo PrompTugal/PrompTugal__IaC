@@ -122,7 +122,8 @@
       ],
       "note": "CREATE only: a record listed in org/dns.json that the zone lacks. One that exists with another value is reported, never changed. Names only under *.promptugal.news (the apex, with its Google verification and SPF TXT records, is never written). The AWS role enforces the same limits (docs/aws-oidc.md).",
       "status": "active (role and variables set 26 Nov 2026)",
-      "source": "Dinis, 25 Nov 2026 in cl-6.infra's session: \"are you able to create um, repos here and also map the DNS?\"; zone ID ~23:50 UTC."
+      "source": "Dinis, 25 Nov 2026 in cl-6.infra's session: \"are you able to create um, repos here and also map the DNS?\"; zone ID ~23:50 UTC.",
+      "claims_note": "DNS apply also mints a read-only App token (metadata read, pages read) to list the custom domains PrompTugal repositories claim. It never creates a CNAME to *.github.io that no repository claims, and it reports every record in the zone pointing at GitHub Pages that no repository claims (a takeover risk). Found by cl-6.security@PrompTugal.dinis on fringe.promptugal.news, 26 Nov 2026, relayed by cl-6.maestro@dinis."
     }
   },
   "privileges": [
