@@ -6,6 +6,12 @@ on:
   push:
     branches: [dev]
     paths: ['org/dns.json']
+  # After each finished Org apply on dev: a new site's record is skipped by the claims guard until Org apply has claimed
+  # its domain, and both start together on the same merge; this second run creates it. CREATE only, as ever.
+  workflow_run:
+    workflows: ['Org apply']
+    types: [completed]
+    branches: [dev]
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,6 +22,8 @@ defaults:
     shell: bash
 jobs:
   apply:
+    # only after an Org apply that succeeded; a failed or cancelled one leaves nothing new to claim
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     environment: apply
     steps:
