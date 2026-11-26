@@ -749,10 +749,10 @@
         "name": "London",
         "kind": "city",
         "parent": "united-kingdom",
-        "agent": "cl-6.places@PrompTugal.dinis"
+        "agent": "cl-6.place.london@PrompTugal.dinis"
       },
       "site": "london.place.agent.promptugal.news",
-      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026 ~15:50 UTC, relayed by cl-6.conductor: \"yes we need that place (for London)\"; place from PrompTugal__News__Website data/places/london/place.json (city, located_in united-kingdom); the 37th place, under cl-6.places",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026 ~15:50 UTC, relayed by cl-6.conductor: \"yes we need that place (for London)\"; place from PrompTugal__News__Website data/places/london/place.json (city, located_in united-kingdom); the 37th place, under cl-6.places; agent cl-6.place.london, its only editor (Dinis, 26 Nov ~16:05 UTC, relayed by cl-6.conductor: one agent per place, cl-6.places never edits London)",
       "pages_site": true,
       "teams": {
         "promptugal-news-agents": "push"
