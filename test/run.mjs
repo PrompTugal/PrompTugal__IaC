@@ -118,6 +118,7 @@ t('key bootstrap: each repository dialect accepts its own entry and refuses anot
     Events: [{ agent: 'x.b@PrompTugal.dinis', ssh_signing: { public_key: 'ssh-ed25519 AAAAold' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh_signing: { public_key: EDSSH }, ssh_public_key: EDSSH }],
     Videos: [{ agent: 'x.b@PrompTugal.dinis', ssh: { public_key_pem: 'old' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh: { public_key_pem: EDPEM } }],
     Cyber: [{ agent: 'x.b@PrompTugal.dinis', status: 'active', bundle: { sign: 'old' } }, (o) => ({ ...o, status: 'superseded' }), { agent: AG, session: 'S', status: 'active', bundle: { sign: ECPEM } }],
+    Data: [{ agent: 'x.b@PrompTugal.dinis', ssh: { public_key_pem: 'old', principals: ['x.b@PrompTugal.dinis'] } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh: { public_key_pem: EDPEM, principals: [AG] }, ssh_signing: { public_key: EDSSH } }],
     Signals: [{ agent: 'x.b@PrompTugal.dinis', git_signing: { pem: 'old' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', git_signing: { pem: ECPEM } }],
   };
   for (const [r, [old, retire, neu]] of Object.entries(cases)) {
@@ -130,6 +131,7 @@ t('key bootstrap: each repository dialect accepts its own entry and refuses anot
   }
   const ev = cfgOf('Events'), mismatch = { agent: AG, ssh_signing: { public_key: EDSSH }, ssh_public_key: 'ssh-ed25519 AAAAother' };
   assert.equal(entryKey(mismatch, ev), null, 'Events: two different keys');
+  assert.equal(entryKey({ agent: AG, ssh: { public_key_pem: EDPEM }, ssh_signing: { public_key: 'ssh-ed25519 AAAAother' } }, cfgOf('Data')), null, 'Data: PEM and ssh line differ');
 });
 t('key bootstrap: more than one new entry, or one for another role, is refused', () => {
   const c = cfgOf('Library'), old = { agent: 'x.b@PrompTugal.dinis', status: 'active', ssh_public_key: 'ssh-ed25519 AAAAold' };

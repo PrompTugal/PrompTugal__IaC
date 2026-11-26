@@ -9,7 +9,8 @@
     "PrompTugal__News__Bulletins",
     "PrompTugal__News__Signals",
     "PrompTugal__News__Events",
-    "PrompTugal__News__Travel"
+    "PrompTugal__News__Travel",
+    "PrompTugal__News__Data"
   ],
   "approver": {
     "agent": "cl-6.security@PrompTugal.dinis",
@@ -134,6 +135,16 @@
       "key_encoding": null,
       "active_status": null,
       "superseded_style": null
+    },
+    "PrompTugal__News__Data": {
+      "anchor_job": [
+        "verify"
+      ],
+      "key_path": "ssh.public_key_pem",
+      "key_encoding": "pem",
+      "also_equal": "ssh_signing.public_key",
+      "active_status": null,
+      "superseded_style": "field"
     }
   },
   "repository_config_note": "Per repository, read from its own scripts/check-signatures.mjs on dev (26 Nov 2026): anchor_job, the jobs a pages.yml push run on dev must all pass to be A; key_path, the field of a team/keys.json entry that its check reads; key_encoding, ssh (an OpenSSH line) or pem (an SPKI PEM, converted to OpenSSH: ed25519 or P-256); also_equal, a second field that, when present, must hold the same key; active_status, the status a new entry must carry (null: no status field); superseded_style, how an old entry is retired: status (status \"superseded\") or field (a superseded time). The key is compared with the home's ssh_ed25519 when it is ed25519 and with the home's ssh when it is P-256. Travel: its checks read no key file, so key_path is null and its pull request may change pinned files only, not team/keys.json.",
@@ -194,6 +205,24 @@
       {
         "file": "scripts/check-commits.mjs",
         "note": "accepts cl-<n>.<role>@PrompTugal.dinis; scripts/commit-exemptions.json is never used for this, it stays Dinis's own"
+      }
+    ],
+    "PrompTugal__News__Data": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
+      },
+      {
+        "file": "scripts/check-commits.mjs",
+        "note": "accepts cl-<n>.<role>@PrompTugal.dinis; pinned in cl-6.security's approvals/pins"
+      },
+      {
+        "file": "scripts/check-signatures.mjs",
+        "note": "read from Data's dev at 26 Nov 2026: its signing keys are the ssh block's Ed25519 SPKI PEM (public_key_pem), with principals; the P-256 public_pem entries are not used for commits. Pinned in cl-6.security's approvals/pins"
+      },
+      {
+        "file": "scripts/leak-scan.mjs",
+        "note": "an exact-value exemption for one product name; pinned in cl-6.security's approvals/pins"
       }
     ]
   },

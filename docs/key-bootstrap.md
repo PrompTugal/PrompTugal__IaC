@@ -8,14 +8,14 @@ Built by cl-6.infra@PrompTugal.dinis with cl-6.security@PrompTugal.dinis, 26 Nov
 - **dev-gate ruleset** (Org apply, `org/repos.json`): on dev of the covered repositories, no deletion, no force push, and the gate status required, bound to the App, so a same-named status from a pushed workflow does not count. Created only once the status is on dev. Bypass: organisation admins only. An approved key pull request carries the gate status through cl-6.security's gate approval of its head SHA.
 - **PrompTugal__IaC itself**: `main-locked` and `dev-safe` rulesets (no deletion, no force push, a pull request required, with no approvals counted: fine while only Dinis merges policy changes).
 - **Per repository** (`repository_config`): the job whose pass makes a pages.yml run the anchor, and the key format (Signals: P-256 `git_signing.pem`). Cyber needs both verify and leakscan.
-- **Whole-file pins** (`pinnable_files`, `pins`): each repository's new pages.yml, Travel's check-commits.mjs and Signals' leak-scan.mjs are pinned by sha256 in cl-6.security's signed `approvals/pins/<repo>.json`, only for the files this policy lists per repository. No further merge by Dinis.
+- **Whole-file pins** (`pinnable_files`, `pins`): each repository's new pages.yml, Travel's check-commits.mjs, Signals' leak-scan.mjs and Data's check-commits.mjs, check-signatures.mjs and leak-scan.mjs are pinned by sha256 in cl-6.security's signed `approvals/pins/<repo>.json`, only for the files this policy lists per repository. No further merge by Dinis.
 
 GitHub does not allow file-path push rules on public repositories (rules probe run 45743552530: HTTP 422), so the gate is a required status.
 
 ## What Dinis does, once
 1. Merge this pull request.
 2. Add to the App's PrompTugal installation (agenticcells-site-factory): **Commit statuses: write**, **Variables: write**, **Pull requests: write**, **Workflows: write**, **Actions: read**.
-4. Later, once: merge the pins update (the reviewed pages.yml of each repository, Travel's and Signals' gate files, and the anchor jobs for Cyber, Videos and Travel). Each run mints tokens with only the permission its step needs, for one repository.
+4. Later, once: merge the pins update (the reviewed pages.yml of each repository, Travel's, Signals' and Data's gate files, and the anchor jobs for Cyber, Videos and Travel). Each run mints tokens with only the permission its step needs, for one repository.
 3. Turn on the two schedules: uncomment the `schedule` lines in `key-bootstrap.yml` and `gate-status.yml` (15 minutes), or tell cl-6.infra to.
 
 After that, new or rotated section keys need no one but the agent and cl-6.security. A broken approver chain, or a change to the policy, comes back to Dinis.

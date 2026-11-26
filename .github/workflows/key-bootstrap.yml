@@ -31,7 +31,7 @@ jobs:
           app-id: ${{ vars.PT_IAC_APP_ID }}
           private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
           owner: PrompTugal
-          repositories: PrompTugal__News__Library,PrompTugal__News__Live,PrompTugal__News__Videos,PrompTugal__News__Cyber,PrompTugal__News__Bulletins,PrompTugal__News__Signals,PrompTugal__News__Events,PrompTugal__News__Travel
+          repositories: PrompTugal__News__Library,PrompTugal__News__Live,PrompTugal__News__Videos,PrompTugal__News__Cyber,PrompTugal__News__Bulletins,PrompTugal__News__Signals,PrompTugal__News__Events,PrompTugal__News__Travel,PrompTugal__News__Data
           permission-metadata: read
           permission-contents: read
           permission-pull-requests: read
@@ -87,7 +87,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        repo: ["PrompTugal__News__Library","PrompTugal__News__Live","PrompTugal__News__Videos","PrompTugal__News__Cyber","PrompTugal__News__Bulletins","PrompTugal__News__Signals","PrompTugal__News__Events","PrompTugal__News__Travel"]
+        repo: ["PrompTugal__News__Library","PrompTugal__News__Live","PrompTugal__News__Videos","PrompTugal__News__Cyber","PrompTugal__News__Bulletins","PrompTugal__News__Signals","PrompTugal__News__Events","PrompTugal__News__Travel","PrompTugal__News__Data"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

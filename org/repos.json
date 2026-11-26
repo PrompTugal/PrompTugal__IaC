@@ -1517,7 +1517,50 @@
       "exists_by": "live on 25 Nov 2026",
       "teams": {
         "promptugal-news-agents": "push"
-      }
+      },
+      "rulesets": [
+        {
+          "name": "dev-gate",
+          "target": "branch",
+          "enforcement": "active",
+          "conditions": {
+            "ref_name": {
+              "include": [
+                "refs/heads/dev"
+              ],
+              "exclude": []
+            }
+          },
+          "bypass_actors": [
+            {
+              "actor_id": 1,
+              "actor_type": "OrganizationAdmin",
+              "bypass_mode": "always"
+            }
+          ],
+          "rules": [
+            {
+              "type": "deletion"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "strict_required_status_checks_policy": false,
+                "required_status_checks": [
+                  {
+                    "context": "promptugal-iac/gate",
+                    "integration_id": 5777442
+                  }
+                ]
+              }
+            }
+          ],
+          "after_status": "promptugal-iac/gate"
+        }
+      ]
     },
     {
       "name": "PrompTugal__News__Events",
