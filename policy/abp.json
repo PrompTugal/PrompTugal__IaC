@@ -65,7 +65,8 @@
         "repo.update_settings",
         "pages.enable",
         "pages.set_cname",
-        "team.grant_push"
+        "team.grant_push",
+        "pages.enforce_https"
       ],
       "refused_always": [
         "repo.delete",
@@ -80,13 +81,15 @@
         "ruleset.delete",
         "ruleset.weaken",
         "pages.delete",
-        "pages.unset_cname"
+        "pages.unset_cname",
+        "pages.disable_https"
       ],
       "note": "Creates and configures only. A repository that exists but is not in org/repos.json is reported, never deleted. On an existing repository it changes only the default branch (to dev) and the settings its own entry in org/repos.json names; the defaults block applies only when a repository is created. It never changes visibility.",
       "default_branch_rule": "Every repository has dev as its default branch; Org apply creates dev from the current default branch if it is missing, then sets it. Dinis, 25 Nov 2026, relayed by cl-6.maestro@dinis: \"please make note to the Infa agent that all repos should have a default dev branch\"; confirmed in cl-6.infra's session ~22:51 UTC: \"yes\".",
       "pages_note": "pages.enable turns on GitHub Pages from dev (root) for a repository whose entry sets pages_site; pages.set_cname sets only the site its entry names, under *.agent.promptugal.news. Its DNS record is added to org/dns.json only after the custom domain is set, so no record ever points at a site that is not ours.",
       "pages_source": "Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the sites\"; \"you should already have permission\".",
-      "team_note": "team.grant_push gives a team that a repository's own entry names push (write) on that repository; team.grant_admin and team.grant_maintain stay refused always. Dinis, 26 Nov 2026 in cl-6.infra's session: \"You need to add this team to all the repos you created, or else nobody else can edit it\" (team promptugal-news-agents)."
+      "team_note": "team.grant_push gives a team that a repository's own entry names push (write) on that repository; team.grant_admin and team.grant_maintain stay refused always. Dinis, 26 Nov 2026 in cl-6.infra's session: \"You need to add this team to all the repos you created, or else nobody else can edit it\" (team promptugal-news-agents).",
+      "https_note": "pages.enforce_https turns on HTTPS for an agent site (its own *.agent.promptugal.news domain) only once GitHub reports its certificate approved or issued; until then the run notes it and the next run tries again. Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the HTTPS for the sites\"."
     },
     "check-github-app": {
       "runs_on": [
