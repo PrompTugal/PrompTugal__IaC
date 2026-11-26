@@ -66,7 +66,8 @@
         "pages.enable",
         "pages.set_cname",
         "team.grant_push",
-        "pages.enforce_https"
+        "pages.enforce_https",
+        "pages.nudge_certificate"
       ],
       "refused_always": [
         "repo.delete",
@@ -89,7 +90,8 @@
       "pages_note": "pages.enable turns on GitHub Pages from dev (root) for a repository whose entry sets pages_site; pages.set_cname sets only the site its entry names, under *.agent.promptugal.news. Its DNS record is added to org/dns.json only after the custom domain is set, so no record ever points at a site that is not ours.",
       "pages_source": "Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the sites\"; \"you should already have permission\".",
       "team_note": "team.grant_push gives a team that a repository's own entry names push (write) on that repository; team.grant_admin and team.grant_maintain stay refused always. Dinis, 26 Nov 2026 in cl-6.infra's session: \"You need to add this team to all the repos you created, or else nobody else can edit it\" (team promptugal-news-agents).",
-      "https_note": "pages.enforce_https turns on HTTPS for an agent site (its own *.agent.promptugal.news domain) only once GitHub reports its certificate approved or issued; until then the run notes it and the next run tries again. Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the HTTPS for the sites\"."
+      "https_note": "pages.enforce_https turns on HTTPS for an agent site (its own *.agent.promptugal.news domain) only once GitHub reports its certificate approved or issued; until then the run notes it and the next run tries again. Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the HTTPS for the sites\".",
+      "nudge_note": "pages.nudge_certificate clears an agent site's custom domain and sets the same one again, so GitHub re-checks DNS and requests the certificate; only when there is none or it failed, never while one is pending. The domains were set before their DNS records existed (run 45742880611: 77 sites with no certificate requested). The same fix SovereignWebsite__IaC uses."
     },
     "check-github-app": {
       "runs_on": [

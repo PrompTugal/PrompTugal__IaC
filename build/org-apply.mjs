@@ -35,6 +35,12 @@ for (const a of p.actions) {
     if (a.cname !== r.site || !/\.agent\.promptugal\.news$/.test(r.site)) throw new Error(`${a.target}: ${a.cname} is not its site`);
     must(await gh('PUT', `${base}/pages`, { cname: r.site, https_enforced: true }), `HTTPS enforced on ${r.site}`);
   }
+  else if (a.action === 'pages.nudge_certificate') {
+    // Clear the domain and set the same one again: GitHub re-checks DNS and requests the certificate.
+    if (a.cname !== r.site || !/\.agent\.promptugal\.news$/.test(r.site)) throw new Error(`${a.target}: ${a.cname} is not its site`);
+    must(await gh('PUT', `${base}/pages`, { cname: null }), `custom domain cleared on ${a.target}`);
+    must(await gh('PUT', `${base}/pages`, { cname: r.site }), `certificate nudge for ${r.site} (was ${a.state})`);
+  }
   else if (a.action === 'team.grant_push') {
     // Push (write) only, and only a team its own entry names with push.
     if ((r.teams || {})[a.team] !== 'push') throw new Error(`${a.target}: team ${a.team} is not in its entry with push`);
