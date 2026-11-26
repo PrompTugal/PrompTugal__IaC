@@ -1323,31 +1323,46 @@
       "name": "PrompTugal__News__Bulletins",
       "description": "The bulletins of PrompTugal.news. First version coming.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Civic",
       "description": "Public data, public services and bureaucracy in Portugal, explained and cross-mapped. Independent, not a government site.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Cyber",
       "description": "Cyber security and threat intelligence for PrompTugal.news. First version coming.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Data",
       "description": "The data behind PrompTugal.news: a refactor of the storm data site, built by its own agentic team.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Events",
       "description": "Events across Portugal, town by town: part of PrompTugal.news. First version coming.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Fringe",
@@ -1359,25 +1374,37 @@
       "name": "PrompTugal__News__Library",
       "description": "The library of PrompTugal.news: the repository that holds the information for everything. First version coming.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Live",
       "description": "Live views of Portugal from public, officially shared webcams: streamed, never recorded. First version coming.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Signals",
       "description": "Signals for PrompTugal.news: social media and other signals, including weak signals. First version coming.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Startups",
       "description": "Portugal's startups and their funding, place by place: companies, incubators, programmes and rounds.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Storm-Charles",
@@ -1401,25 +1428,37 @@
       "name": "PrompTugal__News__Travel",
       "description": "Travel and tourism in Portugal: flights, transport and strikes, weather for visitors, events, and tourism as an industry.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Videos",
       "description": "The videos of PrompTugal.news. First version coming.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Weather",
       "description": "Weather and civil protection for Portugal, place by place: IPMA warnings and forecasts, fire risk, storms, sea state and UV.",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     },
     {
       "name": "PrompTugal__News__Website",
       "description": "repo for web-summit.newsroom.sgit.ai",
       "pages": true,
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
     }
   ],
   "proposed": [],
