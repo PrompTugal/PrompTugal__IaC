@@ -11,12 +11,6 @@
       "exists_by": "live on 25 Nov 2026"
     },
     {
-      "name": "fringe.promptugal.news",
-      "type": "CNAME",
-      "value": "promptugal.github.io",
-      "exists_by": "live on 25 Nov 2026"
-    },
-    {
       "name": "library.promptugal.news",
       "type": "CNAME",
       "value": "promptugal.github.io",
@@ -638,6 +632,14 @@
       "value": "promptugal.github.io",
       "for": "PrompTugal__Agent__Translator",
       "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
+    }
+  ],
+  "removed": [
+    {
+      "name": "fringe.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "why": "no repository claims it (PrompTugal__News__Fringe has no custom domain; the site lives at lisbontechfringe.com), so it answered 404 and could be taken over. Found by cl-6.security@PrompTugal.dinis; Dinis deletes the record in Route 53 himself (26 Nov 2026, relayed by cl-6.maestro@dinis). Removed here so DNS apply never creates it again."
     }
   ]
 }
