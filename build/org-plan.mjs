@@ -35,7 +35,10 @@ export function plan(org, live) {
     // HTTPS only once GitHub has the certificate for this site; until then it is reported, and the next run tries again.
     if (r.pages_site && r.site && l.cname === r.site && !l.https_enforced) {
       if (['approved', 'issued'].includes(l.cert_state)) actions.push({ action: 'pages.enforce_https', target: r.name, cname: r.site });
-      else notes.push(`${r.name}: certificate for ${r.site} is ${l.cert_state || 'not requested yet'}; HTTPS waits`);
+      // No certificate, or a failed one: re-set the same domain so GitHub checks DNS again and requests it (the domains were
+      // set before their DNS records existed). Never while one is pending, so a request in progress is not restarted.
+      else if (!l.cert_state || ['errored', 'bad_authz', 'authorization_revoked', 'dns_changed'].includes(l.cert_state)) actions.push({ action: 'pages.nudge_certificate', target: r.name, cname: r.site, state: l.cert_state || 'none' });
+      else notes.push(`${r.name}: certificate for ${r.site} is ${l.cert_state}; HTTPS waits`);
     }
     for (const [t, perm] of Object.entries(r.teams || {})) if (perm === 'push' && !['push', 'maintain', 'admin'].includes((l.teams || {})[t])) actions.push({ action: 'team.grant_push', target: r.name, team: t });
     if (l.default_branch !== 'dev') {
@@ -71,7 +74,7 @@ export async function liveRepos(org) {
 
 export function markdown(p) {
   const l = [`### Plan for ${p.org} (${p.actions.length} actions)`];
-  for (const a of p.actions) l.push(`- \`${a.action}\` ${a.target}${a.fields ? ` (${a.fields.join(', ')})` : a.from ? ` (from ${a.from})` : a.cname ? ` (${a.cname})` : a.team ? ` (${a.team}, push)` : ''}`);
+  for (const a of p.actions) l.push(`- \`${a.action}\` ${a.target}${a.fields ? ` (${a.fields.join(', ')})` : a.from ? ` (from ${a.from})` : a.state ? ` (${a.cname}, certificate ${a.state})` : a.cname ? ` (${a.cname})` : a.team ? ` (${a.team}, push)` : ''}`);
   if (!p.actions.length) l.push('- nothing to do');
   for (const n of p.notes || []) l.push(`- note: ${n}`);
   if (p.unlisted?.length) l.push(`\nNot in org/repos.json (reported, never deleted): ${p.unlisted.join(', ')}`);
