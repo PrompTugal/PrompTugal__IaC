@@ -1,6 +1,6 @@
 # The AWS role for DNS (dns-apply)
 
-Status: proposed by cl-6.infra@PrompTugal.dinis, 25 Nov 2026, for Dinis to create. On the pattern of SovereignWebsite__IaC's docs/aws-oidc.md (role `sovereignwebsite-factory-dns`).
+Status: live. Proposed by cl-6.infra@PrompTugal.dinis, 25 Nov 2026; created by Dinis in 745506449035, 26 Nov 2026 00:05 UTC. On the pattern of SovereignWebsite__IaC's docs/aws-oidc.md (role `sovereignwebsite-factory-dns`).
 
 The `DNS apply` workflow creates the records in `org/dns.json` that the promptugal.news zone lacks. It assumes this role through GitHub's OpenID Connect, so no AWS key is stored anywhere. The role can only CREATE records of four types under `*.promptugal.news` in that one zone. It cannot change or delete a record, write the apex, create or delete a zone, or touch the domain.
 
@@ -10,7 +10,7 @@ Account 745506449035 (SovereignWebsite's; Dinis, 25 Nov 2026) already has `token
 ## 2. The role
 Name: `promptugal-iac-dns`. Maximum session: 1 hour. Then set, in PrompTugal__IaC's `apply` environment, the variables `PT_AWS_ROLE_ARN` (its ARN) and `PT_ZONE_ID_NEWS` = `Z0663369UQ6WKN4WWZBK`.
 
-**Trust policy** (only this repository's `apply` environment). Two subject forms are listed, as SovereignWebsite's role first had: the default (names) and the one with numeric IDs (organisation 353106737, repository 1472415783), which an organisation can choose and which stops a deleted and recreated repository of the same name from matching. Once DNS apply has run, keep only the form GitHub sent.
+**Trust policy** (only this repository's `apply` environment). This is the live one: DNS apply run 45727179136 (26 Nov 2026 00:13 UTC) printed the subject GitHub sends, the form with numeric IDs (organisation 353106737, repository 1472415783), which stops a deleted and recreated repository of the same name from matching; Dinis then kept only that form (~00:22 UTC), and run 45728049584 assumed the role with it.
 
 ```json
 {
@@ -21,11 +21,8 @@ Name: `promptugal-iac-dns`. Maximum session: 1 hour. Then set, in PrompTugal__Ia
     "Action": "sts:AssumeRoleWithWebIdentity",
     "Condition": {
       "StringEquals": {
-        "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-        "token.actions.githubusercontent.com:sub": [
-          "repo:PrompTugal/PrompTugal__IaC:environment:apply",
-          "repo:PrompTugal@353106737/PrompTugal__IaC@1472415783:environment:apply"
-        ]
+        "token.actions.githubusercontent.com:sub": "repo:PrompTugal@353106737/PrompTugal__IaC@1472415783:environment:apply",
+        "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
       }
     }
   }]
