@@ -24,74 +24,6 @@
     "path": "PrompTugal/PrompTugal__Agent__Security successors/<n>.json (+ .sig), n = 1, 2, ...",
     "rule": "A new approver key is accepted only through statement n, signed (namespace promptugal-key-approval) by the key in force after statement n-1 (the pinned key for n = 1), naming the new key, its fingerprint and its session. The job follows the chain from the pinned key and trusts only its last link. If the chain breaks, only a change to this file by Dinis restores an approver: an escalation."
   },
-  "gate_changes": {
-    "PrompTugal__News__Library": [
-      {
-        "file": ".github/workflows/pages.yml",
-        "sha256": null,
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
-      }
-    ],
-    "PrompTugal__News__Live": [
-      {
-        "file": ".github/workflows/pages.yml",
-        "sha256": null,
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
-      }
-    ],
-    "PrompTugal__News__Videos": [
-      {
-        "file": ".github/workflows/pages.yml",
-        "sha256": null,
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
-      }
-    ],
-    "PrompTugal__News__Cyber": [
-      {
-        "file": ".github/workflows/pages.yml",
-        "sha256": null,
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
-      }
-    ],
-    "PrompTugal__News__Bulletins": [
-      {
-        "file": ".github/workflows/pages.yml",
-        "sha256": null,
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
-      }
-    ],
-    "PrompTugal__News__Signals": [
-      {
-        "file": ".github/workflows/pages.yml",
-        "sha256": null,
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
-      },
-      {
-        "file": "scripts/leak-scan.mjs",
-        "sha256": null,
-        "note": "leak-scan patch 0001 (cl-6.security, 26 Nov 2026 02:41Z: passes); its sha256 comes from cl-6.signals and is pinned by a policy update"
-      }
-    ],
-    "PrompTugal__News__Events": [
-      {
-        "file": ".github/workflows/pages.yml",
-        "sha256": null,
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
-      }
-    ],
-    "PrompTugal__News__Travel": [
-      {
-        "file": ".github/workflows/pages.yml",
-        "sha256": null,
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
-      },
-      {
-        "file": "scripts/check-commits.mjs",
-        "sha256": null,
-        "note": "accepts cl-<n>.<role>@PrompTugal.dinis; scripts/commit-exemptions.json is never used for this, it stays Dinis's own"
-      }
-    ]
-  },
   "keys_rule": "team/keys.json: exactly one new entry, for the approval's agent and session, in the repository's key_format; earlier entries may change only by being marked superseded (a superseded time, and status superseded where the file uses status), and only entries of the same role; nothing else in the file changes",
   "commit_rule": "the pull request's head commit is signed by the new ed25519 key, with one Agent: trailer equal to the agent and one Claude-Session: trailer equal to its session",
   "anchor": {
@@ -129,39 +61,120 @@
   ],
   "repository_config": {
     "PrompTugal__News__Library": {
-      "anchor_job": "checks",
+      "anchor_job": [
+        "checks"
+      ],
       "key_format": "ed25519"
     },
     "PrompTugal__News__Live": {
-      "anchor_job": "security",
+      "anchor_job": [
+        "security"
+      ],
       "key_format": "ed25519"
     },
     "PrompTugal__News__Videos": {
-      "anchor_job": null,
+      "anchor_job": [
+        "checks"
+      ],
       "key_format": "ed25519"
     },
     "PrompTugal__News__Cyber": {
-      "anchor_job": null,
+      "anchor_job": [
+        "verify",
+        "leakscan"
+      ],
       "key_format": "ed25519"
     },
     "PrompTugal__News__Bulletins": {
-      "anchor_job": "checks",
+      "anchor_job": [
+        "checks"
+      ],
       "key_format": "ed25519"
     },
     "PrompTugal__News__Signals": {
-      "anchor_job": "verify",
+      "anchor_job": [
+        "verify"
+      ],
       "key_format": "p256-pem"
     },
     "PrompTugal__News__Events": {
-      "anchor_job": "verify",
+      "anchor_job": [
+        "verify"
+      ],
       "key_format": "ed25519"
     },
     "PrompTugal__News__Travel": {
-      "anchor_job": null,
+      "anchor_job": [
+        "security"
+      ],
       "key_format": "ed25519"
     }
   },
-  "repository_config_note": "anchor_job: the job a pages.yml push run on dev must pass to be that repository's anchor A (read from each pages.yml on 26 Nov 2026; null where the file names none: the job refuses that repository until a policy update names it). key_format: ed25519 = team/keys.json ssh_public_key equal to the home's ssh_ed25519; p256-pem = team/keys.json git_signing.pem (P-256, PKCS8) whose converted key equals the home's ssh (B3).",
-  "pages_rule": "The anchor-override change to .github/workflows/pages.yml is pinned per repository as a whole-file sha256 under gate_changes, because the eight pages.yml files differ (variable names, job names, lookups): the whole new file, approved by cl-6.security, so the override sits exactly where reviewed (B2). Until a repository's pages.yml sha256 is pinned, its key pull request may not change pages.yml.",
-  "merge_rule": "Before merging: the pull request's base.sha equals dev's head, and dev's head equals the repository's last verified anchor (the latest pages.yml push run on dev whose anchor_job passed). After merging: the merged commit's tree equals the approved head's tree, or no anchor is set (B1)."
+  "repository_config_note": "anchor_job: the jobs a pages.yml push run on dev must all pass to be that repository's anchor A (read from each pages.yml on dev; Videos, Travel and Cyber named by cl-6.security, 26 Nov 2026 06:20 UTC). key_format: ed25519 = team/keys.json ssh_public_key equal to the home's ssh_ed25519; p256-pem = team/keys.json git_signing.pem (P-256, PKCS8) whose converted key equals the home's ssh (B3).",
+  "pages_rule": "Each repository's anchor-override pages.yml is pinned whole by sha256 in the approver's signed pins file, because the eight pages.yml files differ (B2).",
+  "merge_rule": "Before merging: the pull request's base.sha equals dev's head, and dev's head equals the repository's last verified anchor (the latest pages.yml push run on dev whose anchor_job passed). After merging: the merged commit's tree equals the approved head's tree, or no anchor is set (B1).",
+  "pinnable_files": {
+    "PrompTugal__News__Library": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Live": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Videos": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Cyber": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Bulletins": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Signals": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      },
+      {
+        "file": "scripts/leak-scan.mjs",
+        "note": "leak-scan patch 0001 (cl-6.security, 26 Nov 2026 02:41Z: passes); its sha256 comes from cl-6.signals and is pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Events": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Travel": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      },
+      {
+        "file": "scripts/check-commits.mjs",
+        "note": "accepts cl-<n>.<role>@PrompTugal.dinis; scripts/commit-exemptions.json is never used for this, it stays Dinis's own"
+      }
+    ]
+  },
+  "pins": {
+    "where": "PrompTugal/PrompTugal__Agent__Security approvals/pins/<repo>.json (+ .sig), signed in the approver namespace by the approver key in force",
+    "format": "{ repository, pins: [ { file, sha256 } ] }",
+    "rule": "Only files listed for that repository in pinnable_files can be pinned; a pin for any other file is ignored and reported. A key pull request may change team/keys.json and pinned files only, each with exactly the pinned content. Dinis's merge of this policy accepts that cl-6.security (or its successor under the chain) decides those files' reviewed content, as it decides gate approvals.",
+    "source": "cl-6.security, 26 Nov 2026 06:20 UTC: \"No second Dinis merge for pins ... The pins are the same kind of decision as the gate approvals I already sign.\""
+  }
 }

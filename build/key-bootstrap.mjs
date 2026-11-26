@@ -15,7 +15,7 @@ import { gh } from './github.mjs';
 
 
 export const loadPolicy = (f = 'policy/key-bootstrap.json') => JSON.parse(readFileSync(f, 'utf8'));
-export const sha256 = (s) => createHash('sha256').update(s).digest('hex');
+export const sha256 = (s) => createHash('sha256').update(s).digest('hex');  // s: a string or the file's raw bytes
 const ORG = 'PrompTugal';
 
 // A detached SSH signature over a file, checked against one key and the policy's namespace.
@@ -82,16 +82,28 @@ export function checkKeys(before, after, { agent, session, homeKey, format = 'ed
   return e;
 }
 
+// The pins for one repository, from the approver's signed pins file, limited to the policy's pinnable files.
+export function readPins(policy, home, repo, ap) {
+  const f = join(home, 'approvals', 'pins', `${repo}.json`), allowed = new Set((policy.pinnable_files[repo] || []).map((x) => x.file));
+  if (!existsSync(f)) return { pins: {}, notes: ['no pins file'] };
+  if (ap.error || !verifySig(f, `${f}.sig`, ap.agent, ap.key, policy.approver.namespace)) return { pins: {}, notes: ['pins file signature does not verify: no pins'] };
+  let d; try { d = JSON.parse(readFileSync(f, 'utf8')); } catch { return { pins: {}, notes: ['pins file is not JSON'] }; }
+  if (d.repository !== repo) return { pins: {}, notes: ['pins file names another repository'] };
+  const pins = {}, notes = [];
+  for (const p of d.pins || []) { if (allowed.has(p.file) && /^[0-9a-f]{64}$/.test(p.sha256 || '')) pins[p.file] = p.sha256; else notes.push(`pin for ${JSON.stringify(p.file)} ignored: not pinnable here or no sha256`); }
+  return { pins, notes };
+}
+
 // The files a pull request may touch, for one repository: team/keys.json, and files pinned whole by sha256.
-export function checkFiles(files, policy, repo) {
-  const e = [], gate = Object.fromEntries((policy.gate_changes[repo] || []).map((g) => [g.file, g]));
-  if (files.length >= 300) e.push('the pull request lists 300 or more files: refused (the API may cut the list)');
+export function checkFiles(files, pins, truncated = false) {
+  const e = [];
+  if (truncated || files.length >= 300) e.push('the pull request lists 300 or more files: refused');
   for (const f of files) {
     if (f.filename === 'team/keys.json') continue;
-    const g = gate[f.filename], q = JSON.stringify(f.filename);
-    if (!g) { e.push(`${q}: not a file this policy lets the pull request change`); continue; }
-    if (!g.sha256) e.push(`${q}: its whole-file sha256 is not pinned in the policy yet`);
-    else if (f.content_sha256 !== g.sha256) e.push(`${q}: content does not match the pinned sha256`);
+    const sha = pins[f.filename], q = JSON.stringify(f.filename);
+    if (!sha) { e.push(`${q}: not pinned for this repository; only team/keys.json and pinned files may change`); continue; }
+    if (f.status === 'removed' || f.status === 'renamed') e.push(`${q}: ${f.status}; a pinned file may only be modified or added`);
+    else if (f.content_sha256 !== sha) e.push(`${q}: content does not match the pinned sha256`);
   }
   if (!files.some((f) => f.filename === 'team/keys.json')) e.push('team/keys.json: not changed; the pull request must add the key');
   return e;
@@ -109,21 +121,22 @@ export function gateState(changed, approved, paths, truncated = false) {
 // The repository's last verified anchor, found as its pages.yml finds it: the latest pages.yml push run on dev whose
 // anchor_job passed. null when the policy names no anchor_job (refused) or none is found.
 export async function lastAnchor(policy, repo) {
-  const job = policy.repository_config?.[repo]?.anchor_job;
-  if (!job) return { sha: null, why: `the policy names no anchor_job for ${repo}` };
+  const jobsWanted = policy.repository_config?.[repo]?.anchor_job;
+  if (!Array.isArray(jobsWanted) || !jobsWanted.length) return { sha: null, why: `the policy names no anchor_job for ${repo}` };
   const runs = (await gh('GET', `/repos/${ORG}/${repo}/actions/workflows/pages.yml/runs?branch=dev&event=push&status=success&per_page=20`)).data?.workflow_runs || [];
   for (const r of runs) {
     if (r.path !== '.github/workflows/pages.yml' || r.head_branch !== 'dev') continue;
     const jobs = (await gh('GET', `/repos/${ORG}/${repo}/actions/runs/${r.id}/jobs?per_page=50`)).data?.jobs || [];
-    if (jobs.some((j) => j.name === job && j.conclusion === 'success')) return { sha: r.head_sha, run: r.id, created_at: r.created_at };
+    if (jobsWanted.every((w) => jobs.some((j) => j.name === w && j.conclusion === 'success'))) return { sha: r.head_sha, run: r.id, created_at: r.created_at };
   }
-  return { sha: null, why: `no pages.yml push run on dev with ${job} passed` };
+  return { sha: null, why: `no pages.yml push run on dev with ${jobsWanted.join(' and ')} passed` };
 }
 
 const git = (cwd, ...a) => execFileSync('git', a, { cwd, encoding: 'utf8' }).trim();
 async function contentAt(repo, path, ref) {
-  const r = await gh('GET', `/repos/${ORG}/${repo}/contents/${path}?ref=${ref}`);
-  return r.status === 200 && r.data?.content ? Buffer.from(r.data.content, 'base64').toString('utf8') : null;
+  // The raw bytes (any size up to the contents API limit), so the sha256 is of the file exactly as committed.
+  const r = await fetch(`https://api.github.com/repos/${ORG}/${repo}/contents/${path.split('/').map(encodeURIComponent).join('/')}?ref=${ref}`, { headers: { authorization: `Bearer ${process.env.GH_TOKEN}`, accept: 'application/vnd.github.raw', 'user-agent': 'promptugal-iac' } });
+  return r.ok ? Buffer.from(await r.arrayBuffer()) : null;
 }
 async function homeKeyOf(agent, format = 'ed25519') {
   // The agent's home: PrompTugal__Agent__<Role>, file site/keys/<name>.json on dev, field ssh_ed25519. Public, read without a token.
@@ -162,12 +175,21 @@ async function plan(homeDir) {
       else if (devHead !== A.sha) item.errors.push("dev's head is not the last verified anchor: commits on dev are not yet checked");
       const diff = await gh('GET', `/repos/${ORG}/${repo}/pulls/${item.pr}`, undefined, undefined, 'application/vnd.github.diff');
       if (sha256(typeof diff.data === 'string' ? diff.data : '') !== a.diff_sha256) item.errors.push('diff sha256 differs from the approved one');
-      const files = (await gh('GET', `/repos/${ORG}/${repo}/pulls/${item.pr}/files?per_page=100`)).data || [];
-      for (const f of files) if ((policy.gate_changes[repo] || []).some((g) => g.file === f.filename)) { const t = await contentAt(repo, f.filename, a.head_sha); f.content_sha256 = t == null ? null : sha256(t); }
-      item.errors.push(...checkFiles(files, policy, repo));
+      // Every page of the file list (100 per page); 300 or more is refused.
+      const files = []; let truncated = false;
+      for (let page = 1; ; page++) {
+        const r = await gh('GET', `/repos/${ORG}/${repo}/pulls/${item.pr}/files?per_page=100&page=${page}`);
+        if (r.status !== 200) { truncated = true; break; }
+        files.push(...r.data); if (r.data.length < 100) break;
+        if (files.length >= 300) { truncated = true; break; }
+      }
+      const { pins, notes } = readPins(policy, homeDir, repo, ap); item.notes = notes;
+      for (const f of files) if (pins[f.filename]) { const t = await contentAt(repo, f.filename, a.head_sha); f.content_sha256 = t == null ? null : sha256(t); }
+      item.errors.push(...checkFiles(files, pins, truncated));
       const format = policy.repository_config?.[repo]?.key_format || 'ed25519';
       const { key: homeKey, home } = await homeKeyOf(a.agent || '', format);
-      item.errors.push(...checkKeys(await contentAt(repo, 'team/keys.json', pr.data.base.sha), await contentAt(repo, 'team/keys.json', a.head_sha), { agent: a.agent, session: a.session, homeKey, format }));
+      const kb = await contentAt(repo, 'team/keys.json', pr.data.base.sha), ka = await contentAt(repo, 'team/keys.json', a.head_sha);
+      item.errors.push(...checkKeys(kb ? kb.toString('utf8') : null, ka ? ka.toString('utf8') : null, { agent: a.agent, session: a.session, homeKey, format }));
       // The head commit: signed by the new key, with the agent's trailers.
       const w = mkdtempSync(join(tmpdir(), 'kbc-'));
       try {

@@ -6,7 +6,7 @@ import { load, validate, validateRepos, checkActions, glob } from '../build/abp.
 import { plan } from '../build/org-plan.mjs';
 import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
 import { unclaimed } from '../build/dns-unclaimed.mjs';
-import { checkKeys, checkFiles, gateState, entryKey } from '../build/key-bootstrap.mjs';
+import { checkKeys, checkFiles, gateState, entryKey, readPins } from '../build/key-bootstrap.mjs';
 const kb = JSON.parse(readFileSync('policy/key-bootstrap.json', 'utf8'));
 
 let n = 0, failed = 0;
@@ -101,7 +101,8 @@ t('a dry DNS plan passes the policy', () => assert.deepEqual(checkActions(policy
 
 const ED = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOnew';
 t('key bootstrap: every covered repository has a config, and pages.yml is pinned whole (B2, B3)', () => {
-  for (const r of kb.repositories) { assert.ok(kb.repository_config[r], r); assert.ok(['ed25519', 'p256-pem'].includes(kb.repository_config[r].key_format), r); assert.ok(kb.gate_changes[r].some((g) => g.file === '.github/workflows/pages.yml'), r); }
+  for (const r of kb.repositories) { assert.ok(kb.repository_config[r], r); assert.ok(['ed25519', 'p256-pem'].includes(kb.repository_config[r].key_format), r); assert.ok(kb.pinnable_files[r].some((g) => g.file === '.github/workflows/pages.yml'), r); assert.ok(kb.repository_config[r].anchor_job.length, r); }
+  assert.deepEqual(kb.repository_config.PrompTugal__News__Cyber.anchor_job, ['verify', 'leakscan']);
   assert.equal(kb.repository_config.PrompTugal__News__Signals.key_format, 'p256-pem');
 });
 t('key bootstrap: keys.json takes one new entry for the agent with its home key', () => {
@@ -121,13 +122,18 @@ t('key bootstrap: a superseded field alone is accepted where the file has no sta
   const { publicKey } = generateKeyPairSync('ec', { namedCurve: 'P-256' });
   assert.match(entryKey({ git_signing: { pem: publicKey.export({ type: 'spki', format: 'pem' }) } }, 'p256-pem'), /^ecdsa-sha2-nistp256 /);
 });
-t('key bootstrap: only keys.json and whole-file pins may change; unpinned files are refused', () => {
-  const files = [{ filename: 'team/keys.json' }];
-  assert.deepEqual(checkFiles(files, kb, 'PrompTugal__News__Cyber'), []);
-  assert.ok(checkFiles([...files, { filename: '.github/workflows/pages.yml' }], kb, 'PrompTugal__News__Cyber').some((e) => e.includes('not pinned')));
-  assert.equal(checkFiles([...files, { filename: 'scripts/check-signatures.mjs' }], kb, 'PrompTugal__News__Cyber').length, 1);
-  assert.ok(checkFiles([...files, { filename: 'scripts/commit-exemptions.json' }], kb, 'PrompTugal__News__Travel').length);
-  assert.ok(checkFiles([...files, { filename: 'x\naction_repo=PrompTugal__News__Cyber' }], kb, 'PrompTugal__News__Cyber').every((e) => !e.includes('\n')));
+t('key bootstrap: only keys.json and pinned files may change, with exactly the pinned content', () => {
+  const files = [{ filename: 'team/keys.json' }], pins = { '.github/workflows/pages.yml': 'a'.repeat(64) };
+  assert.deepEqual(checkFiles(files, {}), []);
+  assert.ok(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified' }], {}).some((e) => e.includes('not pinned')));
+  assert.deepEqual(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified', content_sha256: 'a'.repeat(64) }], pins), []);
+  assert.ok(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified', content_sha256: 'b'.repeat(64) }], pins).length);
+  assert.equal(checkFiles([...files, { filename: 'scripts/check-signatures.mjs' }], pins).length, 1);
+  assert.ok(checkFiles(files, {}, true).length, 'a cut file list is refused');
+  assert.ok(checkFiles([...files, { filename: 'x\naction_repo=PrompTugal__News__Cyber' }], {}).every((e) => !e.includes('\n')));
+});
+t('key bootstrap: pins come only from a verified pins file, limited to pinnable files', () => {
+  assert.deepEqual(readPins(kb, '/nonexistent', 'PrompTugal__News__Cyber', { key: 'x', agent: 'y' }).pins, {});
 });
 t('gate status: untouched paths pass, touched ones need approval, a cut list fails (B4, B5)', () => {
   assert.equal(gateState(['site/index.html'], false, kb.gate_status.paths).state, 'success');
