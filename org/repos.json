@@ -106,6 +106,510 @@
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\""
     },
     {
+      "name": "PrompTugal__Agent__Place__Albufeira",
+      "description": "Home of the agent for Albufeira (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "albufeira",
+        "name": "Albufeira",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.albufeira@PrompTugal.dinis"
+      },
+      "site": "albufeira.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Alcoutim",
+      "description": "Home of the agent for Alcoutim (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "alcoutim",
+        "name": "Alcoutim",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.alcoutim@PrompTugal.dinis"
+      },
+      "site": "alcoutim.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Algarve",
+      "description": "Home of the agent for The Algarve (region, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "algarve",
+        "name": "The Algarve",
+        "kind": "region",
+        "parent": "portugal",
+        "agent": "place.algarve@PrompTugal.dinis"
+      },
+      "site": "algarve.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Aljezur",
+      "description": "Home of the agent for Aljezur (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "aljezur",
+        "name": "Aljezur",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.aljezur@PrompTugal.dinis"
+      },
+      "site": "aljezur.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Aveiro",
+      "description": "Home of the agent for Aveiro (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "aveiro",
+        "name": "Aveiro",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "aveiro.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Beja",
+      "description": "Home of the agent for Beja (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "beja",
+        "name": "Beja",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "beja.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Braga",
+      "description": "Home of the agent for Braga (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "braga",
+        "name": "Braga",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "braga.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Braganca",
+      "description": "Home of the agent for Bragança (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "braganca",
+        "name": "Bragança",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "braganca.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Castelo-Branco",
+      "description": "Home of the agent for Castelo Branco (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "castelo-branco",
+        "name": "Castelo Branco",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "castelo-branco.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Castro-Marim",
+      "description": "Home of the agent for Castro Marim (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "castro-marim",
+        "name": "Castro Marim",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.castro-marim@PrompTugal.dinis"
+      },
+      "site": "castro-marim.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Coimbra",
+      "description": "Home of the agent for Coimbra (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "coimbra",
+        "name": "Coimbra",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "coimbra.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Evora",
+      "description": "Home of the agent for Évora (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "evora",
+        "name": "Évora",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "evora.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Faro",
+      "description": "Home of the agent for Faro (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "faro",
+        "name": "Faro",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.faro@PrompTugal.dinis"
+      },
+      "site": "faro.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Guarda",
+      "description": "Home of the agent for Guarda (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "guarda",
+        "name": "Guarda",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "guarda.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Lagoa",
+      "description": "Home of the agent for Lagoa (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "lagoa",
+        "name": "Lagoa",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.lagoa@PrompTugal.dinis"
+      },
+      "site": "lagoa.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Lagos",
+      "description": "Home of the agent for Lagos (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "lagos",
+        "name": "Lagos",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.lagos@PrompTugal.dinis"
+      },
+      "site": "lagos.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Leiria",
+      "description": "Home of the agent for Leiria (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "leiria",
+        "name": "Leiria",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "leiria.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Lisboa",
+      "description": "Home of the agent for Lisboa (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "lisboa",
+        "name": "Lisboa",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "lisboa.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Loule",
+      "description": "Home of the agent for Loulé (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "loule",
+        "name": "Loulé",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.loule@PrompTugal.dinis"
+      },
+      "site": "loule.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Monchique",
+      "description": "Home of the agent for Monchique (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "monchique",
+        "name": "Monchique",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.monchique@PrompTugal.dinis"
+      },
+      "site": "monchique.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Olhao",
+      "description": "Home of the agent for Olhão (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "olhao",
+        "name": "Olhão",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.olhao@PrompTugal.dinis"
+      },
+      "site": "olhao.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Portalegre",
+      "description": "Home of the agent for Portalegre (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "portalegre",
+        "name": "Portalegre",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "portalegre.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Portimao",
+      "description": "Home of the agent for Portimão (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "portimao",
+        "name": "Portimão",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.portimao@PrompTugal.dinis"
+      },
+      "site": "portimao.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Porto",
+      "description": "Home of the agent for Porto (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "porto",
+        "name": "Porto",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "porto.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Portugal",
+      "description": "Home of the agent for Portugal (country) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "portugal",
+        "name": "Portugal",
+        "kind": "country",
+        "parent": null,
+        "agent": "place.portugal@PrompTugal.dinis"
+      },
+      "site": "portugal.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Quarteira",
+      "description": "Home of the agent for Quarteira (city, in Loulé) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "quarteira",
+        "name": "Quarteira",
+        "kind": "city",
+        "parent": "loule",
+        "agent": "place.quarteira@PrompTugal.dinis"
+      },
+      "site": "quarteira.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Santarem",
+      "description": "Home of the agent for Santarém (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "santarem",
+        "name": "Santarém",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "santarem.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Sao-Bras-de-Alportel",
+      "description": "Home of the agent for São Brás de Alportel (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "sao-bras-de-alportel",
+        "name": "São Brás de Alportel",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.sao-bras-de-alportel@PrompTugal.dinis"
+      },
+      "site": "sao-bras-de-alportel.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Setubal",
+      "description": "Home of the agent for Setúbal (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "setubal",
+        "name": "Setúbal",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "setubal.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Silves",
+      "description": "Home of the agent for Silves (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "silves",
+        "name": "Silves",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.silves@PrompTugal.dinis"
+      },
+      "site": "silves.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Tavira",
+      "description": "Home of the agent for Tavira (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "tavira",
+        "name": "Tavira",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.tavira@PrompTugal.dinis"
+      },
+      "site": "tavira.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Viana-do-Castelo",
+      "description": "Home of the agent for Viana do Castelo (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "viana-do-castelo",
+        "name": "Viana do Castelo",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "viana-do-castelo.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Vila-do-Bispo",
+      "description": "Home of the agent for Vila do Bispo (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "vila-do-bispo",
+        "name": "Vila do Bispo",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.vila-do-bispo@PrompTugal.dinis"
+      },
+      "site": "vila-do-bispo.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Vila-Real",
+      "description": "Home of the agent for Vila Real (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "vila-real",
+        "name": "Vila Real",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "vila-real.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Vila-Real-de-Santo-Antonio",
+      "description": "Home of the agent for Vila Real de Santo António (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "vila-real-de-santo-antonio",
+        "name": "Vila Real de Santo António",
+        "kind": "municipality",
+        "parent": "algarve",
+        "agent": "place.vila-real-de-santo-antonio@PrompTugal.dinis"
+      },
+      "site": "vila-real-de-santo-antonio.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
+      "name": "PrompTugal__Agent__Place__Viseu",
+      "description": "Home of the agent for Viseu (city, in Portugal) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
+      "pages": false,
+      "place": {
+        "id": "viseu",
+        "name": "Viseu",
+        "kind": "city",
+        "parent": "portugal",
+        "agent": "place.districts@PrompTugal.dinis"
+      },
+      "site": "viseu.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one for all places that we current support\"; places from PrompTugal__News__Website data/by-place/places.json"
+    },
+    {
       "name": "PrompTugal__Agent__Signals",
       "description": "Home of the signals agent of PrompTugal.news: its key, area, state and site.",
       "pages": false,
@@ -294,5 +798,5 @@
     }
   ],
   "proposed": [],
-  "proposed_note": "Next: one agent per place (Dinis, 26 Nov 2026: \"an agent per locality, so we track everything that happens there\"), name to agree. Storm-Charles and the apps are out of this map for now (Dinis, 26 Nov 2026)."
+  "proposed_note": "Storm-Charles and the apps are out of this map for now (Dinis, 26 Nov 2026). London is not yet a place in PrompTugal__News__Website data/by-place/places.json."
 }

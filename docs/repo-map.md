@@ -35,5 +35,8 @@ Draft by cl-6.infra@PrompTugal.dinis, 25 Nov 2026, from the 22 existing reposito
 | PrompTugal__Agent__Fringe | News__Fringe | fringe.agent.promptugal.news |
 | PrompTugal__Agent__Swarm | News__Swarm, News__Swarm__Runs | swarm.agent.promptugal.news |
 
+## Place homes (36)
+Dinis, 26 Nov 2026: "an agent per locality, so we track everything that happens there"; name `PrompTugal__Agent__Place__{Name}`; "one for all places that we current support". The places are the 36 in PrompTugal__News__Website `data/by-place/places.json` (Portugal; the Algarve and its 16 municipalities, with Quarteira in Loulé; 18 cities). Names are plain ASCII from each place's id (Loulé is `PrompTugal__Agent__Place__Loule`); each entry in `org/repos.json` keeps the place's id, name, kind, parent and the agent name places.json already gives it (`place.<id>@PrompTugal.dinis`). Sites: `{id}.place.agent.promptugal.news`. London is not in places.json yet.
+
 ## Sites and DNS
 The `{name}.agent.promptugal.news` records are added to `org/dns.json` only once each home's GitHub Pages site is on with that custom domain. A CNAME to promptugal.github.io with no site behind it could be claimed by someone else's Pages site, unless promptugal.news is a verified domain of the PrompTugal organisation (organisation Settings, Pages, Add a domain: GitHub gives a TXT record, which DNS apply can create).
