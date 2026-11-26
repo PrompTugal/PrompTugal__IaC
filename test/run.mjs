@@ -45,6 +45,7 @@ t('visibility is reported, never changed', () => {
 t('defaults are not forced on existing repositories', () => assert.deepEqual(plan(org, live(Object.fromEntries(org.repos.map((r) => [r.name, { has_wiki: true }])))).actions, []));
 t('a dry plan passes the policy', () => assert.deepEqual(checkActions(policy, plan(org, {})), []));
 
+t('every place home names its place and agent', () => { for (const r of org.repos.filter((x) => x.name.startsWith('PrompTugal__Agent__Place__'))) { assert.ok(r.place?.id && r.place?.agent, r.name); assert.match(r.name, /^PrompTugal__Agent__Place__[A-Z][A-Za-z-]*$/); assert.equal(r.site, `${r.place.id}.place.agent.promptugal.news`); } });
 t('proposed repositories are never planned', () => { const names = new Set((org.proposed || []).map((r) => r.name)); assert.ok(plan(org, live()).actions.every((a) => !names.has(a.target))); });
 t('proposed names follow the rules and are not already listed', () => { const have = new Set(org.repos.map((r) => r.name)); for (const r of org.proposed || []) { assert.match(r.name, /^PrompTugal__Agent__[A-Z][A-Za-z0-9]*$/); assert.ok(!have.has(r.name), r.name); } });
 
