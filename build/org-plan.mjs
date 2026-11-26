@@ -49,6 +49,13 @@ export function plan(org, live, opts = {}) {
       else notes.push(`${r.name}: certificate for ${r.site} is ${l.cert_state}; HTTPS waits`);
     }
     for (const [t, perm] of Object.entries(r.teams || {})) if (perm === 'push' && !['push', 'maintain', 'admin'].includes((l.teams || {})[t])) actions.push({ action: 'team.grant_push', target: r.name, team: t });
+    // Rulesets its entry names: created when missing (by name), never changed or deleted here. One that needs the App's
+    // status first ("after_status") waits until dev's head carries that status, so it never blocks before the poster works.
+    for (const rs of r.rulesets || []) {
+      if ((l.rulesets || []).includes(rs.name)) continue;
+      if (rs.after_status && l.dev_status !== 'success') { notes.push(`${r.name}: ruleset ${rs.name} waits for ${rs.after_status} on dev`); continue; }
+      actions.push({ action: 'ruleset.create', target: r.name, ruleset: rs.name });
+    }
     if (l.default_branch !== 'dev') {
       if (!l.has_dev) actions.push({ action: 'branch.create_dev', target: r.name, from: l.default_branch });
       actions.push({ action: 'repo.set_default_branch', target: r.name, from: l.default_branch });
@@ -59,7 +66,7 @@ export function plan(org, live, opts = {}) {
   return { pipeline: 'org-apply', org: org.org, actions, unlisted, notes };
 }
 
-export async function liveRepos(org) {
+export async function liveRepos(org, spec = null) {
   const out = {};
   for (let page = 1; ; page++) {
     const r = await gh('GET', `/orgs/${org}/repos?per_page=100&page=${page}`);
@@ -76,7 +83,15 @@ export async function liveRepos(org) {
       // when the site's domain last changed (only read for a site still without a certificate; unknown counts as recent)
       let cname_changed_at = null;
       if (x.has_pages && !https_enforced && !['approved', 'issued'].includes(cert_state)) { const c = await gh('GET', `/repos/${org}/${x.name}/commits?path=CNAME&per_page=1&sha=${x.default_branch}`); cname_changed_at = c.status === 200 ? (c.data?.[0]?.commit?.committer?.date ?? '1970-01-01T00:00:00Z') : null; }
-      out[x.name] = { ...x, has_dev: dev.status === 200, cname, teams, https_enforced, cert_state, cname_changed_at };
+      let rulesets = [], dev_status = null;
+      const want = spec?.[x.name];
+      if (want?.rulesets?.length) {
+        const rs = await gh('GET', `/repos/${org}/${x.name}/rulesets`);
+        rulesets = (Array.isArray(rs.data) ? rs.data : []).map((q) => q.name);
+        const ctx = want.rulesets.find((q) => q.after_status)?.after_status;
+        if (ctx && dev.status === 200) { const st = await gh('GET', `/repos/${org}/${x.name}/commits/dev/status`); dev_status = (st.data?.statuses || []).find((q) => q.context === ctx)?.state ?? null; }
+      }
+      out[x.name] = { ...x, has_dev: dev.status === 200, cname, teams, https_enforced, cert_state, cname_changed_at, rulesets, dev_status };
     }
     if (r.data.length < 100) break;
   }
@@ -85,7 +100,7 @@ export async function liveRepos(org) {
 
 export function markdown(p) {
   const l = [`### Plan for ${p.org} (${p.actions.length} actions)`];
-  for (const a of p.actions) l.push(`- \`${a.action}\` ${a.target}${a.fields ? ` (${a.fields.join(', ')})` : a.from ? ` (from ${a.from})` : a.state ? ` (${a.cname}, certificate ${a.state})` : a.cname ? ` (${a.cname})` : a.team ? ` (${a.team}, push)` : ''}`);
+  for (const a of p.actions) l.push(`- \`${a.action}\` ${a.target}${a.fields ? ` (${a.fields.join(', ')})` : a.from ? ` (from ${a.from})` : a.state ? ` (${a.cname}, certificate ${a.state})` : a.cname ? ` (${a.cname})` : a.team ? ` (${a.team}, push)` : a.ruleset ? ` (${a.ruleset})` : ''}`);
   if (!p.actions.length) l.push('- nothing to do');
   for (const n of p.notes || []) l.push(`- note: ${n}`);
   if (p.unlisted?.length) l.push(`\nNot in org/repos.json (reported, never deleted): ${p.unlisted.join(', ')}`);
@@ -94,7 +109,7 @@ export function markdown(p) {
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const org = JSON.parse(readFileSync('org/repos.json', 'utf8'));
-  const live = process.env.GH_TOKEN ? await liveRepos(org.org) : {};
+  const live = process.env.GH_TOKEN ? await liveRepos(org.org, Object.fromEntries(wanted(org).map((r) => [r.name, r]))) : {};
   const p = plan(org, live, { nudge: process.env.ORG_NUDGE === '1' });
   if (process.argv[2]) writeFileSync(process.argv[2], JSON.stringify(p, null, 2));
   console.log(markdown(p));

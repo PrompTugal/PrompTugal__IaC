@@ -1,0 +1,76 @@
+name: Gate status
+# Posts the App's status (policy/key-bootstrap.json gate_status) on the dev and work/* heads of the covered section
+# repositories. Only the App can post it; the dev ruleset requires it. Read with one token; each repository's statuses
+# are written with its own token, statuses write only.
+on:
+  workflow_dispatch:
+  # Every 15 minutes: Dinis's decision when he merges this; uncomment to turn it on.
+  # schedule:
+  #   - cron: '4,19,34,49 * * * *'
+permissions:
+  contents: read
+concurrency: gate-status
+defaults:
+  run:
+    shell: bash
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    environment: apply
+    outputs:
+      repos: ${{ steps.plan.outputs.repos }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: git clone -q --depth 50 -b dev https://github.com/PrompTugal/PrompTugal__Agent__Security.git security-home
+      - id: read
+        uses: actions/create-github-app-token@v1.12.0
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+          repositories: 
+          permission-metadata: read
+          permission-contents: read
+          permission-statuses: read
+          permission-actions: read
+      - id: plan
+        env:
+          GH_TOKEN: ${{ steps.read.outputs.token }}
+        run: |
+          node build/gate-status.mjs plan security-home plan.json | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "repos=$(node build/gate-status.mjs repos plan.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gate-plan
+          path: plan.json
+  post:
+    needs: plan
+    if: needs.plan.outputs.repos != '[]'
+    runs-on: ubuntu-latest
+    environment: apply
+    strategy:
+      max-parallel: 1
+      matrix:
+        repo: ${{ fromJSON(needs.plan.outputs.repos) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: gate-plan
+      - id: token
+        uses: actions/create-github-app-token@v1.12.0
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+          repositories: ${{ matrix.repo }}
+          permission-statuses: write
+      - env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+        run: node build/gate-status.mjs post plan.json "${{ matrix.repo }}" | tee -a "$GITHUB_STEP_SUMMARY"

@@ -67,7 +67,8 @@
         "pages.set_cname",
         "team.grant_push",
         "pages.enforce_https",
-        "pages.nudge_certificate"
+        "pages.nudge_certificate",
+        "ruleset.create"
       ],
       "refused_always": [
         "repo.delete",
@@ -91,7 +92,8 @@
       "pages_source": "Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the sites\"; \"you should already have permission\".",
       "team_note": "team.grant_push gives a team that a repository's own entry names push (write) on that repository; team.grant_admin and team.grant_maintain stay refused always. Dinis, 26 Nov 2026 in cl-6.infra's session: \"You need to add this team to all the repos you created, or else nobody else can edit it\" (team promptugal-news-agents).",
       "https_note": "pages.enforce_https turns on HTTPS for an agent site (its own *.agent.promptugal.news domain) only once GitHub reports its certificate approved or issued; until then the run notes it and the next run tries again. Dinis, 26 Nov 2026 in cl-6.infra's session: \"go ahead with the HTTPS for the sites\".",
-      "nudge_note": "pages.nudge_certificate clears an agent site's custom domain and sets the same one again, so GitHub re-checks DNS and requests the certificate; only when there is none or it failed, never while one is pending. The domains were set before their DNS records existed (run 45742880611: 77 sites with no certificate requested). The same fix SovereignWebsite__IaC uses."
+      "nudge_note": "pages.nudge_certificate clears an agent site's custom domain and sets the same one again, so GitHub re-checks DNS and requests the certificate; only when there is none or it failed, never while one is pending. The domains were set before their DNS records existed (run 45742880611: 77 sites with no certificate requested). The same fix SovereignWebsite__IaC uses.",
+      "ruleset_note": "ruleset.create creates a ruleset that a repository's own entry in org/repos.json names, when one of that name is missing; it never changes or deletes one (ruleset.delete and ruleset.weaken stay refused). dev-gate waits until the App's status is on dev."
     },
     "check-github-app": {
       "runs_on": [
@@ -145,6 +147,46 @@
       ],
       "note": "Creates one push ruleset named probe-file-path-restriction with enforcement disabled on PrompTugal__IaC only, to learn whether GitHub allows file-path restrictions on this organisation's public repositories; it enforces nothing and is left in place, disabled, as the record. Token limited to PrompTugal__IaC, metadata read and administration write.",
       "source": "cl-6.security@PrompTugal.dinis (S6), 26 Nov 2026, asked via cl-6.conductor at Dinis's request: \"Please confirm which GitHub rule can enforce a path restriction on these public repositories. Do not assume one exists.\""
+    },
+    "key-bootstrap": {
+      "runs_on": [
+        "by hand",
+        "a 15-minute schedule once Dinis turns it on in the workflow"
+      ],
+      "environment": "apply",
+      "allowed": [
+        "pull_request.merge_approved_head",
+        "variable.set_anchor",
+        "variable.delete_anchor"
+      ],
+      "refused_always": [
+        "merge without a verified approval of the exact head SHA and diff hash",
+        "merge a file outside team/keys.json, the pinned pages.yml block and pinned gate changes",
+        "use commit-exemptions.json",
+        "repo.delete",
+        "ruleset.delete",
+        "app.change"
+      ],
+      "policy": "policy/key-bootstrap.json",
+      "per_run": 1,
+      "tokens": "read: metadata, contents, pull requests read on the covered repositories; merge: pull requests, contents and workflows write on the one repository; anchor: actions variables write on the one repository; cleanup: actions read and actions variables write, one repository per matrix job",
+      "source": "Dinis, 26 Nov 2026, via cl-6.conductor: \"note that I cannot be in-line in the normal publishing workflow, only for escalations and massive exceptions.\" Designed with cl-6.security@PrompTugal.dinis (PrompTugal__Agent__Security docs/security/2026-11-26-section-repos-key-bootstrap.md, 6fbdbc8)."
+    },
+    "gate-status": {
+      "runs_on": [
+        "by hand",
+        "a 15-minute schedule once Dinis turns it on in the workflow"
+      ],
+      "environment": "apply",
+      "allowed": [
+        "status.post_gate"
+      ],
+      "refused_always": [
+        "status.post_other_context",
+        "repo.update_settings"
+      ],
+      "policy": "policy/key-bootstrap.json gate_status",
+      "tokens": "read: metadata, contents, statuses read on the covered repositories; post: statuses write on one repository per matrix job"
     }
   },
   "privileges": [
@@ -183,6 +225,36 @@
       "permission": "members:read (organisation)",
       "why": "org-apply: give the team promptugal-news-agents push on each agent home (team.grant_push)",
       "state": "asked for by Org apply from 26 Nov 2026; SovereignWebsite__IaC lists the same permission for this App; confirmed by the first run that mints a token with it"
+    },
+    {
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
+      "permission": "statuses: write (repository)",
+      "why": "gate-status: post promptugal-iac/gate, the check dev-gate requires",
+      "state": "not yet granted: Dinis adds it to the App's PrompTugal installation when he merges this"
+    },
+    {
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
+      "permission": "actions variables: write (repository)",
+      "why": "key-bootstrap: set and delete SIG_BOOTSTRAP_ANCHOR",
+      "state": "not yet granted: Dinis adds it to the App's PrompTugal installation when he merges this"
+    },
+    {
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
+      "permission": "pull requests: write (repository)",
+      "why": "key-bootstrap: merge an approved key pull request at its approved head SHA",
+      "state": "not yet granted: Dinis adds it to the App's PrompTugal installation when he merges this"
+    },
+    {
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
+      "permission": "workflows: write (repository)",
+      "why": "key-bootstrap: the approved key pull request changes .github/workflows/pages.yml",
+      "state": "not yet granted: Dinis adds it to the App's PrompTugal installation when he merges this"
+    },
+    {
+      "holder": "github-app:agenticcells-site-factory (PrompTugal installation)",
+      "permission": "actions: read (repository)",
+      "why": "key-bootstrap cleanup: find the first green run after the anchor was set",
+      "state": "not yet granted: Dinis adds it to the App's PrompTugal installation when he merges this"
     }
   ],
   "aws": {

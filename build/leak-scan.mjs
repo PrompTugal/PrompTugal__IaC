@@ -89,6 +89,9 @@ const ALLOW = [
   ['docs/SETUP.md', 'long high-entropy string', 'the same OIDC subject, in the setup steps'],
   // The public SHA256 fingerprint of PrompTugal__IaC's App key, so Dinis can tell which key to revoke (cl-6.infra, 2026-11-25). Not a secret.
   ['docs/app-key.md', 'long high-entropy string', 'public fingerprint of the App key'],
+  // The key-bootstrap pins: cl-6.security's SSH public key and fingerprint, and the sha256 of the pinned pages.yml block
+  // (cl-6.infra, 2026-11-26). Public by design: the policy pins them so anyone can check them.
+  ['policy/key-bootstrap.json', 'long high-entropy string', 'public key, fingerprint and content hash pins'],
 ];
 const allowed = (path, kind) => ALLOW.some(([p, k]) => p === path && k === kind);
 

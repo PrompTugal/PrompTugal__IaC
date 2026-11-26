@@ -1,16 +1,19 @@
 // Tests for PrompTugal__IaC. Node built-ins only. Usage: node test/run.mjs
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
+import { generateKeyPairSync } from 'node:crypto';
 import { load, validate, validateRepos, checkActions, glob } from '../build/abp.mjs';
 import { plan } from '../build/org-plan.mjs';
 import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
 import { unclaimed } from '../build/dns-unclaimed.mjs';
+import { checkKeys, checkFiles, gateState, entryKey, readPins, pemToSsh } from '../build/key-bootstrap.mjs';
+const kb = JSON.parse(readFileSync('policy/key-bootstrap.json', 'utf8'));
 
 let n = 0, failed = 0;
 const t = (name, fn) => { n++; try { fn(); } catch (e) { failed++; console.error(`FAIL ${name}: ${e.message}`); } };
 const policy = load();
 const org = JSON.parse(readFileSync('org/repos.json', 'utf8'));
-const live = (over = {}) => Object.fromEntries(org.repos.map((r) => [r.name, { name: r.name, description: r.description, default_branch: 'dev', has_dev: true, visibility: 'public', has_pages: !!r.pages_site, cname: r.pages_site ? r.site : null, https_enforced: !!r.pages_site, teams: Object.fromEntries(Object.keys(r.teams || {}).map((t) => [t, 'push'])), ...(over[r.name] || {}) }]));
+const live = (over = {}) => Object.fromEntries(org.repos.map((r) => [r.name, { name: r.name, description: r.description, default_branch: 'dev', has_dev: true, visibility: 'public', has_pages: !!r.pages_site, cname: r.pages_site ? r.site : null, https_enforced: !!r.pages_site, rulesets: (r.rulesets || []).map((q) => q.name), teams: Object.fromEntries(Object.keys(r.teams || {}).map((t) => [t, 'push'])), ...(over[r.name] || {}) }]));
 
 t('the policy is well formed', () => assert.deepEqual(validate(policy), []));
 t('org/repos.json follows the rules', () => assert.deepEqual(validateRepos(org), []));
@@ -102,6 +105,80 @@ t('DNS apply never creates a GitHub Pages record no repository claims', () => {
   assert.deepEqual(p.actions, []); assert.equal(p.notes.length, 1);
 });
 t('a dry DNS plan passes the policy', () => assert.deepEqual(checkActions(policy, dnsPlan(dns, [])), []));
+
+const ED = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOnew';
+const edPair = generateKeyPairSync('ed25519'), ecPair = generateKeyPairSync('ec', { namedCurve: 'P-256' });
+const EDPEM = edPair.publicKey.export({ type: 'spki', format: 'pem' }), ECPEM = ecPair.publicKey.export({ type: 'spki', format: 'pem' });
+const EDSSH = pemToSsh(EDPEM), ECSSH = pemToSsh(ECPEM);
+const HOME = { ssh_ed25519: EDSSH, ssh: ECSSH };
+const cfgOf = (r) => kb.repository_config[`PrompTugal__News__${r}`];
+const AG = 'cl-6.x@PrompTugal.dinis';
+t('key bootstrap: every covered repository has a config, and pages.yml is pinnable everywhere (B2, B3)', () => {
+  for (const r of kb.repositories) { const c = kb.repository_config[r]; assert.ok(c && c.anchor_job.length, r); assert.ok(c.key_path === null || ['ssh', 'pem'].includes(c.key_encoding), r); assert.ok(kb.pinnable_files[r].some((g) => g.file === '.github/workflows/pages.yml'), r); }
+  assert.deepEqual(kb.repository_config.PrompTugal__News__Cyber.anchor_job, ['verify', 'leakscan']);
+  assert.match(EDSSH, /^ssh-ed25519 /); assert.match(ECSSH, /^ecdsa-sha2-nistp256 /);
+});
+t('key bootstrap: each repository dialect accepts its own entry and refuses another', () => {
+  const cases = {
+    Library: [{ agent: 'x.b@PrompTugal.dinis', status: 'active', ssh_public_key: 'ssh-ed25519 AAAAold' }, (o) => ({ ...o, status: 'superseded' }), { agent: AG, session: 'S', status: 'active', ssh_public_key: EDSSH }],
+    Bulletins: [{ agent: 'x.b@PrompTugal.dinis', status: 'current', git_signing: { ssh_public_key: 'ssh-ed25519 AAAAold' } }, (o) => ({ ...o, status: 'superseded' }), { agent: AG, session: 'S', status: 'current', git_signing: { ssh_public_key: EDSSH } }],
+    Events: [{ agent: 'x.b@PrompTugal.dinis', ssh_signing: { public_key: 'ssh-ed25519 AAAAold' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh_signing: { public_key: EDSSH }, ssh_public_key: EDSSH }],
+    Videos: [{ agent: 'x.b@PrompTugal.dinis', ssh: { public_key_pem: 'old' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh: { public_key_pem: EDPEM } }],
+    Cyber: [{ agent: 'x.b@PrompTugal.dinis', status: 'active', bundle: { sign: 'old' } }, (o) => ({ ...o, status: 'superseded' }), { agent: AG, session: 'S', status: 'active', bundle: { sign: ECPEM } }],
+    Data: [{ agent: 'x.b@PrompTugal.dinis', ssh: { public_key_pem: 'old', principals: ['x.b@PrompTugal.dinis'] } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh: { public_key_pem: EDPEM, principals: [AG] }, ssh_signing: { public_key: EDSSH } }],
+    Signals: [{ agent: 'x.b@PrompTugal.dinis', git_signing: { pem: 'old' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', git_signing: { pem: ECPEM } }],
+  };
+  for (const [r, [old, retire, neu]] of Object.entries(cases)) {
+    const before = JSON.stringify({ keys: [old] }), after = JSON.stringify({ keys: [retire(old), neu] });
+    const ok = checkKeys(before, after, { agent: AG, session: 'S', home: HOME, cfg: cfgOf(r) });
+    assert.deepEqual(ok.errors, [], r);
+    const wrongStatus = JSON.stringify({ keys: [retire(old), { ...neu, status: 'something-else' }] });
+    assert.ok(checkKeys(before, wrongStatus, { agent: AG, session: 'S', home: HOME, cfg: cfgOf(r) }).errors.length, `${r}: wrong status`);
+    assert.ok(checkKeys(before, after, { agent: AG, session: 'S', home: { ssh_ed25519: 'ssh-ed25519 AAAAother', ssh: 'ecdsa-sha2-nistp256 AAAAother' }, cfg: cfgOf(r) }).errors.length, `${r}: other home key`);
+  }
+  const ev = cfgOf('Events'), mismatch = { agent: AG, ssh_signing: { public_key: EDSSH }, ssh_public_key: 'ssh-ed25519 AAAAother' };
+  assert.equal(entryKey(mismatch, ev), null, 'Events: two different keys');
+  assert.equal(entryKey({ agent: AG, ssh: { public_key_pem: EDPEM }, ssh_signing: { public_key: 'ssh-ed25519 AAAAother' } }, cfgOf('Data')), null, 'Data: PEM and ssh line differ');
+  assert.equal(entryKey({ agent: AG, ssh: { public_key_pem: ECPEM } }, cfgOf('Data')), ECSSH, 'Data: a P-256 PEM reads as ecdsa-sha2-nistp256');
+});
+t('key bootstrap: more than one new entry, or one for another role, is refused', () => {
+  const c = cfgOf('Library'), old = { agent: 'x.b@PrompTugal.dinis', status: 'active', ssh_public_key: 'ssh-ed25519 AAAAold' };
+  const neu = { agent: AG, session: 'S', status: 'active', ssh_public_key: EDSSH };
+  assert.ok(checkKeys(JSON.stringify({ keys: [old] }), JSON.stringify({ keys: [old, neu, neu] }), { agent: AG, session: 'S', home: HOME, cfg: c }).errors.length);
+  const other = { ...old, agent: 'y.b@PrompTugal.dinis' };
+  assert.ok(checkKeys(JSON.stringify({ keys: [other] }), JSON.stringify({ keys: [{ ...other, status: 'superseded' }, neu] }), { agent: AG, session: 'S', home: HOME, cfg: c }).errors.some((e) => e.includes('role')));
+});
+t('key bootstrap: only keys.json and pinned files may change, with exactly the pinned content', () => {
+  const files = [{ filename: 'team/keys.json' }], pins = { '.github/workflows/pages.yml': 'a'.repeat(64) };
+  assert.deepEqual(checkFiles(files, {}), []);
+  assert.deepEqual(checkFiles([{ filename: 'scripts/check-commits.mjs', status: 'modified', content_sha256: 'c'.repeat(64) }], { 'scripts/check-commits.mjs': 'c'.repeat(64) }, false, false), [], 'Travel: pinned files only');
+  assert.ok(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified' }], {}).some((e) => e.includes('not pinned')));
+  assert.deepEqual(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified', content_sha256: 'a'.repeat(64) }], pins), []);
+  assert.ok(checkFiles([...files, { filename: '.github/workflows/pages.yml', status: 'modified', content_sha256: 'b'.repeat(64) }], pins).length);
+  assert.equal(checkFiles([...files, { filename: 'scripts/check-signatures.mjs' }], pins).length, 1);
+  assert.ok(checkFiles(files, {}, true).length, 'a cut file list is refused');
+  assert.ok(checkFiles([...files, { filename: 'x\naction_repo=PrompTugal__News__Cyber' }], {}).every((e) => !e.includes('\n')));
+});
+t('key bootstrap: pins come only from a verified pins file, limited to pinnable files', () => {
+  assert.deepEqual(readPins(kb, '/nonexistent', 'PrompTugal__News__Cyber', { key: 'x', agent: 'y' }).pins, {});
+});
+t('gate status: untouched paths pass, touched ones need approval, a cut list fails (B4, B5)', () => {
+  assert.equal(gateState(['site/index.html'], false, kb.gate_status.paths).state, 'success');
+  for (const f of ['team/keys.json', '.gitattributes', 'scripts/leak-scan.mjs', 'scripts/commit-exemptions.json', 'scripts/check-signatures-trusted.sh']) assert.equal(gateState([f], false, kb.gate_status.paths).state, 'failure', f);
+  assert.equal(gateState(['.github/workflows/pages.yml'], true, kb.gate_status.paths).state, 'success');
+  assert.equal(gateState(['site/a'], true, kb.gate_status.paths, true).state, 'failure');
+  assert.equal(gateState(Array.from({ length: 300 }, (_, i) => `site/${i}`), false, kb.gate_status.paths).state, 'failure');
+});
+t('dev-gate waits for the App status, and only the App can post it', () => {
+  const r = org.repos.find((x) => x.rulesets?.some((q) => q.name === 'dev-gate'));
+  const g = r.rulesets.find((q) => q.name === 'dev-gate');
+  assert.equal(g.rules.find((q) => q.type === 'required_status_checks').parameters.required_status_checks[0].integration_id, 5777442);
+  assert.ok(!g.bypass_actors.some((b) => b.actor_type === 'Integration'), 'no App bypass (B6)');
+  const l = live(); l[r.name] = { ...l[r.name], rulesets: [], dev_status: null };
+  assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name), []);
+  l[r.name].dev_status = 'success';
+  assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name).map((a) => a.action), ['ruleset.create']);
+});
 
 console.log(`${n - failed} of ${n} tests passed`);
 if (failed) process.exit(1);
