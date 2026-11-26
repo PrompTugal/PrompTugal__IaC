@@ -10,6 +10,59 @@
   },
   "repos": [
     {
+      "name": "PrompTugal__Agent__ABP",
+      "description": "Home of PrompTugal.news's ABP agent (behaviour policies): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "abp.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Accountant",
+      "description": "Home of PrompTugal.news's accountant (budgets): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "accountant.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Analyst",
+      "description": "Home of PrompTugal.news's analyst agent (a twin of the same role on the partner newsroom team, run from account F): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "analyst.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 1,
+      "twin": true,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Backup",
+      "description": "Home of PrompTugal.news's backup agent: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "backup.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 3,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
       "name": "PrompTugal__Agent__Bulletins",
       "description": "Home of the bulletins agent of PrompTugal.news: its key, area, state and site.",
       "pages": false,
@@ -19,6 +72,20 @@
       "site": "bulletins.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
       "pages_site": true
+    },
+    {
+      "name": "PrompTugal__Agent__Checker",
+      "description": "Home of PrompTugal.news's checker agent (a twin of the same role on the partner newsroom team, run from account F): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "checker.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 1,
+      "twin": true,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
     },
     {
       "name": "PrompTugal__Agent__Civic",
@@ -43,6 +110,46 @@
       "pages_site": true
     },
     {
+      "name": "PrompTugal__Agent__Correspondent",
+      "description": "Home of PrompTugal.news's correspondent (the front page and the beats): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "correspondent.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Curator",
+      "description": "Home of PrompTugal.news's curator agent (a twin of the same role on the partner newsroom team, run from account F): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "curator.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 1,
+      "twin": true,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Customers",
+      "description": "Home of PrompTugal.news's customers agent: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "customers.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 3,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
       "name": "PrompTugal__Agent__Cyber",
       "description": "Home of the cyber security agent of PrompTugal.news: its key, area, state and site.",
       "pages": false,
@@ -63,6 +170,45 @@
       "site": "data.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
       "pages_site": true
+    },
+    {
+      "name": "PrompTugal__Agent__Designer",
+      "description": "Home of PrompTugal.news's designer (design, the brand): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "designer.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Dev",
+      "description": "Home of PrompTugal.news's dev agent (build, gate, CI): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "dev.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 1,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__DevOps",
+      "description": "Home of PrompTugal.news's devops agent: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "devops.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
     },
     {
       "name": "PrompTugal__Agent__Events",
@@ -87,10 +233,49 @@
       "pages_site": true
     },
     {
+      "name": "PrompTugal__Agent__Historian",
+      "description": "Home of PrompTugal.news's historian: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "historian.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 3,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
       "name": "PrompTugal__Agent__Infrastructure",
       "description": "repo for infrastructure.agent.promptugal.news",
       "pages": false,
       "exists_by": "live on 25 Nov 2026"
+    },
+    {
+      "name": "PrompTugal__Agent__Investors",
+      "description": "Home of PrompTugal.news's investors agent: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "investors.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 3,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Journalist",
+      "description": "Home of PrompTugal.news's journalist (articles, sourced and signed): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "journalist.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 1,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
     },
     {
       "name": "PrompTugal__Agent__Library",
@@ -113,6 +298,45 @@
       "site": "live.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
       "pages_site": true
+    },
+    {
+      "name": "PrompTugal__Agent__Observability",
+      "description": "Home of PrompTugal.news's observability agent: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "observability.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Ontologist",
+      "description": "Home of PrompTugal.news's ontologist (schemas, the graph): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "ontologist.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Outreach",
+      "description": "Home of PrompTugal.news's outreach agent (drafts only): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "outreach.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 3,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
     },
     {
       "name": "PrompTugal__Agent__Place__Albufeira",
@@ -655,6 +879,86 @@
       "pages_site": true
     },
     {
+      "name": "PrompTugal__Agent__Programme",
+      "description": "Home of PrompTugal.news's programme agent (a twin of the same role on the partner newsroom team, run from account F): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "programme.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 1,
+      "twin": true,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Researcher",
+      "description": "Home of PrompTugal.news's researcher: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "researcher.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 3,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Reviewer",
+      "description": "Home of PrompTugal.news's reviewer agent (a twin of the same role on the partner newsroom team, run from account F): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "reviewer.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 1,
+      "twin": true,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Rights",
+      "description": "Home of PrompTugal.news's rights agent (licences, terms): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "rights.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Security",
+      "description": "Home of PrompTugal.news's security agent (reviews, HOLD): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "security.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "opus",
+      "phase": 1,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Sherpa",
+      "description": "Home of PrompTugal.news's sherpa (the reader's guide): its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "sherpa.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
       "name": "PrompTugal__Agent__Signals",
       "description": "Home of the signals agent of PrompTugal.news: its key, area, state and site.",
       "pages": false,
@@ -687,6 +991,45 @@
       "site": "swarm.agent.promptugal.news",
       "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026: \"one agent per section, because we need to keep it nice and separate\"",
       "pages_site": true
+    },
+    {
+      "name": "PrompTugal__Agent__Synthetic",
+      "description": "Home of PrompTugal.news's synthetic readers: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "synthetic.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 2,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Telemetry",
+      "description": "Home of PrompTugal.news's telemetry agent: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "telemetry.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 3,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
+    },
+    {
+      "name": "PrompTugal__Agent__Translator",
+      "description": "Home of PrompTugal.news's translator: its key, area, state and site.",
+      "pages": false,
+      "pages_site": true,
+      "site": "translator.agent.promptugal.news",
+      "works_on": [
+        "PrompTugal__News__Website"
+      ],
+      "model": "sonnet",
+      "phase": 3,
+      "exists_by": "proposed by cl-6.conductor@PrompTugal.dinis (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json); created at Dinis's word"
     },
     {
       "name": "PrompTugal__Agent__Travel",
