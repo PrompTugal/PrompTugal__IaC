@@ -52,7 +52,12 @@ export function entryKey(entry, format) {
     try { const f = join(dir, 'k.pem'); writeFileSync(f, String(pem)); return execFileSync('ssh-keygen', ['-i', '-m', 'PKCS8', '-f', f], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().split(/\s+/).slice(0, 2).join(' '); }
     catch { return null; } finally { rmSync(dir, { recursive: true, force: true }); }
   }
-  const k = String(entry?.ssh_public_key || '').trim().split(/\s+/).slice(0, 2).join(' ');
+  // Where the file carries ssh_signing.public_key (Events), that is the key its check-signatures trusts; if
+  // ssh_public_key is there too, the two must be the same key, or the entry has no key.
+  const two = (x) => String(x || '').trim().split(/\s+/).slice(0, 2).join(' ');
+  const signing = two(entry?.ssh_signing?.public_key), plain = two(entry?.ssh_public_key);
+  if (signing && plain && signing !== plain) return null;
+  const k = signing || plain;
   return /^ssh-ed25519 /.test(k) ? k : null;
 }
 const norm = (x) => String(x || '').trim().split(/\s+/).slice(0, 2).join(' ');

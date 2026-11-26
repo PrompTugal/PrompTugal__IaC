@@ -24,8 +24,8 @@
     "path": "PrompTugal/PrompTugal__Agent__Security successors/<n>.json (+ .sig), n = 1, 2, ...",
     "rule": "A new approver key is accepted only through statement n, signed (namespace promptugal-key-approval) by the key in force after statement n-1 (the pinned key for n = 1), naming the new key, its fingerprint and its session. The job follows the chain from the pinned key and trusts only its last link. If the chain breaks, only a change to this file by Dinis restores an approver: an escalation."
   },
-  "keys_rule": "team/keys.json: exactly one new entry, for the approval's agent and session, in the repository's key_format; earlier entries may change only by being marked superseded (a superseded time, and status superseded where the file uses status), and only entries of the same role; nothing else in the file changes",
-  "commit_rule": "the pull request's head commit is signed by the new ed25519 key, with one Agent: trailer equal to the agent and one Claude-Session: trailer equal to its session",
+  "keys_rule": "team/keys.json: exactly one new entry, for the approval's agent and session, in the repository's key_format; earlier entries may change only by being marked superseded (a superseded time, and status superseded where the file uses status), and only entries of the same role; nothing else in the file changes. For ed25519 the key is ssh_signing.public_key where present (what that repository's check reads), else ssh_public_key; if both are present they must be the same key. Entries may omit status (Events, Signals): an old entry is superseded by a superseded time, and a new entry without status counts as active.",
+  "commit_rule": "the pull request's head commit is signed by the new key, in the repository's key_format (ed25519: the home's ssh_ed25519; p256-pem: the home's ssh, the P-256 key), with one Agent: trailer equal to the agent and one Claude-Session: trailer equal to its session",
   "anchor": {
     "variable": "SIG_BOOTSTRAP_ANCHOR",
     "value": "the merge commit SHA on dev",

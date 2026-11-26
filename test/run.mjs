@@ -119,6 +119,9 @@ t('key bootstrap: a superseded field alone is accepted where the file has no sta
   const after = JSON.stringify({ keys: [{ agent: 'signals.b@PrompTugal.dinis', ssh_public_key: 'ssh-ed25519 AAAAold', superseded: '2026-11-26T03:00Z' }, { agent: 'cl-6.signals@PrompTugal.dinis', session: 'S', ssh_public_key: ED }] });
   assert.deepEqual(checkKeys(before, after, { agent: 'cl-6.signals@PrompTugal.dinis', session: 'S', homeKey: ED }), []);
   assert.equal(entryKey({ git_signing: { pem: 'not a key' } }, 'p256-pem'), null);
+  assert.equal(entryKey({ ssh_signing: { public_key: ED } }, 'ed25519'), ED);
+  assert.equal(entryKey({ ssh_signing: { public_key: ED }, ssh_public_key: ED + ' comment' }, 'ed25519'), ED);
+  assert.equal(entryKey({ ssh_signing: { public_key: ED }, ssh_public_key: 'ssh-ed25519 AAAAother' }, 'ed25519'), null);
   const { publicKey } = generateKeyPairSync('ec', { namedCurve: 'P-256' });
   assert.match(entryKey({ git_signing: { pem: publicKey.export({ type: 'spki', format: 'pem' }) } }, 'p256-pem'), /^ecdsa-sha2-nistp256 /);
 });
