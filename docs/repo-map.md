@@ -8,9 +8,16 @@ Draft by cl-6.infra@PrompTugal.dinis, 25 Nov 2026, from the 22 existing reposito
 - **PrompTugal__App__{Platform}**: the apps. Kept as they are.
 - **PrompTugal__IaC** and **PrompTugal__Agent__Infrastructure**: the organisation as code and its keeper.
 
-## Proposed homes (16)
+## Dinis's answers (26 Nov 2026, in cl-6.infra's session)
+- "one agent per section, because we need to keep it nice and separate": the Conductor and 14 section homes move into `repos` and Org apply creates them.
+- "an agent per locality, so we track everything that happens there": place agents, name to agree (below).
+- "forget about Storm Charles for now, because we need to refactor everything out of it"; "forget about the apps for here".
+- The News website split: "start moving the stuff into each agent"; the conductor moves it, once the homes exist.
+- Each agent's site is `{name}.agent.promptugal.news`.
 
-| Proposed | Works on | Site |
+## Homes created (15)
+
+| Home | Works on | Site |
 |---|---|---|
 | PrompTugal__Agent__Conductor | PrompTugal__News__Website (its board moves out; the repository goes back to being the website) | conductor.agent.promptugal.news |
 | PrompTugal__Agent__Library | News__Library | library.agent.promptugal.news |
@@ -19,7 +26,7 @@ Draft by cl-6.infra@PrompTugal.dinis, 25 Nov 2026, from the 22 existing reposito
 | PrompTugal__Agent__Signals | News__Signals | signals.agent.promptugal.news |
 | PrompTugal__Agent__Cyber | News__Cyber | cyber.agent.promptugal.news |
 | PrompTugal__Agent__Civic | News__Civic | civic.agent.promptugal.news |
-| PrompTugal__Agent__Weather | News__Weather, News__Storm-Charles | weather.agent.promptugal.news |
+| PrompTugal__Agent__Weather | News__Weather | weather.agent.promptugal.news |
 | PrompTugal__Agent__Events | News__Events | events.agent.promptugal.news |
 | PrompTugal__Agent__Startups | News__Startups | startups.agent.promptugal.news |
 | PrompTugal__Agent__Travel | News__Travel | travel.agent.promptugal.news |
@@ -27,11 +34,6 @@ Draft by cl-6.infra@PrompTugal.dinis, 25 Nov 2026, from the 22 existing reposito
 | PrompTugal__Agent__Videos | News__Videos | videos.agent.promptugal.news |
 | PrompTugal__Agent__Fringe | News__Fringe | fringe.agent.promptugal.news |
 | PrompTugal__Agent__Swarm | News__Swarm, News__Swarm__Runs | swarm.agent.promptugal.news |
-| PrompTugal__Agent__Apps | App__Android, App__iOS, App__Mobile | apps.agent.promptugal.news |
 
-## Questions for Dinis
-1. One agent per section, or fewer agents each keeping several sections (say Weather with Live and Travel)?
-2. Is News__Storm-Charles part of Weather, or its own?
-3. One apps agent, or one per platform?
-4. The News__Website split (what leaves the website for the conductor's home, and any new section repositories) is the conductor's to propose; cl-6.infra adds the repositories it names.
-5. Do the agent sites go live now (Pages on, `{name}.agent.promptugal.news`), or the homes first and sites once DNS is in place?
+## Sites and DNS
+The `{name}.agent.promptugal.news` records are added to `org/dns.json` only once each home's GitHub Pages site is on with that custom domain. A CNAME to promptugal.github.io with no site behind it could be claimed by someone else's Pages site, unless promptugal.news is a verified domain of the PrompTugal organisation (organisation Settings, Pages, Add a domain: GitHub gives a TXT record, which DNS apply can create).
