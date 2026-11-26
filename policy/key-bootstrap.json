@@ -117,53 +117,53 @@
     "PrompTugal__News__Library": [
       {
         "file": ".github/workflows/pages.yml",
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
       }
     ],
     "PrompTugal__News__Live": [
       {
         "file": ".github/workflows/pages.yml",
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
       }
     ],
     "PrompTugal__News__Videos": [
       {
         "file": ".github/workflows/pages.yml",
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
       }
     ],
     "PrompTugal__News__Cyber": [
       {
         "file": ".github/workflows/pages.yml",
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
       }
     ],
     "PrompTugal__News__Bulletins": [
       {
         "file": ".github/workflows/pages.yml",
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
       }
     ],
     "PrompTugal__News__Signals": [
       {
         "file": ".github/workflows/pages.yml",
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
       },
       {
         "file": "scripts/leak-scan.mjs",
-        "note": "leak-scan patch 0001 (cl-6.security, 26 Nov 2026 02:41Z: passes); its sha256 comes from cl-6.signals and is pinned by a policy update"
+        "note": "leak-scan patch 0001 (cl-6.security, 26 Nov 2026 02:41Z: passes); its sha256 comes from cl-6.signals and is pinned in cl-6.security's approvals/pins"
       }
     ],
     "PrompTugal__News__Events": [
       {
         "file": ".github/workflows/pages.yml",
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
       }
     ],
     "PrompTugal__News__Travel": [
       {
         "file": ".github/workflows/pages.yml",
-        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+        "note": "the reviewed pages.yml with the anchor override; pinned in cl-6.security's approvals/pins"
       },
       {
         "file": "scripts/check-commits.mjs",
