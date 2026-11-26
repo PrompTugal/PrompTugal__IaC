@@ -8,7 +8,8 @@
       "name": "www.promptugal.news",
       "type": "CNAME",
       "value": "promptugal.github.io",
-      "exists_by": "live on 25 Nov 2026"
+      "exists_by": "live on 25 Nov 2026",
+      "expected": "GitHub Pages' pair of the apex promptugal.news (redirects there). Dinis, 26 Nov 2026, relayed by cl-6.maestro@dinis: \"yes www is needed by GH\"."
     },
     {
       "name": "library.promptugal.news",

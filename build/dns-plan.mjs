@@ -28,7 +28,8 @@ export function plan(d, live, claims = null) {
     if (got) { if (!(got.length === 1 && got[0].toLowerCase() === want.toLowerCase())) notes.push(`${r.name} ${r.type} is ${got.join(', ')}, org/dns.json says ${want}: never changed by DNS apply`); continue; }
     if (r.type === 'CNAME' && [...have.keys()].some((k) => k.startsWith(`${n} `))) { notes.push(`${r.name}: other records exist there, a CNAME cannot be added`); continue; }
     if (r.type !== 'CNAME' && cnameAt.has(n)) { notes.push(`${r.name}: a CNAME exists there`); continue; }
-    if (claims && r.type === 'CNAME' && /\.github\.io$/.test(want) && !claims[n.replace(/\.$/, '')]) { notes.push(`${r.name}: no PrompTugal repository claims it on GitHub Pages, not created`); continue; }
+    const bareN = n.replace(/\.$/, ''), pairOf = bareN.startsWith('www.') && claims && claims[bareN.slice(4)];
+    if (claims && r.type === 'CNAME' && /\.github\.io$/.test(want) && !claims[bareN] && !pairOf) { notes.push(`${r.name}: no PrompTugal repository claims it on GitHub Pages, not created`); continue; }
     actions.push({ action: 'route53.create_record', target: `${r.name} ${r.type}`, value: want });
     changes.push({ Action: 'CREATE', ResourceRecordSet: { Name: n, Type: r.type, TTL: r.ttl || 300, ResourceRecords: [{ Value: r.type === 'TXT' ? `"${want}"` : want }] } });
   }

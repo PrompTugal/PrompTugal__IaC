@@ -84,6 +84,10 @@ t('an unclaimed GitHub Pages name is reported, a claimed one is not', () => {
   const sets = [{ Name: 'a.promptugal.news.', Type: 'CNAME', ResourceRecords: [{ Value: 'promptugal.github.io' }] }, { Name: 'b.promptugal.news.', Type: 'CNAME', ResourceRecords: [{ Value: 'promptugal.github.io.' }] }, { Name: 'promptugal.news.', Type: 'A', ResourceRecords: [{ Value: '185.199.108.153' }] }, { Name: 'c.promptugal.news.', Type: 'CNAME', ResourceRecords: [{ Value: 'elsewhere.example' }] }];
   assert.deepEqual(unclaimed(sets, { 'a.promptugal.news': 'R' }).map((x) => x.name), ['b.promptugal.news', 'promptugal.news']);
 });
+t('www of a claimed apex is its pair, not unclaimed', () => {
+  const sets = [{ Name: 'www.promptugal.news.', Type: 'CNAME', ResourceRecords: [{ Value: 'promptugal.github.io' }] }, { Name: 'www.other.promptugal.news.', Type: 'CNAME', ResourceRecords: [{ Value: 'promptugal.github.io' }] }];
+  assert.deepEqual(unclaimed(sets, { 'promptugal.news': 'R' }).map((x) => x.name), ['www.other.promptugal.news']);
+});
 t('DNS apply never creates a GitHub Pages record no repository claims', () => {
   const p = dnsPlan({ zone: 'promptugal.news', records: [{ name: 'x.promptugal.news', type: 'CNAME', value: 'promptugal.github.io' }] }, [], {});
   assert.deepEqual(p.actions, []); assert.equal(p.notes.length, 1);

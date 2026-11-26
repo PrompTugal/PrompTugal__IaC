@@ -13,7 +13,9 @@ export function unclaimed(sets, claims) {
   for (const s of sets) {
     const vals = (s.ResourceRecords || []).map((x) => bare(x.Value));
     const pages = (s.Type === 'CNAME' && vals.some((v) => v.endsWith('.github.io'))) || (['A', 'AAAA'].includes(s.Type) && vals.some((v) => PAGES_IPS.includes(v) || v.startsWith('2606:50c0:800')));
-    if (pages && !claims[bare(s.Name)]) out.push({ name: bare(s.Name), type: s.Type, value: vals.join(', ') });
+    // www.<domain> is GitHub Pages' own pair of a claimed apex (it redirects there), so it counts as claimed.
+    const n = bare(s.Name), pair = n.startsWith('www.') && claims[n.slice(4)];
+    if (pages && !claims[n] && !pair) out.push({ name: bare(s.Name), type: s.Type, value: vals.join(', ') });
   }
   return out;
 }
