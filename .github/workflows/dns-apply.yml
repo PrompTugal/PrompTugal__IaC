@@ -31,6 +31,21 @@ jobs:
           ZONE: ${{ vars.PT_ZONE_ID_NEWS }}
         run: |
           if [ -z "$ROLE" ] || [ -z "$ZONE" ]; then echo "PT_AWS_ROLE_ARN or PT_ZONE_ID_NEWS is not set in the apply environment: nothing applied." | tee -a "$GITHUB_STEP_SUMMARY"; echo "ok=false" >> "$GITHUB_OUTPUT"; else echo "ok=true" >> "$GITHUB_OUTPUT"; fi
+      - id: app
+        if: steps.ready.outputs.ok == 'true'
+        uses: actions/create-github-app-token@v1.12.0
+        with:
+          app-id: ${{ vars.PT_IAC_APP_ID }}
+          private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
+          owner: PrompTugal
+          # Read only: which custom domains the repositories claim.
+          permission-metadata: read
+          permission-pages: read
+      - name: The domains PrompTugal repositories claim
+        if: steps.ready.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: node build/dns-claims.mjs claims.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: The OIDC subject GitHub sends (printed so the role's trust policy can keep only this form)
         if: steps.ready.outputs.ok == 'true'
         # Prints only the sub claim. The token itself is never printed or saved.
@@ -50,7 +65,10 @@ jobs:
           ZONE: ${{ vars.PT_ZONE_ID_NEWS }}
         run: |
           aws route53 list-resource-record-sets --hosted-zone-id "$ZONE" --output json > live.json
-          node build/dns-plan.mjs live.json plan.json | tee -a "$GITHUB_STEP_SUMMARY"
+          node build/dns-plan.mjs live.json plan.json claims.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Records pointing at GitHub Pages that no repository claims (report)
+        if: steps.ready.outputs.ok == 'true'
+        run: node build/dns-unclaimed.mjs live.json claims.json | tee -a "$GITHUB_STEP_SUMMARY" || echo "::warning::a name points at GitHub Pages with no PrompTugal repository claiming it (see the summary)"
       - name: Policy check
         if: steps.ready.outputs.ok == 'true'
         run: node build/abp.mjs actions plan.json
