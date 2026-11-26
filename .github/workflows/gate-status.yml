@@ -35,13 +35,13 @@ jobs:
           permission-metadata: read
           permission-contents: read
           permission-statuses: read
+          permission-actions: read
       - id: plan
         env:
           GH_TOKEN: ${{ steps.read.outputs.token }}
         run: |
-          node build/gate-status.mjs plan security-home plan.json | tee -a "$GITHUB_STEP_SUMMARY" | tee plan.txt
-          repos=$(grep '^repos=' plan.txt | cut -d= -f2)
-          echo "repos=$(node -e 'console.log(JSON.stringify(process.argv[1]?process.argv[1].split(","):[]))' "$repos")" >> "$GITHUB_OUTPUT"
+          node build/gate-status.mjs plan security-home plan.json | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "repos=$(node build/gate-status.mjs repos plan.json)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
           name: gate-plan

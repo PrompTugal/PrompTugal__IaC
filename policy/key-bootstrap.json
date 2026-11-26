@@ -24,25 +24,75 @@
     "path": "PrompTugal/PrompTugal__Agent__Security successors/<n>.json (+ .sig), n = 1, 2, ...",
     "rule": "A new approver key is accepted only through statement n, signed (namespace promptugal-key-approval) by the key in force after statement n-1 (the pinned key for n = 1), naming the new key, its fingerprint and its session. The job follows the chain from the pinned key and trusts only its last link. If the chain breaks, only a change to this file by Dinis restores an approver: an escalation."
   },
-  "pages_block": {
-    "file": ".github/workflows/pages.yml",
-    "lines": [
-      "if [ -n \"${{ vars.SIG_BOOTSTRAP_ANCHOR }}\" ]; then A=\"${{ vars.SIG_BOOTSTRAP_ANCHOR }}\"; echo \"anchor set by PrompTugal__IaC: $A\"; else",
-      "fi"
-    ],
-    "sha256": "82dbf68c5c0477d98791f1aa089fd45e763b2a777d93963446721b653eaf561e",
-    "rule": "the pull request adds exactly these lines (compared without leading and trailing spaces), removes none, and changes no other line of pages.yml; the existing anchor lookup and every check on A stay as they are"
-  },
   "gate_changes": {
+    "PrompTugal__News__Library": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "sha256": null,
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Live": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "sha256": null,
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Videos": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "sha256": null,
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Cyber": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "sha256": null,
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Bulletins": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "sha256": null,
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Signals": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "sha256": null,
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      },
+      {
+        "file": "scripts/leak-scan.mjs",
+        "sha256": null,
+        "note": "leak-scan patch 0001 (cl-6.security, 26 Nov 2026 02:41Z: passes); its sha256 comes from cl-6.signals and is pinned by a policy update"
+      }
+    ],
+    "PrompTugal__News__Events": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "sha256": null,
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      }
+    ],
     "PrompTugal__News__Travel": [
+      {
+        "file": ".github/workflows/pages.yml",
+        "sha256": null,
+        "note": "the reviewed pages.yml with the anchor override; pinned by a policy update"
+      },
       {
         "file": "scripts/check-commits.mjs",
         "sha256": null,
-        "note": "accepts cl-<n>.<role>@PrompTugal.dinis; its sha256 is set by a later policy change, once the new checker exists. Until then Travel's gate change is refused. scripts/commit-exemptions.json is never used for this; it stays Dinis's own."
+        "note": "accepts cl-<n>.<role>@PrompTugal.dinis; scripts/commit-exemptions.json is never used for this, it stays Dinis's own"
       }
     ]
   },
-  "keys_rule": "team/keys.json: exactly one new entry, status active, agent equal to the approval's agent, ssh_public_key equal to the ssh_ed25519 published in that agent's home (site/keys/<name>.json on dev); earlier entries may only change status to superseded (with a time), and only entries of the same role; nothing else in the file changes",
+  "keys_rule": "team/keys.json: exactly one new entry, for the approval's agent and session, in the repository's key_format; earlier entries may change only by being marked superseded (a superseded time, and status superseded where the file uses status), and only entries of the same role; nothing else in the file changes",
   "commit_rule": "the pull request's head commit is signed by the new ed25519 key, with one Agent: trailer equal to the agent and one Claude-Session: trailer equal to its session",
   "anchor": {
     "variable": "SIG_BOOTSTRAP_ANCHOR",
@@ -54,20 +104,21 @@
     "context": "promptugal-iac/gate",
     "paths": [
       ".github/**",
-      "scripts/check-*.mjs",
-      "team/keys.json"
+      "scripts/**",
+      "team/**",
+      ".gitattributes"
     ],
-    "rule": "success for a commit range that leaves these paths untouched; for one that touches them, success only with the approver's signed approval of that head SHA; otherwise failure",
+    "rule": "dev: success when the commits from the repository's anchor A to the head leave the paths untouched; work/*: the same from dev to the head. When touched, success only with cl-6.security's signed approval of that head SHA. Failure when A is unknown, or the compared file list holds 300 or more files (the API cuts it) (B5).",
     "heads": [
       "dev",
       "work/**"
-    ]
+    ],
+    "paths_note": "every file pages.yml copies from A (the whole scripts/ and .gitattributes) and the workflows and keys (B4)"
   },
   "per_run": 1,
   "log": {
-    "branch": "log/key-bootstrap",
-    "file": "key-bootstrap-log.json",
-    "note": "every action, committed by the App to this branch only (never dev)"
+    "where": "each run's summary and its plan artifact (90 days)",
+    "note": "no committed log file: committing would need App write on PrompTugal__IaC (accepted by cl-6.security, 26 Nov 2026)"
   },
   "never": [
     "act without a verified approval of the exact head SHA and diff hash",
@@ -75,5 +126,42 @@
     "use commit-exemptions.json",
     "change the approver or this file",
     "hold a token wider than the step needs"
-  ]
+  ],
+  "repository_config": {
+    "PrompTugal__News__Library": {
+      "anchor_job": "checks",
+      "key_format": "ed25519"
+    },
+    "PrompTugal__News__Live": {
+      "anchor_job": "security",
+      "key_format": "ed25519"
+    },
+    "PrompTugal__News__Videos": {
+      "anchor_job": null,
+      "key_format": "ed25519"
+    },
+    "PrompTugal__News__Cyber": {
+      "anchor_job": null,
+      "key_format": "ed25519"
+    },
+    "PrompTugal__News__Bulletins": {
+      "anchor_job": "checks",
+      "key_format": "ed25519"
+    },
+    "PrompTugal__News__Signals": {
+      "anchor_job": "verify",
+      "key_format": "p256-pem"
+    },
+    "PrompTugal__News__Events": {
+      "anchor_job": "verify",
+      "key_format": "ed25519"
+    },
+    "PrompTugal__News__Travel": {
+      "anchor_job": null,
+      "key_format": "ed25519"
+    }
+  },
+  "repository_config_note": "anchor_job: the job a pages.yml push run on dev must pass to be that repository's anchor A (read from each pages.yml on 26 Nov 2026; null where the file names none: the job refuses that repository until a policy update names it). key_format: ed25519 = team/keys.json ssh_public_key equal to the home's ssh_ed25519; p256-pem = team/keys.json git_signing.pem (P-256, PKCS8) whose converted key equals the home's ssh (B3).",
+  "pages_rule": "The anchor-override change to .github/workflows/pages.yml is pinned per repository as a whole-file sha256 under gate_changes, because the eight pages.yml files differ (variable names, job names, lookups): the whole new file, approved by cl-6.security, so the override sits exactly where reviewed (B2). Until a repository's pages.yml sha256 is pinned, its key pull request may not change pages.yml.",
+  "merge_rule": "Before merging: the pull request's base.sha equals dev's head, and dev's head equals the repository's last verified anchor (the latest pages.yml push run on dev whose anchor_job passed). After merging: the merged commit's tree equals the approved head's tree, or no anchor is set (B1)."
 }

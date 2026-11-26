@@ -35,13 +35,15 @@ jobs:
           permission-metadata: read
           permission-contents: read
           permission-pull-requests: read
+          permission-actions: read
       - name: Plan (read only)
         id: plan
         env:
           GH_TOKEN: ${{ steps.read.outputs.token }}
         run: |
-          node build/key-bootstrap.mjs plan security-home plan.json | tee -a "$GITHUB_STEP_SUMMARY" | tee plan.txt
-          echo "repo=$(grep '^action_repo=' plan.txt | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+          node build/key-bootstrap.mjs plan security-home plan.json | tee -a "$GITHUB_STEP_SUMMARY"
+          # the repository comes from plan.json, validated against the policy, never from printed text (B7)
+          echo "repo=$(node build/key-bootstrap.mjs action-repo plan.json)" >> "$GITHUB_OUTPUT"
       - id: merge-token
         if: steps.plan.outputs.repo != ''
         uses: actions/create-github-app-token@v1.12.0

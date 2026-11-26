@@ -13,6 +13,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { gh } from './github.mjs';
 
+
 export const loadPolicy = (f = 'policy/key-bootstrap.json') => JSON.parse(readFileSync(f, 'utf8'));
 export const sha256 = (s) => createHash('sha256').update(s).digest('hex');
 const ORG = 'PrompTugal';
@@ -42,21 +43,20 @@ export function approverKey(policy, home) {
   return { key, agent };
 }
 
-// pages.yml: only the pinned lines added, nothing removed.
-export function checkPagesPatch(patch, block) {
-  const e = [], added = [], removed = [];
-  for (const l of String(patch || '').split('\n')) {
-    if (l.startsWith('+++') || l.startsWith('---')) continue;
-    if (l.startsWith('+')) added.push(l.slice(1).trim()); else if (l.startsWith('-')) removed.push(l.slice(1));
+// team/keys.json: one new entry for the agent in the repository's key format; earlier entries of its role may only be
+// marked superseded. keyOf(entry) returns the entry's key as "type base64", or null.
+export function entryKey(entry, format) {
+  if (format === 'p256-pem') {
+    const pem = entry?.git_signing?.pem; if (!pem) return null;
+    const dir = mkdtempSync(join(tmpdir(), 'kbk-'));
+    try { const f = join(dir, 'k.pem'); writeFileSync(f, String(pem)); return execFileSync('ssh-keygen', ['-i', '-m', 'PKCS8', '-f', f], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().split(/\s+/).slice(0, 2).join(' '); }
+    catch { return null; } finally { rmSync(dir, { recursive: true, force: true }); }
   }
-  if (removed.length) e.push(`pages.yml: ${removed.length} line(s) removed; only the pinned block may be added`);
-  const want = block.lines.map((x) => x.trim());
-  if (added.length !== want.length || added.some((x, i) => x !== want[i])) e.push('pages.yml: the added lines are not exactly the pinned block');
-  return e;
+  const k = String(entry?.ssh_public_key || '').trim().split(/\s+/).slice(0, 2).join(' ');
+  return /^ssh-ed25519 /.test(k) ? k : null;
 }
-
-// team/keys.json: one new active entry for the agent, with its home key; earlier entries of its role may only be superseded.
-export function checkKeys(before, after, { agent, session, homeKey }) {
+const norm = (x) => String(x || '').trim().split(/\s+/).slice(0, 2).join(' ');
+export function checkKeys(before, after, { agent, session, homeKey, format = 'ed25519' }) {
   const e = [], parse = (t) => { const d = JSON.parse(t || '{"keys":[]}'); return Array.isArray(d) ? { keys: d } : d; };
   let b, a; try { b = parse(before); a = parse(after); } catch { return ['team/keys.json is not valid JSON']; }
   const { keys: bk = [], ...bRest } = b, { keys: ak = [], ...aRest } = a;
@@ -67,41 +67,57 @@ export function checkKeys(before, after, { agent, session, homeKey }) {
     const o = bk[i], n = ak[i];
     if (!n) { e.push('team/keys.json: an entry was removed'); continue; }
     if (JSON.stringify(o) === JSON.stringify(n)) continue;
-    const { status: _s, superseded: _t, ...oRest } = o, { status: ns, superseded: nt, ...nRest } = n;
-    if (JSON.stringify(oRest) !== JSON.stringify(nRest) || ns !== 'superseded' || !nt) e.push(`team/keys.json: entry ${i} changed beyond status superseded with a time`);
-    else if (role(o.agent) !== role(agent)) e.push(`team/keys.json: entry ${i} (${o.agent}) is not of ${agent}'s role`);
+    const strip = ({ status, superseded, ...rest }) => rest;
+    const ok = JSON.stringify(strip(o)) === JSON.stringify(strip(n)) && n.superseded && (n.status === undefined || n.status === 'superseded') && (o.status === undefined || n.status !== undefined);
+    if (!ok) e.push(`team/keys.json: entry ${i} changed beyond being marked superseded`);
+    else if (role(o.agent) !== role(agent)) e.push(`team/keys.json: entry ${i} is not of ${agent}'s role`);
   }
   const k = ak[ak.length - 1] || {};
-  if (k.agent !== agent) e.push(`team/keys.json: the new entry is for ${k.agent || 'nobody'}, not ${agent}`);
-  if (k.status !== 'active') e.push('team/keys.json: the new entry is not active');
+  if (k.agent !== agent) e.push(`team/keys.json: the new entry is for ${JSON.stringify(k.agent || null)}, not ${agent}`);
+  if (k.superseded || (k.status !== undefined && k.status !== 'active')) e.push('team/keys.json: the new entry is not active');
   if (session && (k.session || k.claude_session) !== session) e.push('team/keys.json: the new entry names another session');
-  const norm = (x) => String(x || '').trim().split(/\s+/).slice(0, 2).join(' ');
-  if (!homeKey || norm(k.ssh_public_key) !== norm(homeKey)) e.push("team/keys.json: the new key is not the ssh_ed25519 the agent's home publishes");
-  if (!/^ssh-ed25519 /.test(norm(k.ssh_public_key))) e.push('team/keys.json: the new key is not ssh-ed25519');
+  const key = entryKey(k, format);
+  if (!key) e.push(`team/keys.json: the new entry has no ${format === 'p256-pem' ? 'git_signing.pem (P-256)' : 'ssh-ed25519 ssh_public_key'}`);
+  else if (!homeKey || key !== norm(homeKey)) e.push("team/keys.json: the new key is not the key the agent's home publishes");
   return e;
 }
 
-// The files a pull request may touch, for one repository.
+// The files a pull request may touch, for one repository: team/keys.json, and files pinned whole by sha256.
 export function checkFiles(files, policy, repo) {
   const e = [], gate = Object.fromEntries((policy.gate_changes[repo] || []).map((g) => [g.file, g]));
+  if (files.length >= 300) e.push('the pull request lists 300 or more files: refused (the API may cut the list)');
   for (const f of files) {
     if (f.filename === 'team/keys.json') continue;
-    if (f.filename === policy.pages_block.file) { e.push(...checkPagesPatch(f.patch, policy.pages_block)); continue; }
-    const g = gate[f.filename];
-    if (!g) { e.push(`${f.filename}: not a file this policy lets the pull request change`); continue; }
-    if (!g.sha256) e.push(`${f.filename}: its pinned sha256 is not set yet in the policy`);
-    else if (f.content_sha256 !== g.sha256) e.push(`${f.filename}: content does not match the pinned sha256`);
+    const g = gate[f.filename], q = JSON.stringify(f.filename);
+    if (!g) { e.push(`${q}: not a file this policy lets the pull request change`); continue; }
+    if (!g.sha256) e.push(`${q}: its whole-file sha256 is not pinned in the policy yet`);
+    else if (f.content_sha256 !== g.sha256) e.push(`${q}: content does not match the pinned sha256`);
   }
   if (!files.some((f) => f.filename === 'team/keys.json')) e.push('team/keys.json: not changed; the pull request must add the key');
   return e;
 }
 
 // The gate status for a head: untouched gate paths pass; touched ones pass only with an approval of that SHA.
-export function gateState(changed, approved, paths) {
+export function gateState(changed, approved, paths, truncated = false) {
+  if (truncated || changed.length >= 300) return { state: 'failure', description: '300 or more files in the range: refused (the list may be cut)' };
   const re = paths.map((p) => new RegExp('^' + p.split('**').map((q) => q.split('*').map((s) => s.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('[^/]*')).join('.*') + '$'));
   const touched = changed.filter((f) => re.some((r) => r.test(f)));
   if (!touched.length) return { state: 'success', description: 'gate paths untouched' };
-  return approved ? { state: 'success', description: 'gate paths changed with cl-6.security approval of this SHA' } : { state: 'failure', description: `gate paths changed without approval: ${touched.slice(0, 3).join(', ')}` };
+  return approved ? { state: 'success', description: 'gate paths changed with cl-6.security approval of this SHA' } : { state: 'failure', description: `gate paths changed without approval (${touched.length} files)` };
+}
+
+// The repository's last verified anchor, found as its pages.yml finds it: the latest pages.yml push run on dev whose
+// anchor_job passed. null when the policy names no anchor_job (refused) or none is found.
+export async function lastAnchor(policy, repo) {
+  const job = policy.repository_config?.[repo]?.anchor_job;
+  if (!job) return { sha: null, why: `the policy names no anchor_job for ${repo}` };
+  const runs = (await gh('GET', `/repos/${ORG}/${repo}/actions/workflows/pages.yml/runs?branch=dev&event=push&status=success&per_page=20`)).data?.workflow_runs || [];
+  for (const r of runs) {
+    if (r.path !== '.github/workflows/pages.yml' || r.head_branch !== 'dev') continue;
+    const jobs = (await gh('GET', `/repos/${ORG}/${repo}/actions/runs/${r.id}/jobs?per_page=50`)).data?.jobs || [];
+    if (jobs.some((j) => j.name === job && j.conclusion === 'success')) return { sha: r.head_sha, run: r.id, created_at: r.created_at };
+  }
+  return { sha: null, why: `no pages.yml push run on dev with ${job} passed` };
 }
 
 const git = (cwd, ...a) => execFileSync('git', a, { cwd, encoding: 'utf8' }).trim();
@@ -109,13 +125,14 @@ async function contentAt(repo, path, ref) {
   const r = await gh('GET', `/repos/${ORG}/${repo}/contents/${path}?ref=${ref}`);
   return r.status === 200 && r.data?.content ? Buffer.from(r.data.content, 'base64').toString('utf8') : null;
 }
-async function homeKeyOf(agent) {
+async function homeKeyOf(agent, format = 'ed25519') {
   // The agent's home: PrompTugal__Agent__<Role>, file site/keys/<name>.json on dev, field ssh_ed25519. Public, read without a token.
   const name = agent.split('@')[0], role = name.replace(/^cl-\d+\./, '');
   const home = `PrompTugal__Agent__${role.split(/[-.]/).map((w) => w[0].toUpperCase() + w.slice(1)).join('-')}`;
   try {
     const r = await fetch(`https://raw.githubusercontent.com/${ORG}/${home}/dev/site/keys/${name}.json`);
-    return { home, key: r.ok ? (await r.json()).ssh_ed25519 || null : null };
+    const j = r.ok ? await r.json() : {};
+    return { home, key: (format === 'p256-pem' ? j.ssh : j.ssh_ed25519) || null };
   } catch { return { home, key: null }; }
 }
 
@@ -138,13 +155,19 @@ async function plan(homeDir) {
       if (pr.data.state !== 'open') item.errors.push('pull request is not open');
       if (pr.data.base.ref !== 'dev') item.errors.push('pull request is not into dev');
       if (pr.data.head.sha !== a.head_sha) item.errors.push('head SHA differs from the approved one (a push after approval voids it)');
+      const devHead = (await gh('GET', `/repos/${ORG}/${repo}/branches/dev`)).data?.commit?.sha;
+      const A = await lastAnchor(policy, repo);
+      if (pr.data.base.sha !== devHead) item.errors.push("the pull request's base is not dev's head");
+      if (!A.sha) item.errors.push(`no verified anchor: ${A.why}`);
+      else if (devHead !== A.sha) item.errors.push("dev's head is not the last verified anchor: commits on dev are not yet checked");
       const diff = await gh('GET', `/repos/${ORG}/${repo}/pulls/${item.pr}`, undefined, undefined, 'application/vnd.github.diff');
       if (sha256(typeof diff.data === 'string' ? diff.data : '') !== a.diff_sha256) item.errors.push('diff sha256 differs from the approved one');
       const files = (await gh('GET', `/repos/${ORG}/${repo}/pulls/${item.pr}/files?per_page=100`)).data || [];
       for (const f of files) if ((policy.gate_changes[repo] || []).some((g) => g.file === f.filename)) { const t = await contentAt(repo, f.filename, a.head_sha); f.content_sha256 = t == null ? null : sha256(t); }
       item.errors.push(...checkFiles(files, policy, repo));
-      const { key: homeKey, home } = await homeKeyOf(a.agent || '');
-      item.errors.push(...checkKeys(await contentAt(repo, 'team/keys.json', pr.data.base.sha), await contentAt(repo, 'team/keys.json', a.head_sha), { agent: a.agent, session: a.session, homeKey }));
+      const format = policy.repository_config?.[repo]?.key_format || 'ed25519';
+      const { key: homeKey, home } = await homeKeyOf(a.agent || '', format);
+      item.errors.push(...checkKeys(await contentAt(repo, 'team/keys.json', pr.data.base.sha), await contentAt(repo, 'team/keys.json', a.head_sha), { agent: a.agent, session: a.session, homeKey, format }));
       // The head commit: signed by the new key, with the agent's trailers.
       const w = mkdtempSync(join(tmpdir(), 'kbc-'));
       try {
@@ -156,7 +179,7 @@ async function plan(homeDir) {
         if (tr('Agent').join() !== a.agent) item.errors.push('head commit Agent: trailer is not the agent');
         if (a.session && tr('Claude-Session').join() !== a.session) item.errors.push('head commit Claude-Session: trailer is not the session');
       } catch (x) { item.errors.push(`head commit could not be read: ${x.message.split('\n')[0]}`); } finally { rmSync(w, { recursive: true, force: true }); }
-      if (!item.errors.length && !out.action) out.action = { repo, pr: item.pr, head_sha: a.head_sha, agent: a.agent };
+      if (!item.errors.length && !out.action) out.action = { repo, pr: item.pr, head_sha: a.head_sha, base_sha: pr.data.base.sha, agent: a.agent };
     }
   }
   return out;
@@ -167,13 +190,23 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   if (cmd === 'plan') {
     const p = await plan(x); writeFileSync(y, JSON.stringify(p, null, 2));
     console.log(`### Key bootstrap plan\n- action: ${p.action ? `${p.action.repo} #${p.action.pr} at ${p.action.head_sha.slice(0, 12)}` : 'none'}`);
-    for (const i of p.items) console.log(`- ${i.repo || ''} ${i.pr ? '#' + i.pr : ''} ${i.done || i.refused || (i.errors.length ? 'refused: ' + i.errors.join('; ') : 'ready')}`);
-    console.log(`action_repo=${p.action?.repo || ''}`);
+    // Errors are printed JSON-escaped, one per line, so no text from a pull request can forge a line of its own.
+    for (const i of p.items) console.log(`- ${i.repo || ''} ${i.pr ? '#' + i.pr : ''} ${i.done || i.refused || (i.errors.length ? 'refused: ' + JSON.stringify(i.errors) : 'ready')}`);
+  } else if (cmd === 'action-repo') {
+    // The repository to act on, from plan.json only, and only if the policy covers it (B7).
+    const a = JSON.parse(readFileSync(x, 'utf8')).action;
+    const repo = a && policy.repositories.includes(a.repo) && /^PrompTugal__News__[A-Za-z0-9-]+$/.test(a.repo) ? a.repo : '';
+    process.stdout.write(repo);
   } else if (cmd === 'merge') {
     const a = JSON.parse(readFileSync(x, 'utf8')).action; if (!a) process.exit(0);
     const r = await gh('PUT', `/repos/${ORG}/${a.repo}/pulls/${a.pr}/merge`, { sha: a.head_sha, merge_method: 'rebase' });
     if (r.status !== 200) { console.error(`merge ${a.repo} #${a.pr}: HTTP ${r.status} ${r.data?.message || ''}`); process.exit(1); }
-    writeFileSync(x, JSON.stringify({ ...JSON.parse(readFileSync(x, 'utf8')), merged_sha: r.data.sha }, null, 2));
+    // The merged tree must be the approved head's tree, or no anchor is set (B1).
+    const t1 = (await gh('GET', `/repos/${ORG}/${a.repo}/git/commits/${r.data.sha}`)).data?.tree?.sha;
+    const t2 = (await gh('GET', `/repos/${ORG}/${a.repo}/git/commits/${a.head_sha}`)).data?.tree?.sha;
+    const same = !!t1 && t1 === t2;
+    writeFileSync(x, JSON.stringify({ ...JSON.parse(readFileSync(x, 'utf8')), merged_sha: same ? r.data.sha : null, merged_tree_mismatch: !same }, null, 2));
+    if (!same) { console.error(`merged ${a.repo} #${a.pr}, but its tree is not the approved head's tree: no anchor set; escalate`); process.exit(1); }
     console.log(`merged ${a.repo} #${a.pr} at ${a.head_sha.slice(0, 12)} as ${r.data.sha.slice(0, 12)}`);
   } else if (cmd === 'anchor') {
     const p = JSON.parse(readFileSync(x, 'utf8')); if (!p.merged_sha) process.exit(0);
@@ -190,8 +223,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     if (cur.status === 404) { console.log(`${repo}: no anchor set`); process.exit(0); }
     if (cur.status !== 200) { console.error(`${repo}: reading ${v}: HTTP ${cur.status}`); process.exit(1); }
     const setAt = new Date(cur.data.updated_at || cur.data.created_at);
-    const runs = (await gh('GET', `/repos/${ORG}/${repo}/actions/runs?branch=dev&event=push&per_page=20`)).data?.workflow_runs || [];
-    const green = runs.find((r) => r.conclusion === 'success' && new Date(r.created_at) > setAt);
+    const A = await lastAnchor(policy, repo);
+    const green = A.sha && new Date(A.created_at) > setAt ? { id: A.run } : null;
     const old = Date.now() - setAt.getTime() > policy.anchor.max_hours * 3600e3;
     if (!green && !old) { console.log(`${repo}: anchor ${String(cur.data.value).slice(0, 12)} kept (no green run yet, set ${setAt.toISOString()})`); process.exit(0); }
     const r = await gh('DELETE', `/repos/${ORG}/${repo}/actions/variables/${v}`);

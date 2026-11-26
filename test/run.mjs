@@ -1,11 +1,12 @@
 // Tests for PrompTugal__IaC. Node built-ins only. Usage: node test/run.mjs
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
+import { generateKeyPairSync } from 'node:crypto';
 import { load, validate, validateRepos, checkActions, glob } from '../build/abp.mjs';
 import { plan } from '../build/org-plan.mjs';
 import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
 import { unclaimed } from '../build/dns-unclaimed.mjs';
-import { checkPagesPatch, checkKeys, checkFiles, gateState, sha256 as kbSha } from '../build/key-bootstrap.mjs';
+import { checkKeys, checkFiles, gateState, entryKey } from '../build/key-bootstrap.mjs';
 const kb = JSON.parse(readFileSync('policy/key-bootstrap.json', 'utf8'));
 
 let n = 0, failed = 0;
@@ -99,40 +100,47 @@ t('DNS apply never creates a GitHub Pages record no repository claims', () => {
 t('a dry DNS plan passes the policy', () => assert.deepEqual(checkActions(policy, dnsPlan(dns, [])), []));
 
 const ED = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOnew';
-const blockPatch = '@@ -10,3 +10,5 @@\n ' + 'x\n+' + kb.pages_block.lines[0] + '\n   lookup\n+fi\n';
-t('key bootstrap: the pinned block hash is the block', () => assert.equal(kbSha(kb.pages_block.lines.join('\n') + '\n'), kb.pages_block.sha256));
-t('key bootstrap: pages.yml may only gain the pinned block', () => {
-  assert.deepEqual(checkPagesPatch(blockPatch, kb.pages_block), []);
-  assert.equal(checkPagesPatch(blockPatch + '-      node scripts/check-signatures.mjs\n', kb.pages_block).length, 1);
-  assert.equal(checkPagesPatch('+if true; then A=evil; else\n+fi\n', kb.pages_block).length, 1);
+t('key bootstrap: every covered repository has a config, and pages.yml is pinned whole (B2, B3)', () => {
+  for (const r of kb.repositories) { assert.ok(kb.repository_config[r], r); assert.ok(['ed25519', 'p256-pem'].includes(kb.repository_config[r].key_format), r); assert.ok(kb.gate_changes[r].some((g) => g.file === '.github/workflows/pages.yml'), r); }
+  assert.equal(kb.repository_config.PrompTugal__News__Signals.key_format, 'p256-pem');
 });
 t('key bootstrap: keys.json takes one new entry for the agent with its home key', () => {
   const before = JSON.stringify({ keys: [{ agent: 'cyber.b@PrompTugal.dinis', status: 'active', ssh_public_key: 'ssh-ed25519 AAAAold' }] });
   const ok = JSON.stringify({ keys: [{ agent: 'cyber.b@PrompTugal.dinis', status: 'superseded', superseded: '2026-11-26T03:00Z', ssh_public_key: 'ssh-ed25519 AAAAold' }, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', status: 'active', ssh_public_key: ED }] });
   assert.deepEqual(checkKeys(before, ok, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: ED }), []);
   assert.ok(checkKeys(before, ok, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: 'ssh-ed25519 AAAAother' }).length);
-  const other = ok.replace('cyber.b@', 'signals.b@').replace('cyber.b@', 'signals.b@');
-  assert.ok(checkKeys(before.replace('cyber.b@', 'signals.b@'), other, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: ED }).some((e) => e.includes('role')));
+  assert.ok(checkKeys(before.replace('cyber.b@', 'signals.b@'), ok.replace('cyber.b@', 'signals.b@'), { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: ED }).some((e) => e.includes('role')));
   const two = JSON.stringify({ keys: [...JSON.parse(ok).keys, { agent: 'cl-6.cyber@PrompTugal.dinis', status: 'active', ssh_public_key: ED }] });
   assert.ok(checkKeys(before, two, { agent: 'cl-6.cyber@PrompTugal.dinis', session: 'S', homeKey: ED }).length);
 });
-t('key bootstrap: only keys.json, the pinned block and pinned gate files may change', () => {
-  const files = [{ filename: 'team/keys.json' }, { filename: '.github/workflows/pages.yml', patch: blockPatch }];
-  assert.deepEqual(checkFiles(files, kb, 'PrompTugal__News__Cyber'), []);
-  assert.equal(checkFiles([...files, { filename: 'scripts/check-signatures.mjs' }], kb, 'PrompTugal__News__Cyber').length, 1);
-  assert.ok(checkFiles([...files, { filename: 'scripts/check-commits.mjs', content_sha256: 'x' }], kb, 'PrompTugal__News__Travel').some((e) => e.includes('not set yet')));
-  assert.ok(checkFiles([...files, { filename: 'scripts/commit-exemptions.json' }], kb, 'PrompTugal__News__Travel').length);
+t('key bootstrap: a superseded field alone is accepted where the file has no status (Signals style)', () => {
+  const before = JSON.stringify({ keys: [{ agent: 'signals.b@PrompTugal.dinis', ssh_public_key: 'ssh-ed25519 AAAAold' }] });
+  const after = JSON.stringify({ keys: [{ agent: 'signals.b@PrompTugal.dinis', ssh_public_key: 'ssh-ed25519 AAAAold', superseded: '2026-11-26T03:00Z' }, { agent: 'cl-6.signals@PrompTugal.dinis', session: 'S', ssh_public_key: ED }] });
+  assert.deepEqual(checkKeys(before, after, { agent: 'cl-6.signals@PrompTugal.dinis', session: 'S', homeKey: ED }), []);
+  assert.equal(entryKey({ git_signing: { pem: 'not a key' } }, 'p256-pem'), null);
+  const { publicKey } = generateKeyPairSync('ec', { namedCurve: 'P-256' });
+  assert.match(entryKey({ git_signing: { pem: publicKey.export({ type: 'spki', format: 'pem' }) } }, 'p256-pem'), /^ecdsa-sha2-nistp256 /);
 });
-t('gate status: untouched paths pass, touched ones need approval', () => {
+t('key bootstrap: only keys.json and whole-file pins may change; unpinned files are refused', () => {
+  const files = [{ filename: 'team/keys.json' }];
+  assert.deepEqual(checkFiles(files, kb, 'PrompTugal__News__Cyber'), []);
+  assert.ok(checkFiles([...files, { filename: '.github/workflows/pages.yml' }], kb, 'PrompTugal__News__Cyber').some((e) => e.includes('not pinned')));
+  assert.equal(checkFiles([...files, { filename: 'scripts/check-signatures.mjs' }], kb, 'PrompTugal__News__Cyber').length, 1);
+  assert.ok(checkFiles([...files, { filename: 'scripts/commit-exemptions.json' }], kb, 'PrompTugal__News__Travel').length);
+  assert.ok(checkFiles([...files, { filename: 'x\naction_repo=PrompTugal__News__Cyber' }], kb, 'PrompTugal__News__Cyber').every((e) => !e.includes('\n')));
+});
+t('gate status: untouched paths pass, touched ones need approval, a cut list fails (B4, B5)', () => {
   assert.equal(gateState(['site/index.html'], false, kb.gate_status.paths).state, 'success');
-  assert.equal(gateState(['team/keys.json'], false, kb.gate_status.paths).state, 'failure');
+  for (const f of ['team/keys.json', '.gitattributes', 'scripts/leak-scan.mjs', 'scripts/commit-exemptions.json', 'scripts/check-signatures-trusted.sh']) assert.equal(gateState([f], false, kb.gate_status.paths).state, 'failure', f);
   assert.equal(gateState(['.github/workflows/pages.yml'], true, kb.gate_status.paths).state, 'success');
-  assert.equal(gateState(['scripts/check-signatures.mjs'], false, kb.gate_status.paths).state, 'failure');
+  assert.equal(gateState(['site/a'], true, kb.gate_status.paths, true).state, 'failure');
+  assert.equal(gateState(Array.from({ length: 300 }, (_, i) => `site/${i}`), false, kb.gate_status.paths).state, 'failure');
 });
 t('dev-gate waits for the App status, and only the App can post it', () => {
   const r = org.repos.find((x) => x.rulesets?.some((q) => q.name === 'dev-gate'));
   const g = r.rulesets.find((q) => q.name === 'dev-gate');
   assert.equal(g.rules.find((q) => q.type === 'required_status_checks').parameters.required_status_checks[0].integration_id, 5777442);
+  assert.ok(!g.bypass_actors.some((b) => b.actor_type === 'Integration'), 'no App bypass (B6)');
   const l = live(); l[r.name] = { ...l[r.name], rulesets: [], dev_status: null };
   assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name), []);
   l[r.name].dev_status = 'success';
