@@ -132,6 +132,7 @@ t('key bootstrap: each repository dialect accepts its own entry and refuses anot
   const ev = cfgOf('Events'), mismatch = { agent: AG, ssh_signing: { public_key: EDSSH }, ssh_public_key: 'ssh-ed25519 AAAAother' };
   assert.equal(entryKey(mismatch, ev), null, 'Events: two different keys');
   assert.equal(entryKey({ agent: AG, ssh: { public_key_pem: EDPEM }, ssh_signing: { public_key: 'ssh-ed25519 AAAAother' } }, cfgOf('Data')), null, 'Data: PEM and ssh line differ');
+  assert.equal(entryKey({ agent: AG, ssh: { public_key_pem: ECPEM } }, cfgOf('Data')), ECSSH, 'Data: a P-256 PEM reads as ecdsa-sha2-nistp256');
 });
 t('key bootstrap: more than one new entry, or one for another role, is refused', () => {
   const c = cfgOf('Library'), old = { agent: 'x.b@PrompTugal.dinis', status: 'active', ssh_public_key: 'ssh-ed25519 AAAAold' };

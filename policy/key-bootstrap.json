@@ -218,11 +218,15 @@
       },
       {
         "file": "scripts/check-signatures.mjs",
-        "note": "read from Data's dev at 26 Nov 2026: its signing keys are the ssh block's Ed25519 SPKI PEM (public_key_pem), with principals; the P-256 public_pem entries are not used for commits. Pinned in cl-6.security's approvals/pins"
+        "note": "the pinned version (cl-6.security, 07:19Z) reads the same field as dev, the ssh block's public_key_pem, now as an Ed25519 or P-256 SPKI PEM (P-256 to ecdsa-sha2-nistp256; other curves refused), with principals; pinned in cl-6.security's approvals/pins"
       },
       {
         "file": "scripts/leak-scan.mjs",
         "note": "an exact-value exemption for one product name; pinned in cl-6.security's approvals/pins"
+      },
+      {
+        "file": "scripts/test-leak-scan.mjs",
+        "note": "changed together with leak-scan.mjs (cases for the exempted name); pinned in cl-6.security's approvals/pins"
       }
     ]
   },
