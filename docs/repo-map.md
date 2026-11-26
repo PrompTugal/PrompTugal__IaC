@@ -40,3 +40,10 @@ Dinis, 26 Nov 2026: "an agent per locality, so we track everything that happens 
 
 ## Sites and DNS
 The `{name}.agent.promptugal.news` records are added to `org/dns.json` only once each home's GitHub Pages site is on with that custom domain. A CNAME to promptugal.github.io with no site behind it could be claimed by someone else's Pages site, unless promptugal.news is a verified domain of the PrompTugal organisation (organisation Settings, Pages, Add a domain: GitHub gives a TXT record, which DNS apply can create).
+
+## Role homes (26) and folds (Dinis, 26 Nov 2026)
+Dinis, in cl-6.infra's session (~01:25 UTC): "yes merge #14, and fold those into existing homes". From cl-6.conductor's list (PrompTugal__News__Website board/team/conductor/proposals/2026-11-26-agent-repos.json):
+- 21 role homes: Journalist, Dev, Security, Correspondent, Designer, Accountant, ABP, Ontologist, Observability, DevOps, Sherpa, Synthetic, Rights, Translator, Telemetry, Historian, Researcher, Outreach, Backup, Investors, Customers.
+- 5 twin homes of roles on the partner newsroom team: Reviewer, Curator, Checker, Programme, Analyst.
+- Folded, no repository of their own: place.algarve.central, place.algarve.east and place.algarve.west into PrompTugal__Agent__Place__Algarve; place.districts into PrompTugal__Agent__Place__Portugal; the six places workers (data, datasci, designer, detective, dev, viz) into their role homes (Data, Data, Designer, Researcher, Dev, Designer as cl-6.conductor maps them).
+Every agent home gives promptugal-news-agents push.
