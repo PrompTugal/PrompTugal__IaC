@@ -9,7 +9,7 @@ let n = 0, failed = 0;
 const t = (name, fn) => { n++; try { fn(); } catch (e) { failed++; console.error(`FAIL ${name}: ${e.message}`); } };
 const policy = load();
 const org = JSON.parse(readFileSync('org/repos.json', 'utf8'));
-const live = (over = {}) => Object.fromEntries(org.repos.map((r) => [r.name, { name: r.name, description: r.description, default_branch: 'dev', has_dev: true, visibility: 'public', has_pages: !!r.pages_site, cname: r.pages_site ? r.site : null, ...(over[r.name] || {}) }]));
+const live = (over = {}) => Object.fromEntries(org.repos.map((r) => [r.name, { name: r.name, description: r.description, default_branch: 'dev', has_dev: true, visibility: 'public', has_pages: !!r.pages_site, cname: r.pages_site ? r.site : null, teams: Object.fromEntries(Object.keys(r.teams || {}).map((t) => [t, 'push'])), ...(over[r.name] || {}) }]));
 
 t('the policy is well formed', () => assert.deepEqual(validate(policy), []));
 t('org/repos.json follows the rules', () => assert.deepEqual(validateRepos(org), []));
@@ -52,6 +52,13 @@ t('a home with a site gets Pages and its own domain', () => {
   assert.deepEqual(acts.map((a) => a.action), ['pages.enable', 'pages.set_cname']); assert.equal(acts[1].cname, r.site);
 });
 t('every site is under agent.promptugal.news', () => { for (const r of org.repos.filter((x) => x.pages_site)) assert.match(r.site, /^[a-z0-9-]+(\.place)?\.agent\.promptugal\.news$/, r.name); });
+t('a home without the agents team gets push, never more', () => {
+  const r = org.repos.find((x) => x.teams); const l = live(); l[r.name] = { ...l[r.name], teams: {} };
+  const acts = plan(org, l).actions.filter((a) => a.target === r.name);
+  assert.deepEqual(acts.map((a) => a.action), ['team.grant_push']); assert.equal(acts[0].team, 'promptugal-news-agents');
+  assert.equal(checkActions(policy, { pipeline: 'org-apply', actions: [{ action: 'team.grant_admin', target: r.name }] }).length, 1);
+});
+t('every agent home gives the agents team push', () => { for (const r of org.repos.filter((x) => x.name.startsWith('PrompTugal__Agent__') && x.pages_site)) assert.equal((r.teams || {})['promptugal-news-agents'], 'push', r.name); });
 t('proposed repositories are never planned', () => { const names = new Set((org.proposed || []).map((r) => r.name)); assert.ok(plan(org, live()).actions.every((a) => !names.has(a.target))); });
 t('proposed names follow the rules and are not already listed', () => { const have = new Set(org.repos.map((r) => r.name)); for (const r of org.proposed || []) { assert.match(r.name, /^PrompTugal__Agent__[A-Z][A-Za-z0-9]*$/); assert.ok(!have.has(r.name), r.name); } });
 
