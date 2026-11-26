@@ -4,9 +4,9 @@ name: Gate status
 # are written with its own token, statuses write only.
 on:
   workflow_dispatch:
-  # Every 15 minutes: Dinis's decision when he merges this; uncomment to turn it on.
-  # schedule:
-  #   - cron: '4,19,34,49 * * * *'
+  # Every 15 minutes: turned on by Dinis's merge of this change (after #25 and the App's five permissions).
+  schedule:
+    - cron: '4,19,34,49 * * * *'
 permissions:
   contents: read
 concurrency: gate-status
