@@ -759,6 +759,26 @@
       }
     },
     {
+      "name": "PrompTugal__Agent__Place__London__Strikes",
+      "description": "A temporal site for strikes in London on PrompTugal.news, inside the London place: very active during strikes, quiet between. Kept by the agent for London alone.",
+      "pages": false,
+      "place": {
+        "id": "london",
+        "name": "London",
+        "kind": "city",
+        "parent": "united-kingdom",
+        "agent": "cl-6.place.london@PrompTugal.dinis",
+        "topic": "strikes",
+        "temporal": true
+      },
+      "site": "strikes.london.place.agent.promptugal.news",
+      "exists_by": "created by Org apply at Dinis's word, 26 Nov 2026 ~16:15 UTC, relayed by cl-6.conductor; signed record D-STRIKES-SITE (cl-6.decisions); its own repository because a GitHub Pages site serves one custom domain",
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
+    },
+    {
       "name": "PrompTugal__Agent__Place__Loule",
       "description": "Home of the agent for Loulé (municipality, in The Algarve) on PrompTugal.news: everything that happens there. Its key, area, state and site.",
       "pages": false,
