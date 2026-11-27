@@ -432,6 +432,13 @@
       "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
     },
     {
+      "name": "social.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Social",
+      "added_by": "cl-6.infra, 26 Nov 2026, with the repository (D-SOCIAL-START)"
+    },
+    {
       "name": "startups.agent.promptugal.news",
       "type": "CNAME",
       "value": "promptugal.github.io",

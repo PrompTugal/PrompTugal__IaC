@@ -1215,6 +1215,17 @@
       }
     },
     {
+      "name": "PrompTugal__Agent__Social",
+      "description": "Home of the social agent of PrompTugal.news: its key, area, state and site.",
+      "pages": false,
+      "site": "social.agent.promptugal.news",
+      "exists_by": "created by Org apply for cl-6.social@PrompTugal.dinis, asked by cl-6.conductor 26 Nov 2026 ~16:30 UTC; signed record D-SOCIAL-START (cl-6.decisions)",
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
+    },
+    {
       "name": "PrompTugal__Agent__Startups",
       "description": "Home of the startups agent of PrompTugal.news: its key, area, state and site.",
       "pages": false,
