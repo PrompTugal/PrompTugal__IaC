@@ -126,6 +126,7 @@ t('key bootstrap: each repository dialect accepts its own entry and refuses anot
     Videos: [{ agent: 'x.b@PrompTugal.dinis', ssh: { public_key_pem: 'old' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh: { public_key_pem: EDPEM } }],
     Cyber: [{ agent: 'x.b@PrompTugal.dinis', status: 'active', bundle: { sign: 'old' } }, (o) => ({ ...o, status: 'superseded' }), { agent: AG, session: 'S', status: 'active', bundle: { sign: ECPEM } }],
     Data: [{ agent: 'x.b@PrompTugal.dinis', ssh: { public_key_pem: 'old', principals: ['x.b@PrompTugal.dinis'] } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', ssh: { public_key_pem: EDPEM, principals: [AG] }, ssh_signing: { public_key: EDSSH } }],
+    Travel: [{ agent: 'x.b@PrompTugal.dinis', status: 'active', bundle: { sign: 'old' } }, (o) => ({ ...o, superseded: '2026-11-27T08:00Z' }), { agent: AG, session: 'S', ssh: { public_key_pem: ECPEM, type: 'ecdsa-sha2-nistp256', principals: [AG], session_sha256: '0123456789abcdef', from: '2026-11-26' } }],
     Signals: [{ agent: 'x.b@PrompTugal.dinis', git_signing: { pem: 'old' } }, (o) => ({ ...o, superseded: '2026-11-26T03:00Z' }), { agent: AG, session: 'S', git_signing: { pem: ECPEM } }],
   };
   for (const [r, [old, retire, neu]] of Object.entries(cases)) {
