@@ -46,7 +46,8 @@
       "dev",
       "work/**"
     ],
-    "paths_note": "every file pages.yml copies from A (the whole scripts/ and .gitattributes) and the workflows and keys (B4)"
+    "paths_note": "every file pages.yml copies from A (the whole scripts/ and .gitattributes) and the workflows and keys (B4)",
+    "advance": "On a work/** head: success and a strict fast-forward of dev (compare ahead, behind_by 0) moves dev to it, force false, after re-reading dev and the status; failure creates tag gate/<agent>/<sha12>-fail. Never a force update, never another branch, never a tag deletion."
   },
   "per_run": 1,
   "log": {

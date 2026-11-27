@@ -7,6 +7,7 @@ import { plan } from '../build/org-plan.mjs';
 import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
 import { unclaimed } from '../build/dns-unclaimed.mjs';
 import { checkKeys, checkFiles, gateState, entryKey, readPins, pemToSsh } from '../build/key-bootstrap.mjs';
+import { advanceDecision } from '../build/gate-status.mjs';
 const kb = JSON.parse(readFileSync('policy/key-bootstrap.json', 'utf8'));
 
 let n = 0, failed = 0;
@@ -178,6 +179,22 @@ t('dev-gate waits for the App status, and only the App can post it', () => {
   assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name), []);
   l[r.name].dev_status = 'success';
   assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name).map((a) => a.action), ['ruleset.create']);
+});
+
+t('the App advances dev only to a green work head that is a strict fast-forward, and tags failures', () => {
+  const D = 'a'.repeat(40), H = 'b'.repeat(40), ff = { status: 'ahead', ahead_by: 2, behind_by: 0 };
+  assert.deepEqual(advanceDecision({ branch: 'work/cl-6.data', sha: H, state: 'success', dev: D, cmp: ff }), { kind: 'advance', agent: 'cl-6.data', sha: H, from: D });
+  assert.equal(advanceDecision({ branch: 'work/cl-6.data', sha: H, state: 'success', dev: D, cmp: { status: 'diverged', ahead_by: 1, behind_by: 1 } }), null, 'diverged: never');
+  assert.equal(advanceDecision({ branch: 'work/cl-6.data', sha: H, state: 'success', dev: D, cmp: { status: 'behind', ahead_by: 0, behind_by: 3 } }), null, 'behind: never');
+  assert.equal(advanceDecision({ branch: 'work/cl-6.data', sha: D, state: 'success', dev: D, cmp: { status: 'identical', ahead_by: 0, behind_by: 0 } }), null, 'already dev');
+  assert.equal(advanceDecision({ branch: 'work/cl-6.data', sha: H, state: 'pending', dev: D, cmp: ff }), null, 'pending: wait');
+  assert.equal(advanceDecision({ branch: 'dev', sha: H, state: 'success', dev: D, cmp: ff }), null, 'only work/** heads');
+  assert.equal(advanceDecision({ branch: 'work/a/../b', sha: H, state: 'success', dev: D, cmp: ff }), null, 'odd branch names refused');
+  assert.equal(advanceDecision({ branch: 'work/cl-6.data', sha: H, state: 'success', dev: null, cmp: ff }), null, 'no dev: never');
+  assert.deepEqual(advanceDecision({ branch: 'work/cl-6.data', sha: H, state: 'failure', dev: D, cmp: null }), { kind: 'fail_tag', agent: 'cl-6.data', sha: H, tag: `gate/cl-6.data/${H.slice(0, 12)}-fail` });
+  const pol = JSON.parse(readFileSync('policy/abp.json', 'utf8')).pipelines['gate-status'];
+  for (const a of ['ref.fast_forward_dev', 'tag.create_gate_fail']) assert.ok(pol.allowed.includes(a), a);
+  for (const a of ['ref.force_update', 'ref.update_other_branch', 'tag.delete']) assert.ok(pol.refused_always.includes(a), a);
 });
 
 console.log(`${n - failed} of ${n} tests passed`);

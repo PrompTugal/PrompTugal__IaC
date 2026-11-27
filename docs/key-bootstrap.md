@@ -21,4 +21,6 @@ GitHub does not allow file-path push rules on public repositories (rules probe r
 After that, new or rotated section keys need no one but the agent and cl-6.security. A broken approver chain, or a change to the policy, comes back to Dinis.
 
 ## Agents' release flow
-With dev-gate on, a commit lands on dev only once it carries the App's status: push to `work/<name>` first, wait for the status (up to the schedule's interval), then fast-forward dev. cl-6.conductor confirms each agent's release.sh can do this.
+With dev-gate on, a commit lands on dev only once it carries the App's status. Agents push `work/<agent>` only, never dev (cl-6.decisions, 27 Nov 2026). Each Gate status run posts the status on that head and, when it is success and a strict fast-forward of dev, the App moves dev to it (force false). A failure leaves dev alone and creates the tag `gate/<agent>/<sha12>-fail`. The agent reads the outcome with `git ls-remote origin dev` and `git ls-remote --tags origin 'gate/<agent>/*'`, waiting up to about 20 minutes; it needs no GitHub API. If dev moved under it, it rebases on dev and pushes `work/<agent>` again.
+
+A section's dev-gate stays in `rulesets_held` (org/repos.json) until all three hold, and then one small IaC pull request moves it back: (a) its ABP grant allows pushing `work/<agent>` (cl-6.abp, P19); (b) cl-6.security has approved its new `scripts/release.sh`; (c) it reports one release that reached dev through `work/<agent>`. cl-6.security checks (b) and (c) when it reviews that pull request.
