@@ -1454,7 +1454,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1496,7 +1496,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Civic",
@@ -1515,7 +1516,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1557,7 +1558,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Data",
@@ -1567,7 +1569,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1609,7 +1611,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Events",
@@ -1619,7 +1622,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1661,7 +1664,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Fringe",
@@ -1677,7 +1681,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1719,7 +1723,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Live",
@@ -1729,7 +1734,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1771,7 +1776,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Signals",
@@ -1781,7 +1787,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1823,7 +1829,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Startups",
@@ -1860,7 +1867,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1902,7 +1909,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Videos",
@@ -1912,7 +1920,7 @@
       "teams": {
         "promptugal-news-agents": "push"
       },
-      "rulesets": [
+      "rulesets_held": [
         {
           "name": "dev-gate",
           "target": "branch",
@@ -1954,7 +1962,8 @@
           ],
           "after_status": "promptugal-iac/gate"
         }
-      ]
+      ],
+      "rulesets_held_note": "dev-gate held (27 Nov 2026, cl-6.infra): the section release scripts push HEAD:dev directly and their ABP grants do not cover work/<name>; restore to rulesets once cl-6.abp widens the grant and the section reports ready"
     },
     {
       "name": "PrompTugal__News__Weather",
