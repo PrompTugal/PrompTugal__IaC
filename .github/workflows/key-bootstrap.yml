@@ -52,10 +52,9 @@ jobs:
           private-key: ${{ secrets.PT_IAC_APP_PRIVATE_KEY }}
           owner: PrompTugal
           repositories: ${{ steps.plan.outputs.repo }}
-          permission-pull-requests: write
           permission-contents: write
           permission-workflows: write
-      - name: Merge the approved pull request at its approved head SHA
+      - name: Fast-forward dev to the approved head SHA (no merge API)
         if: steps.plan.outputs.repo != ''
         env:
           GH_TOKEN: ${{ steps.merge-token.outputs.token }}

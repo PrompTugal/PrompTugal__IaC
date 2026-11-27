@@ -125,6 +125,10 @@ export function checkFiles(files, pins, truncated = false, needsKeys = true) {
 }
 
 // The gate status for a head: untouched gate paths pass; touched ones pass only with an approval of that SHA.
+// A key pull request lands by moving dev to its approved head, never through the merge API (cl-6.security, 27 Nov 2026):
+// only a strict fast-forward of dev qualifies, so the agent's signed commits land unchanged. cmp: compare dev...head.
+export function strictFastForward(cmp) { return !!cmp && cmp.status === 'ahead' && cmp.behind_by === 0 && cmp.ahead_by > 0; }
+
 export function gateState(changed, approved, paths, truncated = false) {
   if (truncated || changed.length >= 300) return { state: 'failure', description: '300 or more files in the range: refused (the list may be cut)' };
   const re = paths.map((p) => new RegExp('^' + p.split('**').map((q) => q.split('*').map((s) => s.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('[^/]*')).join('.*') + '$'));
@@ -183,6 +187,9 @@ async function plan(homeDir) {
       const devHead = (await gh('GET', `/repos/${ORG}/${repo}/branches/dev`)).data?.commit?.sha;
       const A = await lastAnchor(policy, repo);
       if (pr.data.base.sha !== devHead) item.errors.push("the pull request's base is not dev's head");
+      const ffc = devHead ? (await gh('GET', `/repos/${ORG}/${repo}/compare/${devHead}...${a.head_sha}?per_page=1`)).data : null;
+      if (!strictFastForward(ffc)) item.errors.push('the head is not a strict fast-forward of dev: merge origin/dev into the branch with a signed merge, push, and have the head approved again');
+      item.dev = devHead;
       if (!A.sha) item.errors.push(`no verified anchor: ${A.why}`);
       else if (devHead !== A.sha) item.errors.push("dev's head is not the last verified anchor: commits on dev are not yet checked");
       const diff = await gh('GET', `/repos/${ORG}/${repo}/pulls/${item.pr}`, undefined, undefined, 'application/vnd.github.diff');
@@ -223,7 +230,7 @@ async function plan(homeDir) {
         if (tr('Agent').join() !== a.agent) item.errors.push('head commit Agent: trailer is not the agent');
         if (a.session && tr('Claude-Session').join() !== a.session) item.errors.push('head commit Claude-Session: trailer is not the session');
       } catch (x) { item.errors.push(`head commit could not be read: ${x.message.split('\n')[0]}`); } finally { rmSync(w, { recursive: true, force: true }); }
-      if (!item.errors.length && !out.action) out.action = { repo, pr: item.pr, head_sha: a.head_sha, base_sha: pr.data.base.sha, agent: a.agent };
+      if (!item.errors.length && !out.action) out.action = { repo, pr: item.pr, head_sha: a.head_sha, base_sha: pr.data.base.sha, agent: a.agent, dev: item.dev };
     }
   }
   return out;
@@ -243,15 +250,19 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     process.stdout.write(repo);
   } else if (cmd === 'merge') {
     const a = JSON.parse(readFileSync(x, 'utf8')).action; if (!a) process.exit(0);
-    const r = await gh('PUT', `/repos/${ORG}/${a.repo}/pulls/${a.pr}/merge`, { sha: a.head_sha, merge_method: 'rebase' });
-    if (r.status !== 200) { console.error(`merge ${a.repo} #${a.pr}: HTTP ${r.status} ${r.data?.message || ''}`); process.exit(1); }
-    // The merged tree must be the approved head's tree, or no anchor is set (B1).
-    const t1 = (await gh('GET', `/repos/${ORG}/${a.repo}/git/commits/${r.data.sha}`)).data?.tree?.sha;
-    const t2 = (await gh('GET', `/repos/${ORG}/${a.repo}/git/commits/${a.head_sha}`)).data?.tree?.sha;
-    const same = !!t1 && t1 === t2;
-    writeFileSync(x, JSON.stringify({ ...JSON.parse(readFileSync(x, 'utf8')), merged_sha: same ? r.data.sha : null, merged_tree_mismatch: !same }, null, 2));
-    if (!same) { console.error(`merged ${a.repo} #${a.pr}, but its tree is not the approved head's tree: no anchor set; escalate`); process.exit(1); }
-    console.log(`merged ${a.repo} #${a.pr} at ${a.head_sha.slice(0, 12)} as ${r.data.sha.slice(0, 12)}`);
+    // No merge API (a rebase or merge commit would be GitHub's, not the agent's signed commits): move dev to the approved
+    // head with force false, only if dev is still where the plan saw it and the head is still a strict fast-forward.
+    const now = (await gh('GET', `/repos/${ORG}/${a.repo}/branches/dev`)).data?.commit?.sha;
+    const cmp = now ? (await gh('GET', `/repos/${ORG}/${a.repo}/compare/${now}...${a.head_sha}?per_page=1`)).data : null;
+    if (!a.dev || now !== a.dev || !strictFastForward(cmp)) { console.error(`${a.repo} #${a.pr}: dev moved or the head is no longer a strict fast-forward; nothing done`); process.exit(1); }
+    const r = await gh('PATCH', `/repos/${ORG}/${a.repo}/git/refs/heads/dev`, { sha: a.head_sha, force: false });
+    if (r.status !== 200) { console.error(`fast-forward ${a.repo} dev to #${a.pr}: HTTP ${r.status} ${r.data?.message || ''}`); process.exit(1); }
+    // dev must now be the approved head itself (so its tree is the approved tree), or no anchor is set (B1).
+    const after = (await gh('GET', `/repos/${ORG}/${a.repo}/branches/dev`)).data?.commit?.sha;
+    const same = after === a.head_sha;
+    writeFileSync(x, JSON.stringify({ ...JSON.parse(readFileSync(x, 'utf8')), merged_sha: same ? a.head_sha : null, merged_tree_mismatch: !same }, null, 2));
+    if (!same) { console.error(`${a.repo} dev is not the approved head after the fast-forward: no anchor set; escalate`); process.exit(1); }
+    console.log(`${a.repo} dev fast-forwarded to #${a.pr} at ${a.head_sha.slice(0, 12)} (the agent's signed commits, unchanged)`);
   } else if (cmd === 'anchor') {
     const p = JSON.parse(readFileSync(x, 'utf8')); if (!p.merged_sha) process.exit(0);
     const v = policy.anchor.variable, body = { name: v, value: p.merged_sha };

@@ -6,7 +6,7 @@ import { load, validate, validateRepos, checkActions, glob } from '../build/abp.
 import { plan } from '../build/org-plan.mjs';
 import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
 import { unclaimed } from '../build/dns-unclaimed.mjs';
-import { checkKeys, checkFiles, gateState, entryKey, readPins, pemToSsh } from '../build/key-bootstrap.mjs';
+import { checkKeys, checkFiles, gateState, entryKey, readPins, pemToSsh, strictFastForward } from '../build/key-bootstrap.mjs';
 import { advanceDecision, appStatus } from '../build/gate-status.mjs';
 const kb = JSON.parse(readFileSync('policy/key-bootstrap.json', 'utf8'));
 
@@ -211,6 +211,20 @@ t('only the App\'s own gate status counts, and its newest wins (R1, N1)', () => 
   assert.equal(appStatus([app('success', '2026-11-27T02:00:00Z'), app('failure', '2026-11-27T02:15:00Z')], g.context, bot).state, 'failure', 'a later failure wins');
   assert.equal(appStatus([app('failure', '2026-11-27T02:15:00Z'), app('success', '2026-11-27T02:00:00Z'), ...forged], g.context, bot).state, 'failure', 'order of the list does not matter');
   assert.equal(appStatus([{ ...app('success', 'x'), context: 'other' }], g.context, bot), null, 'another context is not the gate');
+});
+
+t('a key pull request lands only as a strict fast-forward of dev, never through the merge API', () => {
+  assert.equal(strictFastForward({ status: 'ahead', ahead_by: 1, behind_by: 0 }), true);
+  assert.equal(strictFastForward({ status: 'diverged', ahead_by: 1, behind_by: 2 }), false, 'a non-fast-forward head is refused');
+  assert.equal(strictFastForward({ status: 'behind', ahead_by: 0, behind_by: 1 }), false);
+  assert.equal(strictFastForward({ status: 'identical', ahead_by: 0, behind_by: 0 }), false);
+  assert.equal(strictFastForward(null), false);
+  const src = readFileSync('build/key-bootstrap.mjs', 'utf8');
+  assert.ok(!/pulls\/\$\{a\.pr\}\/merge/.test(src) && !/merge_method/.test(src), 'no merge API call left');
+  assert.ok(/git\/refs\/heads\/dev`, \{ sha: a\.head_sha, force: false \}/.test(src), 'dev moves by PATCH force false');
+  const k = JSON.parse(readFileSync('policy/abp.json', 'utf8')).pipelines['key-bootstrap'];
+  assert.ok(k.allowed.includes('ref.fast_forward_dev_to_approved_head') && !k.allowed.includes('pull_request.merge_approved_head'));
+  assert.ok(!/permission-pull-requests: write/.test(readFileSync('.github/workflows/key-bootstrap.yml', 'utf8')), 'no pull requests write');
 });
 
 console.log(`${n - failed} of ${n} tests passed`);
