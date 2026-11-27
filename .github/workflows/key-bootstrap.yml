@@ -4,9 +4,9 @@ name: Key bootstrap
 # One repository per run. Each token is minted for one step, one repository and that step's permissions only.
 on:
   workflow_dispatch:
-  # Every 15 minutes: Dinis's decision when he merges this; uncomment to turn it on.
-  # schedule:
-  #   - cron: '7,22,37,52 * * * *'
+  # Every 15 minutes: turned on by Dinis's merge of this change (after #25 and the App's five permissions).
+  schedule:
+    - cron: '7,22,37,52 * * * *'
 permissions:
   contents: read
 concurrency: key-bootstrap
