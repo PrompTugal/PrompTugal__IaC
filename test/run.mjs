@@ -170,14 +170,23 @@ t('gate status: untouched paths pass, touched ones need approval, a cut list fai
   assert.equal(gateState(Array.from({ length: 300 }, (_, i) => `site/${i}`), false, kb.gate_status.paths).state, 'failure');
 });
 t('dev-gate waits for the App status, and only the App can post it', () => {
-  const r = org.repos.find((x) => x.rulesets?.some((q) => q.name === 'dev-gate'));
+  // the dev-gate design is checked on a held copy (rulesets_held, 27 Nov 2026) put back for the test only
+  const held = org.repos.find((x) => (x.rulesets || x.rulesets_held || []).some((q) => q.name === 'dev-gate'));
+  const r = { ...held, rulesets: [...(held.rulesets || []), ...(held.rulesets_held || [])] };
+  const o2 = { ...org, repos: org.repos.map((x) => (x.name === r.name ? r : x)) };
   const g = r.rulesets.find((q) => q.name === 'dev-gate');
   assert.equal(g.rules.find((q) => q.type === 'required_status_checks').parameters.required_status_checks[0].integration_id, 5777442);
   assert.ok(!g.bypass_actors.some((b) => b.actor_type === 'Integration'), 'no App bypass (B6)');
   const l = live(); l[r.name] = { ...l[r.name], rulesets: [], dev_status: null };
-  assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name), []);
+  assert.deepEqual(plan(o2, l).actions.filter((a) => a.target === r.name), []);
   l[r.name].dev_status = 'success';
-  assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name).map((a) => a.action), ['ruleset.create']);
+  assert.deepEqual(plan(o2, l).actions.filter((a) => a.target === r.name).map((a) => a.action), ['ruleset.create']);
+});
+t('a held dev-gate is never created, even with the status on dev', () => {
+  const r = org.repos.find((x) => x.rulesets_held?.some((q) => q.name === 'dev-gate'));
+  if (!r) return;
+  const l = live(); l[r.name] = { ...l[r.name], rulesets: [], dev_status: 'success' };
+  assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name && a.action === 'ruleset.create'), []);
 });
 
 console.log(`${n - failed} of ${n} tests passed`);
