@@ -7,6 +7,11 @@ on:
     branches: [dev]
     paths: ['org/**', 'policy/**']
   workflow_dispatch:
+    inputs:
+      nudge:
+        description: 'Re-set the domain of sites whose certificate failed (at most once a day per site)'
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency: org-apply
@@ -46,6 +51,7 @@ jobs:
         if: steps.ready.outputs.ok == 'true'
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
+          ORG_NUDGE: ${{ github.event_name == 'workflow_dispatch' && inputs.nudge && '1' || '' }}
         run: node build/org-plan.mjs plan.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Policy check
         if: steps.ready.outputs.ok == 'true'

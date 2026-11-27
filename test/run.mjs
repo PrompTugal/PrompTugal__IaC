@@ -67,7 +67,14 @@ t('every agent home gives the agents team push', () => { for (const r of org.rep
 t('HTTPS is enforced only once the certificate is approved or issued', () => {
   const r = org.repos.find((x) => x.pages_site); const l = live();
   l[r.name] = { ...l[r.name], https_enforced: false, cert_state: null };
-  assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name).map((a) => a.action), ['pages.nudge_certificate']);
+  const N = { nudge: true, now: Date.parse('2026-11-27T12:00:00Z') };
+  l[r.name].cname_changed_at = '2026-11-26T11:00:00Z';
+  assert.deepEqual(plan(org, l, N).actions.filter((a) => a.target === r.name).map((a) => a.action), ['pages.nudge_certificate']);
+  assert.deepEqual(plan(org, l).actions.filter((a) => a.target === r.name), [], 'no nudge unless asked');
+  l[r.name].cname_changed_at = '2026-11-27T01:00:00Z';
+  assert.deepEqual(plan(org, l, N).actions.filter((a) => a.target === r.name), [], 'no nudge within a day of the last');
+  l[r.name].cname_changed_at = null;
+  assert.deepEqual(plan(org, l, N).actions.filter((a) => a.target === r.name), [], 'unknown last change counts as recent');
   l[r.name].cert_state = 'authorization_pending';
   let p = plan(org, l); assert.deepEqual(p.actions.filter((a) => a.target === r.name), []); assert.ok(p.notes.some((n) => n.includes(r.site)));
   l[r.name].cert_state = 'issued'; p = plan(org, l);

@@ -13,7 +13,10 @@ const OWN = new Set(['description', 'homepage', 'allow_merge_commit', 'allow_squ
 
 export const wanted = (org) => org.repos.map((r) => ({ ...org.defaults, ...r, _own: Object.keys(r) }));
 
-export function plan(org, live) {
+// opts.nudge: re-set a stuck site's domain (a nudge) only when asked (a dispatched run with nudge), never on a push; and
+// never more than once a day per site: cname_changed_at is the last commit to its CNAME file (each nudge makes two).
+export const NUDGE_GAP_MS = 24 * 3600 * 1000;
+export function plan(org, live, opts = {}) {
   const actions = [], notes = [];
   for (const r of wanted(org)) {
     const l = live[r.name];
@@ -37,7 +40,12 @@ export function plan(org, live) {
       if (['approved', 'issued'].includes(l.cert_state)) actions.push({ action: 'pages.enforce_https', target: r.name, cname: r.site });
       // No certificate, or a failed one: re-set the same domain so GitHub checks DNS again and requests it (the domains were
       // set before their DNS records existed). Never while one is pending, so a request in progress is not restarted.
-      else if (!l.cert_state || ['errored', 'bad_authz', 'authorization_revoked', 'dns_changed'].includes(l.cert_state)) actions.push({ action: 'pages.nudge_certificate', target: r.name, cname: r.site, state: l.cert_state || 'none' });
+      else if (!l.cert_state || ['errored', 'bad_authz', 'authorization_revoked', 'dns_changed'].includes(l.cert_state)) {
+        const state = l.cert_state || 'none', last = l.cname_changed_at ? Date.parse(l.cname_changed_at) : NaN, now = opts.now ?? Date.now();
+        if (!opts.nudge) notes.push(`${r.name}: certificate for ${r.site} is ${state}; a nudge runs only on a dispatched run with nudge`);
+        else if (!(now - last >= NUDGE_GAP_MS)) notes.push(`${r.name}: certificate for ${r.site} is ${state}; its domain changed ${l.cname_changed_at || 'at an unknown time'}, under a day ago, so no nudge`);
+        else actions.push({ action: 'pages.nudge_certificate', target: r.name, cname: r.site, state });
+      }
       else notes.push(`${r.name}: certificate for ${r.site} is ${l.cert_state}; HTTPS waits`);
     }
     for (const [t, perm] of Object.entries(r.teams || {})) if (perm === 'push' && !['push', 'maintain', 'admin'].includes((l.teams || {})[t])) actions.push({ action: 'team.grant_push', target: r.name, team: t });
@@ -72,6 +80,9 @@ export async function liveRepos(org, spec = null) {
       if (x.has_pages) { const pg = await gh('GET', `/repos/${org}/${x.name}/pages`); cname = pg.data?.cname ?? null; https_enforced = !!pg.data?.https_enforced; cert_state = pg.data?.https_certificate?.state ?? null; }
       const tm = await gh('GET', `/repos/${org}/${x.name}/teams`);
       const teams = Object.fromEntries((Array.isArray(tm.data) ? tm.data : []).map((t) => [t.slug, t.permission]));
+      // when the site's domain last changed (only read for a site still without a certificate; unknown counts as recent)
+      let cname_changed_at = null;
+      if (x.has_pages && !https_enforced && !['approved', 'issued'].includes(cert_state)) { const c = await gh('GET', `/repos/${org}/${x.name}/commits?path=CNAME&per_page=1&sha=${x.default_branch}`); cname_changed_at = c.status === 200 ? (c.data?.[0]?.commit?.committer?.date ?? '1970-01-01T00:00:00Z') : null; }
       let rulesets = [], dev_status = null;
       const want = spec?.[x.name];
       if (want?.rulesets?.length) {
@@ -80,7 +91,7 @@ export async function liveRepos(org, spec = null) {
         const ctx = want.rulesets.find((q) => q.after_status)?.after_status;
         if (ctx && dev.status === 200) { const st = await gh('GET', `/repos/${org}/${x.name}/commits/dev/status`); dev_status = (st.data?.statuses || []).find((q) => q.context === ctx)?.state ?? null; }
       }
-      out[x.name] = { ...x, has_dev: dev.status === 200, cname, teams, https_enforced, cert_state, rulesets, dev_status };
+      out[x.name] = { ...x, has_dev: dev.status === 200, cname, teams, https_enforced, cert_state, cname_changed_at, rulesets, dev_status };
     }
     if (r.data.length < 100) break;
   }
@@ -99,7 +110,7 @@ export function markdown(p) {
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const org = JSON.parse(readFileSync('org/repos.json', 'utf8'));
   const live = process.env.GH_TOKEN ? await liveRepos(org.org, Object.fromEntries(wanted(org).map((r) => [r.name, r]))) : {};
-  const p = plan(org, live);
+  const p = plan(org, live, { nudge: process.env.ORG_NUDGE === '1' });
   if (process.argv[2]) writeFileSync(process.argv[2], JSON.stringify(p, null, 2));
   console.log(markdown(p));
 }
