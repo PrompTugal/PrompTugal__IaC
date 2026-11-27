@@ -259,6 +259,17 @@
       }
     },
     {
+      "name": "PrompTugal__Agent__Editor",
+      "description": "Home of the editor of PrompTugal.news, the top-level editor accountable for content: its key, area, state and site.",
+      "pages": false,
+      "site": "editor.agent.promptugal.news",
+      "exists_by": "created by Org apply for cl-6.editor@PrompTugal.dinis (owner of content/**, senior to the correspondent), asked by cl-6.conductor 27 Nov 2026 ~10:35 UTC after Dinis's request (~10:20 UTC) and cl-6.maestro's agreement; signed record from cl-6.decisions pending",
+      "pages_site": true,
+      "teams": {
+        "promptugal-news-agents": "push"
+      }
+    },
+    {
       "name": "PrompTugal__Agent__Events",
       "description": "Home of the events agent of PrompTugal.news: its key, area, state and site.",
       "pages": false,

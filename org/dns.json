@@ -131,6 +131,13 @@
       "added_by": "cl-6.infra, 26 Nov 2026, after Org apply set this custom domain on the repository"
     },
     {
+      "name": "editor.agent.promptugal.news",
+      "type": "CNAME",
+      "value": "promptugal.github.io",
+      "for": "PrompTugal__Agent__Editor",
+      "added_by": "cl-6.infra, 27 Nov 2026, with the repository (decisions record pending)"
+    },
+    {
       "name": "events.agent.promptugal.news",
       "type": "CNAME",
       "value": "promptugal.github.io",
