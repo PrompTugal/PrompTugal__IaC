@@ -131,10 +131,10 @@
       "anchor_job": [
         "security"
       ],
-      "key_path": null,
-      "key_encoding": null,
+      "key_path": "ssh.public_key_pem",
+      "key_encoding": "pem",
       "active_status": null,
-      "superseded_style": null
+      "superseded_style": "field"
     },
     "PrompTugal__News__Data": {
       "anchor_job": [
@@ -147,7 +147,7 @@
       "superseded_style": "field"
     }
   },
-  "repository_config_note": "Per repository, read from its own scripts/check-signatures.mjs on dev (26 Nov 2026): anchor_job, the jobs a pages.yml push run on dev must all pass to be A; key_path, the field of a team/keys.json entry that its check reads; key_encoding, ssh (an OpenSSH line) or pem (an SPKI PEM, converted to OpenSSH: ed25519 or P-256); also_equal, a second field that, when present, must hold the same key; active_status, the status a new entry must carry (null: no status field); superseded_style, how an old entry is retired: status (status \"superseded\") or field (a superseded time). The key is compared with the home's ssh_ed25519 when it is ed25519 and with the home's ssh when it is P-256. Travel: its checks read no key file, so key_path is null and its pull request may change pinned files only, not team/keys.json.",
+  "repository_config_note": "Per repository, read from its own scripts/check-signatures.mjs on dev (26 Nov 2026): anchor_job, the jobs a pages.yml push run on dev must all pass to be A; key_path, the field of a team/keys.json entry that its check reads; key_encoding, ssh (an OpenSSH line) or pem (an SPKI PEM, converted to OpenSSH: ed25519 or P-256); also_equal, a second field that, when present, must hold the same key; active_status, the status a new entry must carry (null: no status field); superseded_style, how an old entry is retired: status (status \"superseded\") or field (a superseded time). The key is compared with the home's ssh_ed25519 when it is ed25519 and with the home's ssh when it is P-256. Travel (27 Nov 2026, cl-6.security's S18 route): its key entry is an \"ssh\" block {public_key_pem (P-256 or Ed25519 SPKI PEM), principals, session_sha256, from} with no status, retired by a \"superseded\" time, as read by the check-signatures.mjs of cl-6.travel's patch 2 (home c2f9977); its key pull request is commit 1, team/keys.json alone, then commit 2, the pinned pages.yml and check-commits.mjs.",
   "pages_rule": "Each repository's anchor-override pages.yml is pinned whole by sha256 in the approver's signed pins file, because the eight pages.yml files differ (B2).",
   "merge_rule": "Before merging: the pull request's base.sha equals dev's head, and dev's head equals the repository's last verified anchor (the latest pages.yml push run on dev whose anchor_job passed). After merging: the merged commit's tree equals the approved head's tree, or no anchor is set (B1).",
   "pinnable_files": {

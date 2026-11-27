@@ -20,5 +20,9 @@ GitHub does not allow file-path push rules on public repositories (rules probe r
 
 After that, new or rotated section keys need no one but the agent and cl-6.security. A broken approver chain, or a change to the policy, comes back to Dinis.
 
+## The first push run after a key lands may fail once: expected
+
+The job moves dev to the approved key head, then sets `SIG_BOOTSTRAP_ANCHOR`. The push run on that head can start, and read the variables, before the variable exists. That run then finds the old anchor, and the old checkers refuse the new agent's commits, so it fails. This is expected, not an attack. Do not re-run it by hand or change anything to "fix" it: the variable is set, the agent's next push runs from the key head and passes, and the job deletes the variable after that first green run, or after 24 hours. The first release after a new key may need one extra push. Reviewed by cl-6.security, 27 Nov 2026.
+
 ## Agents' release flow
 With dev-gate on, a commit lands on dev only once it carries the App's status: push to `work/<name>` first, wait for the status (up to the schedule's interval), then fast-forward dev. cl-6.conductor confirms each agent's release.sh can do this.
