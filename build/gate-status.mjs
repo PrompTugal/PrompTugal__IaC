@@ -16,6 +16,16 @@ import { loadPolicy, approverKey, verifySig, gateState, lastAnchor } from './key
 
 const ORG = 'PrompTugal';
 
+// The App's own gate status on a commit (R1, cl-6.security 27 Nov): only statuses created by the App's bot account count,
+// matched on login, id and type together, and the newest of those wins (N1). statuses: the list endpoint's entries.
+export function appStatus(statuses, context, bot) {
+  const mine = (statuses || []).filter((s) => s.context === context && s.creator && s.creator.type === 'Bot'
+    && s.creator.login === bot.login && Number(s.creator.id) === Number(bot.id));
+  mine.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  return mine[0] || null;
+}
+const statusesOf = async (repo, sha) => (await gh('GET', `/repos/${ORG}/${repo}/commits/${sha}/statuses?per_page=100`)).data;
+
 // What the App does with a work/** head once its state is known (pure, for the tests). cmp is the compare of dev...head.
 export function advanceDecision({ branch, sha, state, dev, cmp }) {
   if (!branch || !branch.startsWith('work/') || !sha || !dev) return null;
@@ -38,8 +48,7 @@ async function plan(home) {
     const dev = heads.find((x) => x.name === 'dev')?.commit?.sha || null;
     for (const b of heads) {
       const sha = b.commit.sha;
-      const have = await gh('GET', `/repos/${ORG}/${repo}/commits/${sha}/status`);
-      const posted = (have.data?.statuses || []).find((s) => s.context === g.context);
+      const posted = appStatus(await statusesOf(repo, sha), g.context, g.app_bot);
       if (posted) {
         // already judged: a work/** head may still need advancing (or its fail tag) if an earlier run posted it
         if (b.name.startsWith('work/') && ['success', 'failure'].includes(posted.state)) {
@@ -103,7 +112,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       }
       // re-read just before moving: dev must still be where the plan saw it, and the head must still carry success
       const now = (await gh('GET', `/repos/${ORG}/${y}/branches/dev`)).data?.commit?.sha;
-      const st = (await gh('GET', `/repos/${ORG}/${y}/commits/${m.sha}/status`)).data?.statuses?.find((s) => s.context === g.context)?.state;
+      const st = appStatus(await statusesOf(y, m.sha), g.context, g.app_bot)?.state;
       if (now !== m.from || st !== 'success') { console.log(`${y} work/${m.agent} ${m.sha.slice(0, 12)}: not advanced (dev moved or status not success)`); continue; }
       const r = await gh('PATCH', `/repos/${ORG}/${y}/git/refs/heads/dev`, { sha: m.sha, force: false });
       console.log(`${y} dev ${m.from.slice(0, 12)} -> ${m.sha.slice(0, 12)} (work/${m.agent}): ${r.status === 200 ? 'advanced' : `HTTP ${r.status}`}`);

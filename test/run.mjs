@@ -7,7 +7,7 @@ import { plan } from '../build/org-plan.mjs';
 import { plan as dnsPlan, validateDns } from '../build/dns-plan.mjs';
 import { unclaimed } from '../build/dns-unclaimed.mjs';
 import { checkKeys, checkFiles, gateState, entryKey, readPins, pemToSsh } from '../build/key-bootstrap.mjs';
-import { advanceDecision } from '../build/gate-status.mjs';
+import { advanceDecision, appStatus } from '../build/gate-status.mjs';
 const kb = JSON.parse(readFileSync('policy/key-bootstrap.json', 'utf8'));
 
 let n = 0, failed = 0;
@@ -195,6 +195,22 @@ t('the App advances dev only to a green work head that is a strict fast-forward,
   const pol = JSON.parse(readFileSync('policy/abp.json', 'utf8')).pipelines['gate-status'];
   for (const a of ['ref.fast_forward_dev', 'tag.create_gate_fail']) assert.ok(pol.allowed.includes(a), a);
   for (const a of ['ref.force_update', 'ref.update_other_branch', 'tag.delete']) assert.ok(pol.refused_always.includes(a), a);
+});
+
+t('only the App\'s own gate status counts, and its newest wins (R1, N1)', () => {
+  const g = JSON.parse(readFileSync('policy/key-bootstrap.json', 'utf8')).gate_status, bot = g.app_bot;
+  const app = (state, at) => ({ context: g.context, state, created_at: at, creator: { login: bot.login, id: bot.id, type: 'Bot' } });
+  const forged = [
+    { context: g.context, state: 'success', created_at: '2026-11-27T03:00:00Z', creator: { login: 'the-cyber-boardroom-athena', id: 360710802, type: 'User' } },
+    { context: g.context, state: 'success', created_at: '2026-11-27T03:00:00Z', creator: { login: bot.login, id: 1, type: 'Bot' } },
+    { context: g.context, state: 'success', created_at: '2026-11-27T03:00:00Z', creator: { login: 'other-app[bot]', id: bot.id, type: 'Bot' } },
+  ];
+  assert.equal(appStatus(forged, g.context, bot), null, 'a forged success is ignored');
+  const H = 'b'.repeat(40), D = 'a'.repeat(40), ff = { status: 'ahead', ahead_by: 1, behind_by: 0 };
+  assert.equal(advanceDecision({ branch: 'work/cl-6.data', sha: H, state: appStatus(forged, g.context, bot)?.state, dev: D, cmp: ff }), null, 'so nothing advances');
+  assert.equal(appStatus([app('success', '2026-11-27T02:00:00Z'), app('failure', '2026-11-27T02:15:00Z')], g.context, bot).state, 'failure', 'a later failure wins');
+  assert.equal(appStatus([app('failure', '2026-11-27T02:15:00Z'), app('success', '2026-11-27T02:00:00Z'), ...forged], g.context, bot).state, 'failure', 'order of the list does not matter');
+  assert.equal(appStatus([{ ...app('success', 'x'), context: 'other' }], g.context, bot), null, 'another context is not the gate');
 });
 
 console.log(`${n - failed} of ${n} tests passed`);

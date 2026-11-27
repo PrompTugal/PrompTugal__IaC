@@ -48,7 +48,13 @@
     ],
     "paths_note": "every file pages.yml copies from A (the whole scripts/ and .gitattributes) and the workflows and keys (B4)",
     "advance": "On a work/** head: success and a strict fast-forward of dev (compare ahead, behind_by 0) moves dev to it, force false, after re-reading dev and the status; failure creates tag gate/<agent>/<sha12>-fail. Never a force update, never another branch, never a tag deletion.",
-    "agent_push": "An agent pushes work/<agent> only, never dev. After a rebase it re-pushes with --force-with-lease on its own work/<agent> and nowhere else (ABP P19); each new SHA is judged afresh. The App never force-updates any ref."
+    "agent_push": "An agent pushes work/<agent> only, never dev. After a rebase it re-pushes with --force-with-lease on its own work/<agent> and nowhere else (ABP P19); each new SHA is judged afresh. The App never force-updates any ref.",
+    "app_bot": {
+      "login": "agenticcells-site-factory[bot]",
+      "id": 357166223,
+      "source": "the App's commits (Create/Delete CNAME) in PrompTugal__Agent__Security, author 357166223+agenticcells-site-factory[bot]@users.noreply.github.com, read 27 Nov 2026"
+    },
+    "trust": "Only a status whose creator is app_bot (login, id and type Bot) counts, the newest such status on the SHA; a status with the same context from anyone else is ignored, for judging, advancing and tagging alike."
   },
   "per_run": 1,
   "log": {
