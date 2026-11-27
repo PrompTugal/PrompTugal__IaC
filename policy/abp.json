@@ -155,9 +155,9 @@
       ],
       "environment": "apply",
       "allowed": [
-        "pull_request.merge_approved_head",
         "variable.set_anchor",
-        "variable.delete_anchor"
+        "variable.delete_anchor",
+        "ref.fast_forward_dev_to_approved_head"
       ],
       "refused_always": [
         "merge without a verified approval of the exact head SHA and diff hash",
@@ -165,11 +165,13 @@
         "use commit-exemptions.json",
         "repo.delete",
         "ruleset.delete",
-        "app.change"
+        "app.change",
+        "pull_request.merge_api (rebase, squash or merge)",
+        "ref.force_update"
       ],
       "policy": "policy/key-bootstrap.json",
       "per_run": 1,
-      "tokens": "read: metadata, contents, pull requests read on the covered repositories; merge: pull requests, contents and workflows write on the one repository; anchor: actions variables write on the one repository; cleanup: actions read and actions variables write, one repository per matrix job",
+      "tokens": "read: metadata, contents, pull requests read on the covered repositories; fast-forward: contents and workflows write on the one repository (no pull requests write); anchor: actions variables write on the one repository; cleanup: actions read and actions variables write, one repository per matrix job",
       "source": "Dinis, 26 Nov 2026, via cl-6.conductor: \"note that I cannot be in-line in the normal publishing workflow, only for escalations and massive exceptions.\" Designed with cl-6.security@PrompTugal.dinis (PrompTugal__Agent__Security docs/security/2026-11-26-section-repos-key-bootstrap.md, 6fbdbc8)."
     },
     "gate-status": {
