@@ -49,13 +49,13 @@ t('visibility is reported, never changed', () => {
 t('defaults are not forced on existing repositories', () => assert.deepEqual(plan(org, live(Object.fromEntries(org.repos.map((r) => [r.name, { has_wiki: true }])))).actions, []));
 t('a dry plan passes the policy', () => assert.deepEqual(checkActions(policy, plan(org, {})), []));
 
-t('every place home names its place and agent', () => { for (const r of org.repos.filter((x) => x.name.startsWith('PrompTugal__Agent__Place__'))) { assert.ok(r.place?.id && r.place?.agent, r.name); assert.match(r.name, /^PrompTugal__Agent__Place__[A-Z][A-Za-z-]*$/); assert.equal(r.site, `${r.place.id}.place.agent.promptugal.news`); } });
+t('every place home names its place and agent', () => { for (const r of org.repos.filter((x) => x.name.startsWith('PrompTugal__Agent__Place__'))) { assert.ok(r.place?.id && r.place?.agent, r.name); assert.match(r.name, /^PrompTugal__Agent__Place__[A-Z][A-Za-z-]*(__[A-Z][A-Za-z-]*)?$/); assert.equal(!!r.place.topic, /^PrompTugal__Agent__Place__[A-Z][A-Za-z-]*__[A-Z]/.test(r.name), r.name); assert.equal(r.site, `${r.place.topic ? r.place.topic + '.' : ''}${r.place.id}.place.agent.promptugal.news`); } });
 t('a home with a site gets Pages and its own domain', () => {
   const r = org.repos.find((x) => x.pages_site); const l = live(); l[r.name] = { ...l[r.name], has_pages: false, cname: null };
   const acts = plan(org, l).actions.filter((a) => a.target === r.name);
   assert.deepEqual(acts.map((a) => a.action), ['pages.enable', 'pages.set_cname']); assert.equal(acts[1].cname, r.site);
 });
-t('every site is under agent.promptugal.news', () => { for (const r of org.repos.filter((x) => x.pages_site)) assert.match(r.site, /^[a-z0-9-]+(\.place)?\.agent\.promptugal\.news$/, r.name); });
+t('every site is under agent.promptugal.news', () => { for (const r of org.repos.filter((x) => x.pages_site)) assert.match(r.site, /^(([a-z0-9-]+\.)?[a-z0-9-]+\.place|[a-z0-9-]+)\.agent\.promptugal\.news$/, r.name); });
 t('a home without the agents team gets push, never more', () => {
   const r = org.repos.find((x) => x.teams); const l = live(); l[r.name] = { ...l[r.name], teams: {} };
   const acts = plan(org, l).actions.filter((a) => a.target === r.name);
