@@ -179,14 +179,20 @@
       ],
       "environment": "apply",
       "allowed": [
-        "status.post_gate"
+        "status.post_gate",
+        "ref.fast_forward_dev",
+        "tag.create_gate_fail"
       ],
       "refused_always": [
         "status.post_other_context",
-        "repo.update_settings"
+        "repo.update_settings",
+        "ref.force_update",
+        "ref.update_other_branch",
+        "tag.delete"
       ],
       "policy": "policy/key-bootstrap.json gate_status",
-      "tokens": "read: metadata, contents, statuses read on the covered repositories; post: statuses write on one repository per matrix job"
+      "tokens": "read: metadata, contents, statuses read on the covered repositories; post: statuses write on one repository per matrix job; advance: contents write (and statuses read) on one repository per matrix job, for the dev fast-forward and the fail tag only",
+      "advance": "cl-6.decisions, 27 Nov 2026: agents push work/<agent> only; the App moves dev to a work/** head whose gate status is success and which is a strict fast-forward of dev (force false, re-checked just before), and tags a failure gate/<agent>/<sha12>-fail, so agents read the outcome with git ls-remote"
     }
   },
   "privileges": [
