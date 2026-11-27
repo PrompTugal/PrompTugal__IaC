@@ -47,7 +47,8 @@
       "work/**"
     ],
     "paths_note": "every file pages.yml copies from A (the whole scripts/ and .gitattributes) and the workflows and keys (B4)",
-    "advance": "On a work/** head: success and a strict fast-forward of dev (compare ahead, behind_by 0) moves dev to it, force false, after re-reading dev and the status; failure creates tag gate/<agent>/<sha12>-fail. Never a force update, never another branch, never a tag deletion."
+    "advance": "On a work/** head: success and a strict fast-forward of dev (compare ahead, behind_by 0) moves dev to it, force false, after re-reading dev and the status; failure creates tag gate/<agent>/<sha12>-fail. Never a force update, never another branch, never a tag deletion.",
+    "agent_push": "An agent pushes work/<agent> only, never dev. After a rebase it re-pushes with --force-with-lease on its own work/<agent> and nowhere else (ABP P19); each new SHA is judged afresh. The App never force-updates any ref."
   },
   "per_run": 1,
   "log": {
